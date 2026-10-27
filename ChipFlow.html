@@ -1,0 +1,2804 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ChipFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark}
+/* ═══════════════════════════════════════════════════════════════════
+   ChipFlow — styles
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg: #07080d;
+  --bg-alt: #0b0d15;
+  --surface: #0f111a;
+  --card: rgba(255, 255, 255, 0.03);
+  --card-hover: rgba(255, 255, 255, 0.055);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #f0f1f5;
+  --muted: #9da3b4;
+  --dim: #5f6580;
+
+  --accent-indigo: #6366f1;
+  --accent-cyan: #06b6d4;
+  --accent-violet: #8b5cf6;
+  --accent-rose: #f43f5e;
+  --accent-amber: #f59e0b;
+  --accent-emerald: #10b981;
+  --gradient: linear-gradient(135deg, #6366f1, #06b6d4);
+
+  --nav-height: 72px;
+  --radius: 16px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3, h4, p { margin-top: 0; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; color: inherit; }
+ul { margin: 0; padding: 0; list-style: none; }
+::selection { background: rgba(99, 102, 241, 0.4); }
+:focus-visible { outline: 2px solid var(--accent-indigo); outline-offset: 2px; }
+section[id] { scroll-margin-top: var(--nav-height); }
+
+/* ─── Preloader ─── */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+.preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.preloader-inner { text-align: center; }
+.chip-icon { width: 84px; height: 84px; margin: 0 auto 20px; animation: chip-pulse 1.6s ease-in-out infinite; }
+.preloader-text { color: var(--muted); font-size: 14px; letter-spacing: 0.04em; margin-bottom: 18px; }
+.preloader-bar { width: 220px; height: 3px; margin: 0 auto; background: var(--border); border-radius: 3px; overflow: hidden; }
+.preloader-bar-fill { height: 100%; width: 0; background: var(--gradient); animation: preload-fill 2s ease-out forwards; }
+@keyframes chip-pulse { 50% { transform: scale(1.08); filter: drop-shadow(0 0 14px rgba(99, 102, 241, 0.6)); } }
+@keyframes preload-fill { to { width: 100%; } }
+
+/* ─── Navbar ─── */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+.navbar.scrolled {
+  background: rgba(7, 8, 13, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom-color: var(--border);
+}
+.nav-inner {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.nav-logo { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; letter-spacing: -0.01em; }
+.nav-logo-icon { width: 30px; height: 30px; }
+.nav-links { display: flex; gap: 2px; }
+.nav-link {
+  display: block;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: var(--text); background: var(--card-hover); }
+.nav-link.active { color: var(--text); background: rgba(99, 102, 241, 0.16); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.search-trigger {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.search-trigger:hover { border-color: var(--border-strong); color: var(--text); }
+.search-shortcut { font-family: var(--mono); font-size: 12px; padding: 1px 6px; border: 1px solid var(--border); border-radius: 5px; }
+
+.hamburger {
+  display: none;
+  flex-direction: column; justify-content: center; gap: 5px;
+  width: 40px; height: 40px;
+  padding: 0 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.hamburger span { display: block; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.25s, opacity 0.25s; }
+.hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-nav {
+  position: fixed;
+  top: var(--nav-height); left: 0; right: 0;
+  z-index: 99;
+  padding: 12px 24px 24px;
+  background: rgba(7, 8, 13, 0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transform: translateY(-12px);
+  opacity: 0; visibility: hidden;
+  transition: transform 0.25s, opacity 0.25s, visibility 0.25s;
+}
+.mobile-nav.open { transform: none; opacity: 1; visibility: visible; }
+.mobile-nav-link { display: block; padding: 14px 4px; font-size: 16px; font-weight: 500; color: var(--muted); border-bottom: 1px solid var(--border); }
+.mobile-nav-link:hover { color: var(--text); }
+
+@media (max-width: 960px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .search-shortcut { display: none; }
+}
+
+/* ─── Search ─── */
+.search-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; justify-content: center; align-items: flex-start;
+  padding: 12vh 16px 0;
+  background: rgba(3, 4, 8, 0.72);
+  backdrop-filter: blur(6px);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.search-overlay.open { opacity: 1; visibility: visible; }
+.search-modal {
+  width: min(660px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  transform: translateY(-8px);
+  transition: transform 0.2s;
+}
+.search-overlay.open .search-modal { transform: none; }
+.search-input-wrap { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); color: var(--muted); }
+.search-input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--text); font: inherit; font-size: 16px; }
+.search-input::placeholder { color: var(--dim); }
+.search-esc { font-family: var(--mono); font-size: 11px; padding: 2px 7px; border: 1px solid var(--border); border-radius: 5px; color: var(--dim); }
+.search-results { max-height: min(60vh, 520px); overflow-y: auto; padding: 8px; }
+.search-empty { text-align: center; padding: 44px 20px; color: var(--dim); font-size: 14px; }
+.search-empty p { margin: 12px 0 0; }
+.search-category-label { padding: 12px 12px 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
+.search-result-item { display: flex; align-items: center; gap: 14px; padding: 10px 12px; border-radius: 10px; cursor: pointer; }
+.search-result-item:hover { background: var(--card-hover); }
+.search-result-icon { width: 36px; height: 36px; flex: none; display: grid; place-items: center; border-radius: 9px; background: var(--card); border: 1px solid var(--border); font-size: 17px; }
+.search-result-info { flex: 1; min-width: 0; }
+.search-result-title { font-weight: 600; font-size: 14.5px; }
+.search-result-desc { font-size: 12.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.search-result-badge { flex: none; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 600; }
+
+/* ─── Buttons ─── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 24px;
+  border-radius: 12px;
+  font-weight: 600; font-size: 15px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--gradient); color: #fff; box-shadow: 0 8px 28px rgba(99, 102, 241, 0.35); }
+.btn-primary:hover { box-shadow: 0 12px 36px rgba(99, 102, 241, 0.5); }
+.btn-ghost { background: var(--card); border-color: var(--border-strong); }
+.btn-ghost:hover { background: var(--card-hover); }
+
+/* ─── Hero ─── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: calc(var(--nav-height) + 40px) 24px 120px;
+  text-align: center;
+  overflow: hidden;
+}
+.hero-bg { position: absolute; inset: 0; pointer-events: none; }
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, transparent 72%);
+  mask-image: radial-gradient(ellipse at center, #000 20%, transparent 72%);
+}
+.hero-glow { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.5; }
+.hero-glow-1 { width: 520px; height: 520px; top: -140px; left: 8%; background: rgba(99, 102, 241, 0.55); }
+.hero-glow-2 { width: 460px; height: 460px; bottom: -120px; right: 8%; background: rgba(6, 182, 212, 0.4); }
+.hero-particles { position: absolute; inset: 0; overflow: hidden; }
+.hero-particle { position: absolute; border-radius: 50%; opacity: 0; animation: particle-rise linear infinite; }
+@keyframes particle-rise {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 0.7; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
+.hero-content { position: relative; z-index: 1; max-width: 920px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 7px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--card);
+  font-size: 13px; color: var(--muted);
+  margin-bottom: 28px;
+}
+.badge-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-emerald); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); animation: dot-pulse 2s infinite; }
+@keyframes dot-pulse { 70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+.hero-title { font-size: clamp(38px, 7vw, 76px); font-weight: 800; line-height: 1.06; letter-spacing: -0.03em; margin-bottom: 22px; }
+.hero-gradient-text { background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+.hero-subtitle { max-width: 640px; margin: 0 auto 44px; font-size: clamp(16px, 2vw, 19px); color: var(--muted); }
+.hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 44px; }
+.hero-stat { padding: 20px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
+.hero-stat-value { display: block; font-family: var(--mono); font-size: clamp(26px, 3.4vw, 38px); font-weight: 600; background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+.hero-stat-label { display: block; margin-top: 4px; font-size: 13px; color: var(--muted); }
+.hero-cta { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.scroll-indicator { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 12px; color: var(--dim); letter-spacing: 0.06em; }
+.scroll-mouse { width: 22px; height: 34px; border: 2px solid var(--dim); border-radius: 12px; display: flex; justify-content: center; padding-top: 6px; }
+.scroll-dot { width: 3px; height: 7px; border-radius: 2px; background: var(--muted); animation: scroll-dot 1.8s ease-in-out infinite; }
+@keyframes scroll-dot { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(11px); opacity: 0; } }
+@media (max-width: 720px) {
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .scroll-indicator { display: none; }
+}
+
+/* ─── Sections ─── */
+.section { padding: 110px 0; }
+.section-alt { background: var(--bg-alt); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.section-header { max-width: 740px; margin: 0 auto 56px; text-align: center; }
+.section-tag { display: inline-block; padding: 5px 14px; margin-bottom: 16px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-indigo); background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.3); }
+.section-title { font-size: clamp(30px, 4.6vw, 46px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.12; margin-bottom: 14px; }
+.section-subtitle { color: var(--muted); font-size: 17px; margin: 0; }
+@media (max-width: 640px) { .section { padding: 76px 0; } }
+
+.fade-in { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.fade-in.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .fade-in { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* ─── Business models ─── */
+.business-models-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px; }
+.model-card { padding: 26px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); transition: transform 0.25s, border-color 0.25s, background 0.25s; }
+.model-card:hover { transform: translateY(-4px); border-color: rgba(99, 102, 241, 0.4); background: var(--card-hover); }
+.model-icon { width: 46px; height: 46px; display: grid; place-items: center; margin-bottom: 16px; border-radius: 12px; background: rgba(99, 102, 241, 0.14); color: var(--accent-indigo); }
+.model-icon svg { width: 24px; height: 24px; }
+.model-card h3 { font-size: 18px; margin-bottom: 6px; }
+.model-card p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+.model-companies { display: flex; flex-wrap: wrap; gap: 8px; }
+.company-chip { padding: 3px 12px; border-radius: 999px; font-size: 12.5px; font-weight: 600; border: 1px solid; }
+.company-chip.apple { color: #a78bfa; background: rgba(167, 139, 250, 0.12); border-color: rgba(167, 139, 250, 0.3); }
+.company-chip.google { color: #34d399; background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.3); }
+.company-chip.qualcomm { color: #f472b6; background: rgba(244, 114, 182, 0.12); border-color: rgba(244, 114, 182, 0.3); }
+.company-chip.mediatek { color: #fbbf24; background: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.3); }
+.company-chip.samsung { color: #38bdf8; background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.3); }
+.company-chip.tsmc { color: #f87171; background: rgba(248, 113, 113, 0.12); border-color: rgba(248, 113, 113, 0.3); }
+
+/* ─── Charts ─── */
+.charts-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
+.chart-card { padding: 24px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); min-width: 0; }
+.chart-card-wide { grid-column: 1 / -1; }
+.chart-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.chart-header h3 { font-size: 17px; margin: 0; }
+.chart-badge { padding: 3px 11px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--muted); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); white-space: nowrap; }
+.chart-body { position: relative; height: 320px; }
+.chart-body-tall { height: 420px; }
+.chart-body canvas { max-width: 100%; }
+@media (max-width: 900px) { .charts-row { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .chart-body { height: 280px; } .chart-body-tall { height: 340px; } .chart-card { padding: 18px; } }
+
+/* ─── Processors ─── */
+.filter-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 36px; }
+.filter-btn { padding: 8px 20px; border-radius: 999px; border: 1px solid var(--border); background: var(--card); color: var(--muted); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.filter-btn:hover { color: var(--text); border-color: var(--border-strong); }
+.filter-btn.active { color: #fff; background: var(--gradient); border-color: transparent; }
+.processor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+.proc-card { padding: 24px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); cursor: pointer; transition: transform 0.25s, border-color 0.25s, background 0.25s, opacity 0.7s ease; }
+.proc-card:hover { transform: translateY(-5px); border-color: rgba(99, 102, 241, 0.45); background: var(--card-hover); }
+.proc-card.hidden { display: none; }
+.proc-brand { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+.proc-name { font-size: 23px; font-weight: 700; letter-spacing: -0.01em; }
+.proc-node { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 2px; }
+.proc-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.proc-spec { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.proc-spec-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+.proc-spec-value { font-size: 15px; font-weight: 600; }
+.proc-risk-badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid; }
+.risk-critical-badge { color: #fb7185; background: rgba(244, 63, 94, 0.12); border-color: rgba(244, 63, 94, 0.32); }
+.risk-high-badge { color: #fb923c; background: rgba(251, 146, 60, 0.12); border-color: rgba(251, 146, 60, 0.32); }
+.risk-medium-badge { color: #fbbf24; background: rgba(251, 191, 36, 0.12); border-color: rgba(251, 191, 36, 0.32); }
+
+.processor-modal-overlay { position: fixed; inset: 0; z-index: 400; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(3, 4, 8, 0.78); backdrop-filter: blur(6px); opacity: 0; visibility: hidden; transition: opacity 0.25s, visibility 0.25s; }
+.processor-modal-overlay.open { opacity: 1; visibility: visible; }
+.processor-modal { position: relative; width: min(860px, 100%); max-height: 90vh; overflow-y: auto; padding: 40px; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 22px; box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6); transform: translateY(14px) scale(0.98); transition: transform 0.25s; }
+.processor-modal-overlay.open .processor-modal { transform: none; }
+.modal-close { position: absolute; top: 16px; right: 16px; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--border); background: var(--card); font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); }
+.modal-close:hover { color: var(--text); background: var(--card-hover); }
+.modal-brand { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px; }
+.processor-modal h2 { font-size: 34px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.modal-section { margin-top: 30px; }
+.modal-section h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.modal-specs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.modal-spec { padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
+.modal-spec-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); margin-bottom: 3px; }
+.modal-spec-value { font-size: 14.5px; font-weight: 600; }
+.modal-desc { color: var(--muted); margin: 0; }
+.modal-strengths ul { display: flex; flex-direction: column; gap: 10px; }
+.modal-strengths li { position: relative; padding-left: 28px; color: var(--muted); }
+.modal-strengths li::before { content: '✓'; position: absolute; left: 0; top: 0; width: 18px; height: 18px; display: grid; place-items: center; border-radius: 50%; font-size: 11px; font-weight: 700; color: var(--accent-emerald); background: rgba(16, 185, 129, 0.15); margin-top: 3px; }
+.modal-risk { padding: 16px 18px; border-radius: 12px; border: 1px solid rgba(244, 63, 94, 0.25); border-left: 3px solid var(--accent-rose); background: rgba(244, 63, 94, 0.07); }
+.modal-risk p { margin: 0; color: var(--muted); }
+@media (max-width: 560px) { .processor-modal { padding: 28px 20px; } .processor-modal h2 { font-size: 28px; } }
+
+/* ─── Supply chain tiers ─── */
+.supply-chain-visual { max-width: 860px; margin: 0 auto 24px; }
+.tier-card { display: grid; grid-template-columns: 92px 1fr; column-gap: 20px; align-items: start; }
+.tier-number { margin-top: 20px; padding: 6px 0; text-align: center; font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 10px; background: rgba(6, 182, 212, 0.08); }
+.tier-content { padding: 22px 24px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
+.tier-content h3 { font-size: 19px; margin-bottom: 6px; }
+.tier-content p { color: var(--muted); font-size: 14.5px; margin-bottom: 14px; }
+.tier-companies { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.tier-companies span { padding: 3px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 500; color: var(--text); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); }
+.tier-stat { font-size: 14px; color: var(--muted); padding-top: 12px; border-top: 1px dashed var(--border-strong); }
+.tier-stat strong { color: var(--accent-cyan); font-family: var(--mono); font-weight: 600; }
+.tier-connector { grid-column: 2; display: flex; justify-content: center; padding: 4px 0; }
+.tier-connector svg { width: 24px; height: 48px; }
+@media (max-width: 640px) {
+  .tier-card { grid-template-columns: 1fr; }
+  .tier-number { margin: 0 0 10px; width: 72px; }
+  .tier-connector { grid-column: 1; }
+}
+
+/* ─── Risks ─── */
+.risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.risk-card { --sev: var(--accent-amber); padding: 26px; border: 1px solid var(--border); border-top: 3px solid var(--sev); border-radius: var(--radius); background: var(--card); transition: transform 0.25s, background 0.25s; }
+.risk-card:hover { transform: translateY(-4px); background: var(--card-hover); }
+.risk-card.risk-critical { --sev: #f43f5e; }
+.risk-card.risk-high { --sev: #fb923c; }
+.risk-card.risk-medium { --sev: #fbbf24; }
+.risk-level { display: inline-block; margin-bottom: 12px; padding: 2px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--sev); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--sev); }
+.risk-card h3 { font-size: 18px; margin-bottom: 8px; }
+.risk-card p { color: var(--muted); font-size: 14.5px; }
+.risk-card p strong { color: var(--text); }
+.risk-metric { margin-top: 18px; }
+.risk-bar { height: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); overflow: hidden; margin-bottom: 8px; }
+.risk-bar-fill { height: 100%; width: var(--risk-pct, 0%); border-radius: 6px; background: var(--sev); }
+.risk-metric span { font-size: 12.5px; color: var(--muted); font-family: var(--mono); }
+
+.investment-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin: 48px 0 8px; }
+.invest-card { padding: 26px 22px; text-align: center; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); transition: transform 0.25s, border-color 0.25s; }
+.invest-card:hover { transform: translateY(-4px); border-color: rgba(99, 102, 241, 0.4); }
+.invest-icon { font-size: 30px; margin-bottom: 8px; }
+.invest-card h4 { font-size: 15px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.invest-value { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; background: var(--gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+.invest-card p { font-size: 13.5px; color: var(--muted); margin: 0; }
+
+/* ─── Timeline ─── */
+.timeline { position: relative; max-width: 860px; margin: 0 auto 24px; padding-left: 44px; }
+.timeline::before { content: ''; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(to bottom, var(--accent-indigo), var(--accent-cyan)); opacity: 0.5; }
+.timeline-item { position: relative; margin-bottom: 26px; }
+.timeline-dot { position: absolute; left: -44px; top: 26px; width: 24px; height: 24px; border-radius: 50%; background: var(--bg-alt); border: 2px solid var(--accent-indigo); box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.15); }
+.timeline-dot::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: var(--gradient); }
+.timeline-card { padding: 24px 26px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); transition: border-color 0.25s, background 0.25s; }
+.timeline-item:hover .timeline-card { border-color: rgba(99, 102, 241, 0.4); background: var(--card-hover); }
+.timeline-year { display: inline-block; margin-bottom: 8px; font-family: var(--mono); font-size: 13px; font-weight: 600; color: var(--accent-cyan); }
+.timeline-card h3 { font-size: 20px; margin-bottom: 8px; }
+.timeline-card p { color: var(--muted); font-size: 14.5px; margin-bottom: 14px; }
+.timeline-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.timeline-chips span { padding: 3px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 500; background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.28); color: #c7c9ff; }
+@media (max-width: 560px) { .timeline { padding-left: 34px; } .timeline-dot { left: -34px; } }
+
+/* ─── Footer ─── */
+.footer { padding: 64px 0 32px; border-top: 1px solid var(--border); background: var(--bg); }
+.footer-inner { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+.footer-brand { max-width: 340px; }
+.footer-brand p { margin: 14px 0 0; color: var(--muted); font-size: 14px; }
+.footer-links { display: grid; grid-template-columns: repeat(3, auto); gap: 24px 64px; }
+.footer-col h4 { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); margin-bottom: 14px; }
+.footer-col a { display: block; padding: 4px 0; font-size: 14px; color: var(--muted); transition: color 0.2s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; }
+.footer-bottom p { margin: 0; font-size: 13px; color: var(--dim); }
+@media (max-width: 720px) { .footer-links { grid-template-columns: 1fr 1fr; gap: 28px 40px; } }
+
+/* thin scrollbars */
+.search-results, .processor-modal { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.15) transparent; }
+
+/* ChipFlow — Data & Sources section. Dark theme to match the site. */
+.ds-section {
+  padding: 96px 0 80px;
+  scroll-margin-top: 80px;
+  color: #f0f1f5;
+}
+.ds-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.ds-wrap h2 {
+  font-size: clamp(28px, 4vw, 40px);
+  margin: 6px 0 10px;
+  line-height: 1.15;
+}
+.ds-wrap h3 {
+  font-size: 20px;
+  margin: 48px 0 14px;
+}
+.ds-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-indigo, #6366f1);
+  font-weight: 600;
+}
+.ds-lead {
+  color: #9da3b4;
+  max-width: 680px;
+  line-height: 1.6;
+  margin: 0;
+}
+.ds-muted {
+  color: #9da3b4;
+  font-size: 13px;
+}
+.ds-loading {
+  color: #9da3b4;
+}
+
+.ds-head {
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+/* live status pill */
+.ds-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  white-space: nowrap;
+}
+.ds-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9da3b4;
+}
+.ds-live-on .ds-dot {
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  animation: ds-pulse 2s infinite;
+}
+.ds-live-wait .ds-dot {
+  background: #f59e0b;
+}
+.ds-live-off .ds-dot {
+  background: #9da3b4;
+}
+@keyframes ds-pulse {
+  70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-live-on .ds-dot { animation: none; }
+}
+
+/* legend */
+.ds-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 24px;
+  margin-top: 28px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 13px;
+  color: #9da3b4;
+}
+.ds-legend > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+/* badges */
+.ds-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.ds-ok { color: #34d399; background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); }
+.ds-warn { color: #fbbf24; background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.3); }
+.ds-bad { color: #fb7185; background: rgba(244, 63, 94, 0.12); border-color: rgba(244, 63, 94, 0.3); }
+.ds-info { color: #38bdf8; background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.3); }
+
+/* dataset cards */
+.ds-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ds-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.025);
+}
+.ds-card summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+}
+.ds-card summary::-webkit-details-marker { display: none; }
+.ds-card summary::before {
+  content: '▸';
+  color: #9da3b4;
+  margin-right: 4px;
+  transition: transform 0.15s;
+}
+.ds-card[open] summary::before { transform: rotate(90deg); }
+.ds-card-title {
+  flex: 1;
+  font-weight: 600;
+}
+.ds-card summary:focus-visible,
+.ds-btn:focus-visible,
+.ds-sources a:focus-visible,
+.ds-cite:focus-visible {
+  outline: 2px solid var(--accent-indigo, #6366f1);
+  outline-offset: 2px;
+}
+.ds-card-body {
+  padding: 0 18px 18px;
+}
+.ds-note {
+  color: #9da3b4;
+  line-height: 1.6;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+.ds-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  font-size: 13px;
+  color: #9da3b4;
+  margin-bottom: 12px;
+}
+.ds-meta b { color: #f0f1f5; font-weight: 600; }
+
+/* tables */
+.ds-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.ds-table th,
+.ds-table td {
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.ds-table th {
+  color: #9da3b4;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(255, 255, 255, 0.03);
+  white-space: nowrap;
+}
+.ds-table tr:last-child td { border-bottom: 0; }
+
+/* buttons and links */
+.ds-btn {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #f0f1f5;
+  background: rgba(99, 102, 241, 0.16);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+}
+.ds-btn:hover { background: rgba(99, 102, 241, 0.28); }
+.ds-cite {
+  color: var(--accent-indigo, #6366f1);
+  text-decoration: none;
+  font-weight: 600;
+}
+.ds-cite:hover { text-decoration: underline; }
+
+/* source list */
+.ds-sources {
+  padding-left: 22px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ds-sources li { scroll-margin-top: 90px; }
+.ds-sources a {
+  color: #f0f1f5;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(99, 102, 241, 0.6);
+  text-underline-offset: 3px;
+}
+.ds-src-meta { color: #9da3b4; font-size: 13px; margin-top: 2px; }
+.ds-src-supports { color: #9da3b4; font-size: 13.5px; margin-top: 2px; line-height: 1.5; }
+
+.ds-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 640px) {
+  .ds-section { padding: 72px 0 56px; }
+  .ds-wrap { padding: 0 16px; }
+  .ds-live { white-space: normal; }
+}
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+
+
+  <!-- ═══════════════════════ PRELOADER ═══════════════════════ -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-inner">
+      <div class="chip-icon">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="16" y="16" width="32" height="32" rx="4" stroke="url(#grad)" stroke-width="2.5"/>
+          <rect x="22" y="22" width="20" height="20" rx="2" fill="url(#grad)" opacity="0.15"/>
+          <rect x="26" y="26" width="12" height="12" rx="1" fill="url(#grad)" opacity="0.4"/>
+          <!-- Pins -->
+          <line x1="20" y1="16" x2="20" y2="6" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="28" y1="16" x2="28" y2="6" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="36" y1="16" x2="36" y2="6" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="16" x2="44" y2="6" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="20" y1="48" x2="20" y2="58" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="28" y1="48" x2="28" y2="58" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="36" y1="48" x2="36" y2="58" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="48" x2="44" y2="58" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="20" x2="6" y2="20" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="28" x2="6" y2="28" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="36" x2="6" y2="36" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="44" x2="6" y2="44" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="20" x2="58" y2="20" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="28" x2="58" y2="28" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="36" x2="58" y2="36" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="44" x2="58" y2="44" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="64" y2="64">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <p class="preloader-text">Initializing ChipFlow Analytics…</p>
+      <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+  <nav id="navbar" class="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none"><rect x="8" y="8" width="16" height="16" rx="2" stroke="url(#navGrad)" stroke-width="1.5"/><rect x="11" y="11" width="10" height="10" rx="1" fill="url(#navGrad)" opacity=".3"/><line x1="12" y1="8" x2="12" y2="3" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="16" y1="8" x2="16" y2="3" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="20" y1="8" x2="20" y2="3" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="12" y1="24" x2="12" y2="29" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="16" y1="24" x2="16" y2="29" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="20" y1="24" x2="20" y2="29" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="12" x2="3" y2="12" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="16" x2="3" y2="16" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="20" x2="3" y2="20" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="24" y1="12" x2="29" y2="12" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="24" y1="16" x2="29" y2="16" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="24" y1="20" x2="29" y2="20" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><defs><linearGradient id="navGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+        <span>ChipFlow</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#overview" class="nav-link" data-section="overview">Overview</a></li>
+        <li><a href="#processors" class="nav-link" data-section="processors">Processors</a></li>
+        <li><a href="#supply-chain" class="nav-link" data-section="supply-chain">Supply Chain</a></li>
+        <li><a href="#analytics" class="nav-link" data-section="analytics">Analytics</a></li>
+        <li><a href="#geopolitics" class="nav-link" data-section="geopolitics">Geopolitics</a></li>
+        <li><a href="#roadmap" class="nav-link" data-section="roadmap">Roadmap</a></li>
+      </ul>
+      <div class="nav-actions">
+        <div class="search-trigger" id="searchTrigger">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="search-shortcut">⌘K</span>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ SEARCH MODAL ═══════════════════════ -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-modal">
+      <div class="search-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search processors, foundries, technologies…" autocomplete="off" />
+        <kbd class="search-esc">ESC</kbd>
+      </div>
+      <div class="search-results" id="searchResults">
+        <div class="search-empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>Type to search across processors, technologies, and supply chain data</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ MOBILE NAV ═══════════════════════ -->
+  <div class="mobile-nav" id="mobileNav">
+    <ul class="mobile-nav-links">
+      <li><a href="#overview" class="mobile-nav-link">Overview</a></li>
+      <li><a href="#processors" class="mobile-nav-link">Processors</a></li>
+      <li><a href="#supply-chain" class="mobile-nav-link">Supply Chain</a></li>
+      <li><a href="#analytics" class="mobile-nav-link">Analytics</a></li>
+      <li><a href="#geopolitics" class="mobile-nav-link">Geopolitics</a></li>
+      <li><a href="#roadmap" class="mobile-nav-link">Roadmap</a></li>
+    </ul>
+  </div>
+
+  <main>
+    <!-- ═══════════════════════ HERO ═══════════════════════ -->
+    <section id="hero" class="hero">
+      <div class="hero-bg">
+        <div class="hero-grid"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <div class="hero-particles" id="heroParticles"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>Live Data — October 2026</span>
+        </div>
+        <h1 class="hero-title">
+          Global Mobile Processor<br/>
+          <span class="hero-gradient-text">Supply Chain Intelligence</span>
+        </h1>
+        <p class="hero-subtitle">
+          Explore the $45B ecosystem powering 1.2 billion smartphones. Interactive analytics across foundries, geopolitics, costs, and next-gen technology roadmaps.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat" data-count="45">
+            <span class="hero-stat-value" id="statRevenue">$0B</span>
+            <span class="hero-stat-label">Annual Revenue</span>
+          </div>
+          <div class="hero-stat" data-count="1.2">
+            <span class="hero-stat-value" id="statShipments">0B</span>
+            <span class="hero-stat-label">Smartphones Shipped</span>
+          </div>
+          <div class="hero-stat" data-count="87">
+            <span class="hero-stat-value" id="statTSMC">0%</span>
+            <span class="hero-stat-label">Sub-5nm at TSMC</span>
+          </div>
+          <div class="hero-stat" data-count="20">
+            <span class="hero-stat-value" id="statTransistors">0B</span>
+            <span class="hero-stat-label">Transistors per SoC</span>
+          </div>
+        </div>
+        <div class="hero-cta">
+          <a href="#overview" class="btn btn-primary">
+            Explore Analytics
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#processors" class="btn btn-ghost">
+            View Processors
+          </a>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+        <span>Scroll to explore</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ OVERVIEW ═══════════════════════ -->
+    <section id="overview" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Executive Overview</span>
+          <h2 class="section-title">Industry at a Glance</h2>
+          <p class="section-subtitle">The mobile SoC market spans captive fabless, merchant fabless, IDM hybrid, and pure-play foundry models — each with distinct strategic implications.</p>
+        </div>
+
+        <div class="business-models-grid">
+          <div class="model-card" data-model="captive">
+            <div class="model-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+            </div>
+            <h3>Captive Fabless</h3>
+            <p>Design proprietary silicon for own hardware. Zero merchant sales.</p>
+            <div class="model-companies">
+              <span class="company-chip apple">Apple</span>
+              <span class="company-chip google">Google</span>
+            </div>
+          </div>
+          <div class="model-card" data-model="merchant">
+            <div class="model-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <h3>Merchant Fabless</h3>
+            <p>Design & sell processors to third-party OEMs worldwide.</p>
+            <div class="model-companies">
+              <span class="company-chip qualcomm">Qualcomm</span>
+              <span class="company-chip mediatek">MediaTek</span>
+            </div>
+          </div>
+          <div class="model-card" data-model="idm">
+            <div class="model-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+            </div>
+            <h3>Integrated IDM</h3>
+            <p>Designs, fabricates, and assembles — vertically integrated.</p>
+            <div class="model-companies">
+              <span class="company-chip samsung">Samsung</span>
+            </div>
+          </div>
+          <div class="model-card" data-model="foundry">
+            <div class="model-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20h20"/><path d="M5 20V8l4-4 4 4v12"/><path d="M13 20V10l4-3 4 3v10"/><rect x="8" y="12" width="2" height="2" fill="currentColor" opacity=".5"/><rect x="16" y="12" width="2" height="2" fill="currentColor" opacity=".5"/></svg>
+            </div>
+            <h3>Pure-Play Foundry</h3>
+            <p>Manufactures wafers on contract. Zero competing products.</p>
+            <div class="model-companies">
+              <span class="company-chip tsmc">TSMC</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Market share charts row -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Unit Market Share</h3>
+              <span class="chart-badge">2026 Estimated</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartUnitShare"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Revenue Market Share</h3>
+              <span class="chart-badge">$45B+ Market</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartRevenueShare"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ PROCESSORS ═══════════════════════ -->
+    <section id="processors" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Processor Intelligence</span>
+          <h2 class="section-title">Explore Mobile Processors</h2>
+          <p class="section-subtitle">Deep-dive into specifications, foundry partnerships, costs, and competitive positioning of each major SoC.</p>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="apple">Apple</button>
+          <button class="filter-btn" data-filter="qualcomm">Qualcomm</button>
+          <button class="filter-btn" data-filter="mediatek">MediaTek</button>
+          <button class="filter-btn" data-filter="samsung">Samsung</button>
+          <button class="filter-btn" data-filter="google">Google</button>
+          <button class="filter-btn" data-filter="hisilicon">HiSilicon</button>
+        </div>
+
+        <!-- Processor cards -->
+        <div class="processor-grid" id="processorGrid">
+          <!-- Cards are generated by JS -->
+        </div>
+
+        <!-- Processor detail modal -->
+        <div class="processor-modal-overlay" id="processorModal">
+          <div class="processor-modal">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-content" id="modalContent">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ SUPPLY CHAIN ═══════════════════════ -->
+    <section id="supply-chain" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">5-Tier Architecture</span>
+          <h2 class="section-title">End-to-End Supply Chain</h2>
+          <p class="section-subtitle">From quartz mining to your pocket — trace every tier of the world's most complex manufacturing pipeline.</p>
+        </div>
+
+        <div class="supply-chain-visual">
+          <div class="tier-card" data-tier="4">
+            <div class="tier-number">Tier 4</div>
+            <div class="tier-content">
+              <h3>Raw Materials & Chemicals</h3>
+              <p>Electronic-grade polysilicon (99.999999999% purity), photoresists, ultra-pure HF, purified Neon gas</p>
+              <div class="tier-companies">
+                <span>Shin-Etsu</span><span>SUMCO</span><span>JSR</span><span>TOK</span><span>Daikin</span>
+              </div>
+              <div class="tier-stat">
+                <strong>55%</strong> of 300mm wafers by 2 Japanese firms
+              </div>
+            </div>
+            <div class="tier-connector">
+              <svg viewBox="0 0 24 60"><line x1="12" y1="0" x2="12" y2="48" stroke="url(#tierGrad)" stroke-width="2" stroke-dasharray="4 4"/><polygon points="6,48 18,48 12,58" fill="url(#tierGrad)"/><defs><linearGradient id="tierGrad" x1="0" y1="0" x2="0" y2="60"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            </div>
+          </div>
+
+          <div class="tier-card" data-tier="3">
+            <div class="tier-number">Tier 3</div>
+            <div class="tier-content">
+              <h3>Equipment, EDA & IP</h3>
+              <p>EUV lithography, etch/deposition tools, EDA software, ARM architecture licensing</p>
+              <div class="tier-companies">
+                <span>ASML</span><span>Applied Materials</span><span>Lam Research</span><span>Synopsys</span><span>Cadence</span><span>ARM</span>
+              </div>
+              <div class="tier-stat">
+                <strong>$350M+</strong> per High-NA EUV scanner
+              </div>
+            </div>
+            <div class="tier-connector">
+              <svg viewBox="0 0 24 60"><line x1="12" y1="0" x2="12" y2="48" stroke="url(#tierGrad2)" stroke-width="2" stroke-dasharray="4 4"/><polygon points="6,48 18,48 12,58" fill="url(#tierGrad2)"/><defs><linearGradient id="tierGrad2" x1="0" y1="0" x2="0" y2="60"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            </div>
+          </div>
+
+          <div class="tier-card" data-tier="2">
+            <div class="tier-number">Tier 2</div>
+            <div class="tier-content">
+              <h3>Wafer Fabrication</h3>
+              <p>1,500+ chemical/plasma steps over 16–22 weeks in ISO Class 1 cleanrooms</p>
+              <div class="tier-companies">
+                <span>TSMC</span><span>Samsung Foundry</span><span>SMIC</span>
+              </div>
+              <div class="tier-stat">
+                <strong>$20,500</strong> per 3nm 300mm wafer
+              </div>
+            </div>
+            <div class="tier-connector">
+              <svg viewBox="0 0 24 60"><line x1="12" y1="0" x2="12" y2="48" stroke="url(#tierGrad3)" stroke-width="2" stroke-dasharray="4 4"/><polygon points="6,48 18,48 12,58" fill="url(#tierGrad3)"/><defs><linearGradient id="tierGrad3" x1="0" y1="0" x2="0" y2="60"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            </div>
+          </div>
+
+          <div class="tier-card" data-tier="1">
+            <div class="tier-number">Tier 1</div>
+            <div class="tier-content">
+              <h3>Advanced Packaging & Test</h3>
+              <p>InFO-PoP, DRAM stacking, micro-bump bonding, automated wafer testing</p>
+              <div class="tier-companies">
+                <span>TSMC InFO</span><span>ASE Group</span><span>Amkor</span><span>JCET</span><span>Advantest</span>
+              </div>
+              <div class="tier-stat">
+                <strong>3–5 weeks</strong> packaging & test cycle
+              </div>
+            </div>
+            <div class="tier-connector">
+              <svg viewBox="0 0 24 60"><line x1="12" y1="0" x2="12" y2="48" stroke="url(#tierGrad4)" stroke-width="2" stroke-dasharray="4 4"/><polygon points="6,48 18,48 12,58" fill="url(#tierGrad4)"/><defs><linearGradient id="tierGrad4" x1="0" y1="0" x2="0" y2="60"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            </div>
+          </div>
+
+          <div class="tier-card" data-tier="0">
+            <div class="tier-number">Tier 0</div>
+            <div class="tier-content">
+              <h3>OEM Integration & Logistics</h3>
+              <p>Surface mount assembly, final device testing, temperature-controlled air freight</p>
+              <div class="tier-companies">
+                <span>Foxconn</span><span>Pegatron</span><span>Luxshare</span><span>Samsung Vietnam</span>
+              </div>
+              <div class="tier-stat">
+                <strong>$150+</strong> per 2g SoC via air freight
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lead times chart -->
+        <div class="charts-row">
+          <div class="chart-card chart-card-wide">
+            <div class="chart-header">
+              <h3>Silicon Lead Time Breakdown</h3>
+              <span class="chart-badge">6–8 Months Total</span>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chartLeadTimes"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ ANALYTICS ═══════════════════════ -->
+    <section id="analytics" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Data Analytics</span>
+          <h2 class="section-title">Deep Analytics Dashboard</h2>
+          <p class="section-subtitle">Comprehensive cost analysis, BOM breakdowns, foundry economics, and bullwhip effect modeling.</p>
+        </div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>BOM Cost Breakdown</h3>
+              <span class="chart-badge">$1,000+ Flagship</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartBOM"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>SoC Cost by Tier</h3>
+              <span class="chart-badge">Per-Unit USD</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartSoCCost"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Wafer Cost Progression</h3>
+              <span class="chart-badge">Per 300mm Wafer</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartWaferCost"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Bullwhip Effect Amplification</h3>
+              <span class="chart-badge">Demand → CapEx</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartBullwhip"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foundry comparison -->
+        <div class="charts-row">
+          <div class="chart-card chart-card-wide">
+            <div class="chart-header">
+              <h3>Foundry Node Comparison</h3>
+              <span class="chart-badge">Key Metrics</span>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chartFoundryComparison"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ GEOPOLITICS ═══════════════════════ -->
+    <section id="geopolitics" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Geopolitical Risk</span>
+          <h2 class="section-title">Strategic Vulnerabilities</h2>
+          <p class="section-subtitle">Mapping the concentration risks, export controls, and decoupling strategies reshaping the global semiconductor landscape.</p>
+        </div>
+
+        <div class="risk-grid">
+          <div class="risk-card risk-critical">
+            <div class="risk-level">CRITICAL</div>
+            <h3>Taiwan Strait Concentration</h3>
+            <p>87% of sub-5nm logic is fabricated by TSMC in Taiwan. A military conflict or blockade would erase <strong>$1–2 trillion</strong> from global GDP within the first year.</p>
+            <div class="risk-metric">
+              <div class="risk-bar" style="--risk-pct: 87%"><div class="risk-bar-fill"></div></div>
+              <span>87% concentration</span>
+            </div>
+          </div>
+          <div class="risk-card risk-high">
+            <div class="risk-level">HIGH</div>
+            <h3>ASML EUV Monopoly</h3>
+            <p>100% of EUV lithography systems come from a single Dutch company. Lead times exceed 18–24 months with annual output capped at ~50–60 units.</p>
+            <div class="risk-metric">
+              <div class="risk-bar" style="--risk-pct: 100%"><div class="risk-bar-fill"></div></div>
+              <span>100% monopoly</span>
+            </div>
+          </div>
+          <div class="risk-card risk-high">
+            <div class="risk-level">HIGH</div>
+            <h3>US Export Controls</h3>
+            <p>BIS entity list bans block EUV tools and advanced EDA to China. HiSilicon forced onto SMIC 7nm DUV multi-patterning at >$140/die costs.</p>
+            <div class="risk-metric">
+              <div class="risk-bar" style="--risk-pct: 75%"><div class="risk-bar-fill"></div></div>
+              <span>75% supply disruption</span>
+            </div>
+          </div>
+          <div class="risk-card risk-medium">
+            <div class="risk-level">MEDIUM</div>
+            <h3>ARM Licensing Disputes</h3>
+            <p>99%+ of mobile SoCs rely on ARM ISA. Qualcomm vs. ARM litigation threatens architectural licensing stability for the entire ecosystem.</p>
+            <div class="risk-metric">
+              <div class="risk-bar" style="--risk-pct: 55%"><div class="risk-bar-fill"></div></div>
+              <span>55% ecosystem exposure</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHIPS Act & Investment -->
+        <div class="investment-cards">
+          <div class="invest-card">
+            <div class="invest-icon">🇺🇸</div>
+            <h4>US CHIPS Act</h4>
+            <div class="invest-value">$52.7B</div>
+            <p>Federal subsidies for domestic semiconductor manufacturing and R&D</p>
+          </div>
+          <div class="invest-card">
+            <div class="invest-icon">🇹🇼</div>
+            <h4>TSMC Arizona</h4>
+            <div class="invest-value">$65B</div>
+            <p>Three-phase investment in Fab 21 — 4nm pilot production began late 2024</p>
+          </div>
+          <div class="invest-card">
+            <div class="invest-icon">🇨🇳</div>
+            <h4>China Big Fund III</h4>
+            <div class="invest-value">$47.5B</div>
+            <p>Third-phase national IC fund targeting domestic EUV and advanced node self-sufficiency</p>
+          </div>
+          <div class="invest-card">
+            <div class="invest-icon">🇰🇷</div>
+            <h4>Samsung Taylor TX</h4>
+            <div class="invest-value">$6.4B</div>
+            <p>Federal subsidies for advanced foundry and packaging fabs in Texas</p>
+          </div>
+        </div>
+
+        <!-- Environmental/ESG -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Environmental Impact</h3>
+              <span class="chart-badge">Sustainability</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartESG"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>TSMC Energy Consumption</h3>
+              <span class="chart-badge">% of Taiwan Grid</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartEnergy"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ ROADMAP ═══════════════════════ -->
+    <section id="roadmap" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Future Outlook</span>
+          <h2 class="section-title">Technology Roadmap 2026–2030</h2>
+          <p class="section-subtitle">Next-generation architectures from 3nm FinFET to 2nm GAA nanosheets, backside power delivery, and mobile chiplets.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item" data-year="2024-2025">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2024–2025</span>
+              <h3>3nm FinFET / GAA</h3>
+              <p>TSMC N3E/N3P powering Apple A18, Snapdragon 8 Elite, Dimensity 9400. Samsung 3nm GAA (MBCFET) enters production with yield challenges.</p>
+              <div class="timeline-chips">
+                <span>Apple A18 Pro</span><span>SD 8 Elite</span><span>Dimensity 9400</span>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-item" data-year="2025-2027">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2025–2027</span>
+              <h3>2nm Gate-All-Around Nanosheet</h3>
+              <p>TSMC N2 & Samsung SF2 adopt High-NA EUV. Nanosheet channels surrounded on all 4 sides — 25–30% power reduction at iso-speed.</p>
+              <div class="timeline-chips">
+                <span>10–15% Speed↑</span><span>25–30% Power↓</span><span>High-NA EUV</span>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-item" data-year="2027-2028">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2027–2028</span>
+              <h3>Backside Power Delivery (BSPDN)</h3>
+              <p>TSMC A16 / Intel PowerVia — power rails move to wafer backside, eliminating IR drop and freeing 15%+ front-side routing density.</p>
+              <div class="timeline-chips">
+                <span>TSMC A16</span><span>Intel PowerVia</span><span>15% Density↑</span>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-item" data-year="2028-2030">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2028–2030</span>
+              <h3>3D Hybrid Bonding & Chiplets</h3>
+              <p>Disaggregated SoCs: 2nm compute chiplet + 6nm I/O modem chiplet. Copper-to-copper wafer stacking (TSMC SoIC) for 3D SRAM cache.</p>
+              <div class="timeline-chips">
+                <span>UCIe</span><span>TSMC SoIC</span><span>Mobile Chiplets</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Roadmap performance chart -->
+        <div class="charts-row">
+          <div class="chart-card chart-card-wide">
+            <div class="chart-header">
+              <h3>Node Performance Trajectory</h3>
+              <span class="chart-badge">Relative to 7nm Baseline</span>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chartRoadmap"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="nav-logo">
+            <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none"><rect x="8" y="8" width="16" height="16" rx="2" stroke="url(#fGrad)" stroke-width="1.5"/><rect x="11" y="11" width="10" height="10" rx="1" fill="url(#fGrad)" opacity=".3"/><defs><linearGradient id="fGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            <span>ChipFlow</span>
+          </span>
+          <p>Global Mobile Processor Supply Chain Intelligence Platform</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Sections</h4>
+            <a href="#overview">Overview</a>
+            <a href="#processors">Processors</a>
+            <a href="#supply-chain">Supply Chain</a>
+          </div>
+          <div class="footer-col">
+            <h4>Analytics</h4>
+            <a href="#analytics">Cost Analytics</a>
+            <a href="#geopolitics">Geopolitics</a>
+            <a href="#roadmap">Roadmap</a>
+          </div>
+          <div class="footer-col">
+            <h4>Data Sources</h4>
+            <a href="#data-sources">Datasets &amp; Sources</a>
+            <a href="#data-sources">Source List</a>
+            <a href="#data-sources">Claims Checked</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 ChipFlow Analytics — Supply Chain Research Platform. Data compiled for Academic & Executive Strategy Evaluation.</p>
+      </div>
+    </div>
+  </footer>
+
+<script>window.CHIPFLOW_STATIC={"data": {"meta": {"version": 1, "updatedAt": "2026-10-22T08:49:01.318Z", "description": "Data behind the ChipFlow charts and processor cards. Edit this file (or PATCH /api/datasets/:id) and the website updates live."}, "processors": [{"id": "apple-a18-pro", "brand": "Apple", "brandColor": "#a78bfa", "name": "A18 Pro", "altName": "A17 Pro", "model": "Captive Fabless", "node": "TSMC 3nm (N3B / N3E)", "foundry": "TSMC (100%)", "cpu": "Custom Apple ARMv9", "packaging": "TSMC InFO-PoP", "modem": "External Qualcomm 5G", "unitShare": 18, "revenueShare": 38, "bomCost": "$110 – $135", "bomAvg": 122, "riskLevel": "critical", "riskLabel": "Single-source Taiwan", "filter": "apple", "description": "Apple captures ~38% of global smartphone SoC revenue with just 18% unit share. Silicon strategy is holistic: chips are engineered to maximize iOS feature integration, computational photography, battery runtime, and Apple Intelligence.", "strengths": ["Preferential TSMC \"Alpha Customer\" status — first access to every new node", "Apple represents 23–25% of TSMC's total revenue", "Funded commercialization of TSMC InFO-PoP packaging", "Yield risk absorption: pays only for functional dies during early ramps"], "risks": "Taiwan Concentration: 100% of advanced silicon is fabricated in Taiwan. Any geopolitical blockade or seismic event would paralyze flagship hardware output within 60–90 days. Still dependent on external Qualcomm 5G modems despite $1B Intel modem division acquisition."}, {"id": "snapdragon-8-elite", "brand": "Qualcomm", "brandColor": "#f472b6", "name": "Snapdragon 8 Elite", "altName": "Snapdragon 8 Gen 3", "model": "Merchant Fabless", "node": "TSMC 3nm (N3E)", "foundry": "TSMC (Ex-Samsung)", "cpu": "Custom Oryon (Nuvia)", "packaging": "Amkor / ASE / TSMC", "modem": "Integrated Snapdragon X80", "unitShare": 28, "revenueShare": 34, "bomCost": "$180 – $200", "bomAvg": 190, "riskLevel": "high", "riskLabel": "TSMC allocation & ARM legal", "filter": "qualcomm", "description": "Qualcomm is the premier merchant silicon provider, setting the performance standard for Android flagships with ~34% of global SoC dollar revenues. The custom Oryon CPU architecture (from Nuvia acquisition) broke reliance on ARM standard roadmap.", "strengths": ["Custom Oryon cores deliver desktop-class IPC and power optimization", "Integrated 5G mmWave + Sub-6 modem with RF front-end (complete platform)", "Successfully pivoted from Samsung Foundry to TSMC after SD 8 Gen 1 thermal issues", "Dominant position in premium Android tier with strong OEM partnerships"], "risks": "ARM Holdings sued Qualcomm over Nuvia architectural license transfer, threatening to terminate Qualcomm's architectural rights. At $180–$200 per unit, pricing strains relationships with Chinese OEMs, encouraging dual-sourcing with MediaTek."}, {"id": "dimensity-9400", "brand": "MediaTek", "brandColor": "#fbbf24", "name": "Dimensity 9400", "altName": "Dimensity 9300", "model": "Merchant Fabless", "node": "TSMC 3nm (N3E)", "foundry": "TSMC (100%)", "cpu": "Stock ARM Cortex (All-Big)", "packaging": "TSMC InFO / ASE", "modem": "Integrated MediaTek 5G", "unitShare": 37, "revenueShare": 17, "bomCost": "$120 – $140", "bomAvg": 130, "riskLevel": "medium", "riskLabel": "China OEM exposure", "filter": "mediatek", "description": "The undisputed unit volume champion at ~37% of global mobile processors. Successfully transitioned from budget to flagship tier with the revolutionary \"All-Big-Core\" architecture eliminating small efficiency cores.", "strengths": ["Hsinchu proximity to TSMC — frictionless engineering collaboration", "Fast-follower economics: adopts refined N3E keeping costs ~30% below Qualcomm", "All-Big-Core innovation (1x X925 + 3x X4 + 4x A720) achieves superior thermals", "Largest SoC supplier by unit volume globally"], "risks": "Over 70% of mobile revenues from Chinese brands (Vivo, Oppo, Xiaomi, Transsion). Uses standard ARM Cortex cores leaving it exposed to ARM licensing restructuring."}, {"id": "exynos-2500", "brand": "Samsung", "brandColor": "#38bdf8", "name": "Exynos 2500", "altName": "Exynos 2400", "model": "Hybrid IDM", "node": "Samsung 3nm GAA / 4nm", "foundry": "Samsung Foundry", "cpu": "Stock ARM Cortex-X/A", "packaging": "Samsung FOWLP", "modem": "Integrated Exynos 5G", "unitShare": 5, "revenueShare": 5, "bomCost": "$100 – $120", "bomAvg": 110, "riskLevel": "high", "riskLabel": "Low 3nm GAA fab yields", "filter": "samsung", "description": "Samsung's unique IDM structure creates friction between Samsung System LSI (design), Samsung Foundry (fabrication), and Samsung MX (device division). 3nm GAA yields below 30% during initial runs forced delays.", "strengths": ["Memory & Packaging co-location: leading LPDDR5X DRAM and UFS manufacturer", "Geopolitical independence from Taiwan with fabs in Pyeongtaek and Hwaseong", "First foundry to introduce Gate-All-Around (GAA) MBCFET architecture", "Fan-Out Wafer-Level Packaging (FOWLP) improved thermal dissipation"], "risks": "Persistently low 3nm GAA yields (reportedly <30% initially). Internal rivalry: Samsung MX has repeatedly abandoned Exynos in favor of Qualcomm Snapdragon due to thermal and yield issues."}, {"id": "tensor-g5", "brand": "Google", "brandColor": "#34d399", "name": "Tensor G5", "altName": "Tensor G4", "model": "Captive Fabless", "node": "TSMC 3nm (N3E)", "foundry": "TSMC (Switched from Samsung)", "cpu": "Custom / Stock ARM", "packaging": "TSMC InFO", "modem": "External/Integrated Exynos/TSMC", "unitShare": 1.5, "revenueShare": 1, "bomCost": "$90 – $110", "bomAvg": 100, "riskLevel": "medium", "riskLabel": "Small unit scale", "filter": "google", "description": "Google transitioned from Samsung co-design (Tensor G1–G4) to fully in-house architecture on TSMC 3nm for G5. Focus on custom ML/TPU and ISP tailored to Android Pixel software suite.", "strengths": ["Custom ML accelerators (TPU) optimized for Google AI models", "Switched to TSMC 3nm from Samsung, improving thermals and efficiency", "Full architecture control for Android + Pixel Camera pipeline optimization", "Deep software-hardware co-optimization for on-device AI"], "risks": "Very small production scale (~1.5% unit share) limits foundry negotiation leverage. Transitioning away from Samsung design blocks requires significant in-house silicon engineering investment."}, {"id": "kirin-9010", "brand": "HiSilicon (Huawei)", "brandColor": "#fb923c", "name": "Kirin 9010", "altName": "Kirin 9000s", "model": "Captive Fabless (Sanctioned)", "node": "SMIC 7nm DUV Multi-pattern", "foundry": "SMIC (China Domestic)", "cpu": "Custom Taishan (ARMv8/v9)", "packaging": "JCET / Domestic OSAT", "modem": "Integrated Balong 5G", "unitShare": 3, "revenueShare": 3, "bomCost": "$140+ estimated", "bomAvg": 145, "riskLevel": "critical", "riskLabel": "ASML EUV export embargo", "filter": "hisilicon", "description": "Pre-2020, HiSilicon was world-class — introducing the first 5nm 5G SoC (Kirin 9000) on TSMC. US export bans forced domestic substitution via SMIC DUV multi-patterning at 7nm-equivalent, proving technological resilience but at steep cost.", "strengths": ["Proved technological resilience under US sanctions with domestic SMIC fabrication", "DUV multi-patterning (SAQP) achieved 7nm-equivalent transistor densities without EUV", "Fully integrated Balong 5G modem — complete self-sufficiency", "Backed by China Big Fund III ($47.5B) national semiconductor initiative"], "risks": "ASML EUV export embargo prevents access to advanced lithography. DUV multi-patterning incurs high defect rates, low wafer throughput, and estimated costs exceeding $140/die. Banned from TSMC and any foundry using US-origin technology."}], "datasets": {"unitShare": {"title": "Smartphone SoC unit market share", "chartId": "chartUnitShare", "unit": "% of units shipped", "asOf": "Period not stated in source code", "labels": ["MediaTek", "Qualcomm", "Apple", "Samsung", "HiSilicon", "Google", "Others"], "series": [{"label": "Unit share (%)", "data": [37, 28, 18, 5, 3, 1.5, 7.5]}], "status": "partial", "sourceIds": ["counterpoint-q1-2025", "counterpoint-q4-2024"], "note": "Closest published figures: Counterpoint Research, Q1 2025 had MediaTek 36%, Qualcomm 26%, Apple 17% and Samsung 5% (reported by ChannelNews). Your values for these four are 1 to 2 points higher, which suggests a different quarter or year, or rounding. HiSilicon 3%, Google 1.5% and Others 7.5% could not be confirmed. State the exact period you used."}, "revenueShare": {"title": "Smartphone SoC revenue market share", "chartId": "chartRevenueShare", "unit": "% of revenue", "asOf": "Period not stated in source code", "labels": ["Apple", "Qualcomm", "MediaTek", "Samsung", "HiSilicon", "Google", "Others"], "series": [{"label": "Revenue share (%)", "data": [38, 34, 17, 5, 3, 1, 2]}], "status": "unverified", "sourceIds": [], "note": "No source found. Revenue-share splits normally come from paid industry reports (for example Counterpoint, Omdia or TechInsights). Add the report name and quarter before citing these figures."}, "bomBreakdown": {"title": "Flagship smartphone bill of materials", "chartId": "chartBOM", "unit": "USD per phone", "asOf": "Period not stated in source code", "labels": ["SoC + 5G Modem", "Display (OLED)", "Camera Modules", "Memory (DRAM+Flash)", "Enclosure", "RF/Wi-Fi/BT", "Power/Battery/Misc"], "series": [{"label": "Cost (USD)", "data": [165, 95, 88, 62, 58, 48, 44]}], "status": "unverified", "sourceIds": [], "note": "The components add up to $560 and SoC plus modem is $165 (29.5%), so the figures are internally consistent. No teardown report or other source is attached yet. Cite the report (for example a teardown of a specific phone) before presenting these as measured data."}, "socCostByTier": {"title": "SoC cost by phone price tier", "chartId": "chartSoCCost", "unit": "USD per SoC", "asOf": "Period not stated in source code", "labels": ["Ultra-Flagship\n($1,000+ MSRP)", "Premium Mid\n($400–$600)", "Budget\n(<$200)"], "series": [{"label": "Low Range", "data": [150, 50, 18]}, {"label": "High Range", "data": [200, 75, 28]}], "status": "unverified", "sourceIds": [], "note": "No source found. Cost ranges per price tier need an analyst report or teardown behind them."}, "waferCost": {"title": "Cost per 300mm wafer by process node", "chartId": "chartWaferCost", "unit": "USD per wafer", "asOf": "Mixed: 2020 and 2022 estimates", "labels": ["28nm", "16nm", "10nm", "7nm", "5nm", "3nm", "2nm (est.)"], "series": [{"label": "Cost per 300mm Wafer", "data": [3200, 5400, 8500, 12000, 16600, 20500, 29000]}], "status": "partial", "sourceIds": ["cset-2020", "digitimes-3nm"], "note": "Checked against two published estimates. 5nm ($16,600 here vs about $16,988 in CSET's 2020 estimate) and 3nm ($20,500 here vs reports of $20,000 or more from DigiTimes in 2022) are close. 16nm ($5,400 vs $3,984), 10nm ($8,500 vs $5,992) and 7nm ($12,000 vs $9,346) are higher than CSET's 2020 numbers. That may reflect later price rises, but it needs its own source. 28nm and the 2nm estimate have no source yet. These are analyst estimates, not published TSMC price lists."}, "bullwhip": {"title": "Bullwhip effect: demand amplification along the chain", "chartId": "chartBullwhip", "unit": "± % demand swing", "asOf": "Illustrative", "labels": ["Retail\nPhone Sales", "OEM\nOrders", "Fabless\nTape-Out", "Foundry\nWafer Starts"], "series": [{"label": "Demand Amplification", "data": [5, 15, 30, 60]}], "status": "assessment", "sourceIds": [], "note": "Illustrative model of how a small retail change grows into a large swing at foundry wafer starts. No source is attached. Cite the supply-chain literature it is based on, or label the chart as an illustration."}, "foundryComparison": {"title": "Foundry comparison scores", "chartId": "chartFoundryComparison", "unit": "score out of 100", "asOf": "Author assessment", "labels": ["Yield Rate", "Process Node", "Capacity", "Packaging", "Cost Efficiency", "Customer Trust"], "series": [{"label": "TSMC", "data": [95, 98, 90, 95, 85, 98]}, {"label": "Samsung Foundry", "data": [55, 85, 65, 70, 75, 50]}, {"label": "SMIC", "data": [45, 40, 50, 35, 60, 30]}], "status": "assessment", "sourceIds": [], "note": "These 0 to 100 scores are subjective ratings, not measurements. Explain how you scored them, or label the chart as the author's qualitative assessment."}, "leadTimes": {"title": "Supply chain lead times", "chartId": "chartLeadTimes", "unit": "weeks", "asOf": "Period not stated in source code", "labels": ["Design Cycle (RTL → Tape-Out)", "Photomask Fabrication", "Wafer Fabrication", "OSAT Packaging & Test", "Logistics & Integration"], "series": [{"label": "Lead Time (Weeks)", "data": [96, 6, 19, 4, 6]}], "status": "unverified", "sourceIds": [], "note": "No source found. Lead-time figures should come from an industry report or a company disclosure."}, "esg": {"title": "Environmental impact scores", "chartId": "chartESG", "unit": "score out of 100", "asOf": "Author assessment", "labels": ["Water Usage (UPW)", "Energy (EUV)", "Carbon Emissions", "Conflict Minerals", "Chemical Waste"], "series": [{"label": "Impact score (/100)", "data": [85, 92, 70, 55, 65]}], "status": "assessment", "sourceIds": [], "note": "Subjective 0 to 100 impact scores. No source is attached. Label them as the author's assessment, or cite the report they are based on."}, "energy": {"title": "TSMC share of Taiwan's electricity use", "chartId": "chartEnergy", "unit": "% of Taiwan total electricity", "asOf": "2020 to 2025, with 2026 and 2028 projected", "labels": ["2020", "2021", "2022", "2023", "2024", "2025", "2026 (est.)", "2028 (proj.)"], "series": [{"label": "TSMC % of Taiwan Grid", "data": [5.5, 6.2, 6.8, 7.2, 7.8, 8, 9.2, 13]}], "status": "partial", "sourceIds": ["sp-global-dcd"], "note": "S&P Global (reported by DCD, October 2024) puts TSMC at about 8% of Taiwan's electricity use, which matches your 2025 value. The 2020 to 2023 values, the 2026 estimate and the 2028 projection have no source. S&P's own projection is almost 24% by 2030 under a high wafer-growth scenario."}, "roadmap": {"title": "Process technology roadmap index", "chartId": "chartRoadmap", "unit": "index (7nm = 100)", "asOf": "Projection", "labels": ["7nm\n(2018)", "5nm\n(2020)", "3nm\n(2023)", "2nm\n(2026)", "1.4nm\n(2028)", "A14\n(2030)"], "series": [{"label": "Performance (rel. to 7nm)", "data": [100, 118, 140, 160, 185, 210]}, {"label": "Power Efficiency", "data": [100, 130, 160, 200, 240, 280]}, {"label": "Transistor Density", "data": [100, 180, 330, 500, 700, 950]}, {"label": "Wafer Cost", "data": [100, 138, 171, 242, 310, 380]}], "status": "assessment", "sourceIds": [], "note": "Relative index values from 7nm to A14, partly projections. No source is attached. Tie each curve to published foundry roadmap claims, or label the chart as an estimate."}}}, "sources": {"statusLegend": {"verified": "Matches a published source that was opened and checked.", "partial": "Some values match a published source, others do not or could not be checked.", "unverified": "No source found yet. Treat as unconfirmed.", "assessment": "The author's own estimate, score or projection, not a measurement.", "outdated": "The published source shows this claim has changed."}, "sources": [{"id": "counterpoint-q1-2025", "title": "MediaTek Again Tops Smartphone SoC Market", "publisher": "ChannelNews (citing Counterpoint Research)", "date": "2025-06-25", "accessed": "2026-10-22", "url": "https://www.channelnews.com.au/mediatek-again-tops-smartphone-soc-market/", "supports": "Smartphone SoC unit share, Q1 2025: MediaTek 36%, Qualcomm 26%, Apple 17%, Samsung 5%."}, {"id": "counterpoint-q4-2024", "title": "Infographic: Global Smartphone AP Market Share, Q4 2024", "publisher": "Counterpoint Research", "date": "2025", "accessed": "2026-10-22", "url": "https://counterpointresearch.com/en/reports/infographic-global-smartphone-ap-market-share-q4-2024", "supports": "Original quarterly market-share series. The figures are behind a subscription, so they were not checked."}, {"id": "cset-2020", "title": "Analysts believe that a single TSMC 5nm wafer costs $17,000", "publisher": "Center for Security and Emerging Technology (CSET), Georgetown University", "date": "2020-09-20", "accessed": "2026-10-22", "url": "https://cset.georgetown.edu/article/analysts-believe-that-a-single-tsmc-5nm-wafer-costs-17000/", "supports": "2020 estimates per 300mm wafer: 5nm about $16,988, 7nm $9,346, 10nm $5,992, 16/12nm $3,984. Based on CSET's report \"AI Chips: What Are They and Why They Matter\"."}, {"id": "digitimes-3nm", "title": "TSMC 3nm Wafer Pricing Revealed: $20,000 US & 25% Price Increase Over 5nm", "publisher": "Wccftech (citing DigiTimes)", "date": "2022-11-22", "accessed": "2026-10-22", "url": "https://wccftech.com/tsmc-3nm-wafer-pricing-revealed-20000-us-25-price-increase-over-5nm-next-gen-cpus-gpus-expensive/amp/", "supports": "3nm wafer price reported at or above $20,000."}, {"id": "sp-global-dcd", "title": "TSMC could account for 24% of Taiwan's electricity consumption by 2030", "publisher": "DatacenterDynamics (citing S&P Global)", "date": "2024-10-07", "accessed": "2026-10-22", "url": "https://www.datacenterdynamics.com/en/news/tsmc-could-account-for-24-of-taiwans-electricity-consumption-by-2030", "supports": "TSMC uses about 8% of Taiwan's electricity; S&P Global projects almost 24% by 2030."}, {"id": "chips-act", "title": "CHIPS Act Allocates $52 Billion in Subsidies to Revitalize Semiconductor Manufacturing", "publisher": "Perkins Coie", "date": "2022-08-09", "accessed": "2026-10-22", "url": "https://perkinscoie.com/insights/update/chips-act-allocates-52-billion-subsidies-revitalize-semiconductor-manufacturing", "supports": "The CHIPS Act allocates $52.7 billion for domestic semiconductor manufacturing. Signed 9 August 2022."}, {"id": "big-fund-3", "title": "China's $47B semiconductor fund puts chip sovereignty front and center", "publisher": "TechCrunch", "date": "2024-05-28", "accessed": "2026-10-22", "url": "https://techcrunch.com/2024/05/28/chinas-47b-semiconductor-fund-puts-chip-sovereignty-front-and-center", "supports": "Big Fund III is 344 billion yuan, about $47.5 billion."}, {"id": "counterpoint-foundry-q3-2024", "title": "Taipei Times, 14 January 2025 (citing Counterpoint Research foundry data)", "publisher": "Taipei Times", "date": "2025-01-14", "accessed": "2026-10-22", "url": "https://taipeitimes.com/News/biz/archives/2025/01/14/2003830149", "supports": "TSMC held 64% of the global pure-play foundry business in Q3 2024. This covers all process nodes, not only advanced ones."}, {"id": "asml-mit", "title": "ASML's $400 million machine powering the future of chipmaking", "publisher": "MIT Technology Review", "date": "2026-06-23", "accessed": "2026-10-22", "url": "https://technologyreview.com/2026/06/23/1138837/asml-400-million-dollar-machine-powering-future-of-chipmaking", "supports": "ASML makes about 90% of the world's chip-lithography tools; High-NA machines cost about $400 million each; the first EUV machines cost well over $100 million."}, {"id": "arm-qualcomm", "title": "\"Full and final judgment\" reached in Qualcomm vs. Arm case", "publisher": "RCR Wireless News", "date": "2025-10-01", "accessed": "2026-10-22", "url": "https://www.rcrwireless.com/20251001/tech/qualcomm-arm-2", "supports": "A Delaware court ruled that neither Qualcomm nor Nuvia breached Arm's license. Arm said it would appeal."}], "claims": [{"claim": "TSMC makes 87% of sub-5nm chips", "where": "Hero statistic and search index", "status": "unverified", "note": "No source found. Counterpoint reported TSMC at 64% of the global pure-play foundry business in Q3 2024, but that covers all nodes, not advanced nodes. Cite a report that gives the advanced-node figure.", "sourceIds": ["counterpoint-foundry-q3-2024"]}, {"claim": "US CHIPS Act provides $52.7B for domestic semiconductor manufacturing", "where": "Geopolitics section", "status": "verified", "note": "Matches the published figure. Signed into law 9 August 2022.", "sourceIds": ["chips-act"]}, {"claim": "China Big Fund III is $47.5B", "where": "HiSilicon card", "status": "verified", "note": "344 billion yuan, about $47.5 billion (TechCrunch, 28 May 2024).", "sourceIds": ["big-fund-3"]}, {"claim": "ARM sued Qualcomm over the Nuvia license and threatens to terminate its architectural rights", "where": "Qualcomm card (risk factors)", "status": "outdated", "note": "A Delaware court entered final judgment for Qualcomm, reported 1 October 2025: neither Qualcomm nor Nuvia breached Arm's license. Arm said it would appeal. Update the risk text to reflect this.", "sourceIds": ["arm-qualcomm"]}, {"claim": "ASML has a 100% monopoly on EUV, at $180M to $350M+ per machine", "where": "Search index (Equipment & IP)", "status": "partial", "note": "MIT Technology Review (June 2026) says ASML makes about 90% of all lithography tools, prices High-NA machines at about $400 million and says the first EUV machines cost well over $100 million. The EUV-only 100% claim and the $180M to $350M+ range need a direct source.", "sourceIds": ["asml-mit"]}, {"claim": "TSMC uses about 8% of Taiwan's electricity", "where": "Energy chart", "status": "verified", "note": "Matches S&P Global as reported by DCD in October 2024.", "sourceIds": ["sp-global-dcd"]}, {"claim": "SoC plus modem is 29.5% of a flagship phone's bill of materials ($165 of $560)", "where": "Search index (BOM Cost Analysis)", "status": "unverified", "note": "The arithmetic checks out (165 / 560 = 29.5%), but the underlying BOM figures have no source.", "sourceIds": []}, {"claim": "Samsung 3nm GAA yields were below 30% initially", "where": "Samsung Exynos card", "status": "unverified", "note": "No source found. The site text already says \"reportedly\", so add the report it comes from.", "sourceIds": []}, {"claim": "Apple accounts for 23 to 25% of TSMC's revenue", "where": "Apple A18 Pro card", "status": "unverified", "note": "No source found. TSMC annual reports name its largest customers and could be used here.", "sourceIds": []}]}};</script>
+<script>/* ═══════════════════════════════════════════════════════════════════
+   ChipFlow — App Logic, Data, Charts, Search & Interactions
+   ═══════════════════════════════════════════════════════════════════ */
+
+// ─── PROCESSOR DATA ───
+const PROCESSORS = [
+  {
+    id: 'apple-a18-pro',
+    brand: 'Apple',
+    brandColor: '#a78bfa',
+    name: 'A18 Pro',
+    altName: 'A17 Pro',
+    model: 'Captive Fabless',
+    node: 'TSMC 3nm (N3B / N3E)',
+    foundry: 'TSMC (100%)',
+    cpu: 'Custom Apple ARMv9',
+    packaging: 'TSMC InFO-PoP',
+    modem: 'External Qualcomm 5G',
+    unitShare: 18,
+    revenueShare: 38,
+    bomCost: '$110 – $135',
+    bomAvg: 122,
+    riskLevel: 'critical',
+    riskLabel: 'Single-source Taiwan',
+    filter: 'apple',
+    description: 'Apple captures ~38% of global smartphone SoC revenue with just 18% unit share. Silicon strategy is holistic: chips are engineered to maximize iOS feature integration, computational photography, battery runtime, and Apple Intelligence.',
+    strengths: [
+      'Preferential TSMC "Alpha Customer" status — first access to every new node',
+      'Apple represents 23–25% of TSMC\'s total revenue',
+      'Funded commercialization of TSMC InFO-PoP packaging',
+      'Yield risk absorption: pays only for functional dies during early ramps'
+    ],
+    risks: 'Taiwan Concentration: 100% of advanced silicon is fabricated in Taiwan. Any geopolitical blockade or seismic event would paralyze flagship hardware output within 60–90 days. Still dependent on external Qualcomm 5G modems despite $1B Intel modem division acquisition.'
+  },
+  {
+    id: 'snapdragon-8-elite',
+    brand: 'Qualcomm',
+    brandColor: '#f472b6',
+    name: 'Snapdragon 8 Elite',
+    altName: 'Snapdragon 8 Gen 3',
+    model: 'Merchant Fabless',
+    node: 'TSMC 3nm (N3E)',
+    foundry: 'TSMC (Ex-Samsung)',
+    cpu: 'Custom Oryon (Nuvia)',
+    packaging: 'Amkor / ASE / TSMC',
+    modem: 'Integrated Snapdragon X80',
+    unitShare: 28,
+    revenueShare: 34,
+    bomCost: '$180 – $200',
+    bomAvg: 190,
+    riskLevel: 'high',
+    riskLabel: 'TSMC allocation & ARM legal',
+    filter: 'qualcomm',
+    description: 'Qualcomm is the premier merchant silicon provider, setting the performance standard for Android flagships with ~34% of global SoC dollar revenues. The custom Oryon CPU architecture (from Nuvia acquisition) broke reliance on ARM standard roadmap.',
+    strengths: [
+      'Custom Oryon cores deliver desktop-class IPC and power optimization',
+      'Integrated 5G mmWave + Sub-6 modem with RF front-end (complete platform)',
+      'Successfully pivoted from Samsung Foundry to TSMC after SD 8 Gen 1 thermal issues',
+      'Dominant position in premium Android tier with strong OEM partnerships'
+    ],
+    risks: 'ARM Holdings sued Qualcomm over Nuvia architectural license transfer, threatening to terminate Qualcomm\'s architectural rights. At $180–$200 per unit, pricing strains relationships with Chinese OEMs, encouraging dual-sourcing with MediaTek.'
+  },
+  {
+    id: 'dimensity-9400',
+    brand: 'MediaTek',
+    brandColor: '#fbbf24',
+    name: 'Dimensity 9400',
+    altName: 'Dimensity 9300',
+    model: 'Merchant Fabless',
+    node: 'TSMC 3nm (N3E)',
+    foundry: 'TSMC (100%)',
+    cpu: 'Stock ARM Cortex (All-Big)',
+    packaging: 'TSMC InFO / ASE',
+    modem: 'Integrated MediaTek 5G',
+    unitShare: 37,
+    revenueShare: 17,
+    bomCost: '$120 – $140',
+    bomAvg: 130,
+    riskLevel: 'medium',
+    riskLabel: 'China OEM exposure',
+    filter: 'mediatek',
+    description: 'The undisputed unit volume champion at ~37% of global mobile processors. Successfully transitioned from budget to flagship tier with the revolutionary "All-Big-Core" architecture eliminating small efficiency cores.',
+    strengths: [
+      'Hsinchu proximity to TSMC — frictionless engineering collaboration',
+      'Fast-follower economics: adopts refined N3E keeping costs ~30% below Qualcomm',
+      'All-Big-Core innovation (1x X925 + 3x X4 + 4x A720) achieves superior thermals',
+      'Largest SoC supplier by unit volume globally'
+    ],
+    risks: 'Over 70% of mobile revenues from Chinese brands (Vivo, Oppo, Xiaomi, Transsion). Uses standard ARM Cortex cores leaving it exposed to ARM licensing restructuring.'
+  },
+  {
+    id: 'exynos-2500',
+    brand: 'Samsung',
+    brandColor: '#38bdf8',
+    name: 'Exynos 2500',
+    altName: 'Exynos 2400',
+    model: 'Hybrid IDM',
+    node: 'Samsung 3nm GAA / 4nm',
+    foundry: 'Samsung Foundry',
+    cpu: 'Stock ARM Cortex-X/A',
+    packaging: 'Samsung FOWLP',
+    modem: 'Integrated Exynos 5G',
+    unitShare: 5,
+    revenueShare: 5,
+    bomCost: '$100 – $120',
+    bomAvg: 110,
+    riskLevel: 'high',
+    riskLabel: 'Low 3nm GAA fab yields',
+    filter: 'samsung',
+    description: 'Samsung\'s unique IDM structure creates friction between Samsung System LSI (design), Samsung Foundry (fabrication), and Samsung MX (device division). 3nm GAA yields below 30% during initial runs forced delays.',
+    strengths: [
+      'Memory & Packaging co-location: leading LPDDR5X DRAM and UFS manufacturer',
+      'Geopolitical independence from Taiwan with fabs in Pyeongtaek and Hwaseong',
+      'First foundry to introduce Gate-All-Around (GAA) MBCFET architecture',
+      'Fan-Out Wafer-Level Packaging (FOWLP) improved thermal dissipation'
+    ],
+    risks: 'Persistently low 3nm GAA yields (reportedly <30% initially). Internal rivalry: Samsung MX has repeatedly abandoned Exynos in favor of Qualcomm Snapdragon due to thermal and yield issues.'
+  },
+  {
+    id: 'tensor-g5',
+    brand: 'Google',
+    brandColor: '#34d399',
+    name: 'Tensor G5',
+    altName: 'Tensor G4',
+    model: 'Captive Fabless',
+    node: 'TSMC 3nm (N3E)',
+    foundry: 'TSMC (Switched from Samsung)',
+    cpu: 'Custom / Stock ARM',
+    packaging: 'TSMC InFO',
+    modem: 'External/Integrated Exynos/TSMC',
+    unitShare: 1.5,
+    revenueShare: 1,
+    bomCost: '$90 – $110',
+    bomAvg: 100,
+    riskLevel: 'medium',
+    riskLabel: 'Small unit scale',
+    filter: 'google',
+    description: 'Google transitioned from Samsung co-design (Tensor G1–G4) to fully in-house architecture on TSMC 3nm for G5. Focus on custom ML/TPU and ISP tailored to Android Pixel software suite.',
+    strengths: [
+      'Custom ML accelerators (TPU) optimized for Google AI models',
+      'Switched to TSMC 3nm from Samsung, improving thermals and efficiency',
+      'Full architecture control for Android + Pixel Camera pipeline optimization',
+      'Deep software-hardware co-optimization for on-device AI'
+    ],
+    risks: 'Very small production scale (~1.5% unit share) limits foundry negotiation leverage. Transitioning away from Samsung design blocks requires significant in-house silicon engineering investment.'
+  },
+  {
+    id: 'kirin-9010',
+    brand: 'HiSilicon (Huawei)',
+    brandColor: '#fb923c',
+    name: 'Kirin 9010',
+    altName: 'Kirin 9000s',
+    model: 'Captive Fabless (Sanctioned)',
+    node: 'SMIC 7nm DUV Multi-pattern',
+    foundry: 'SMIC (China Domestic)',
+    cpu: 'Custom Taishan (ARMv8/v9)',
+    packaging: 'JCET / Domestic OSAT',
+    modem: 'Integrated Balong 5G',
+    unitShare: 3,
+    revenueShare: 3,
+    bomCost: '$140+ estimated',
+    bomAvg: 145,
+    riskLevel: 'critical',
+    riskLabel: 'ASML EUV export embargo',
+    filter: 'hisilicon',
+    description: 'Pre-2020, HiSilicon was world-class — introducing the first 5nm 5G SoC (Kirin 9000) on TSMC. US export bans forced domestic substitution via SMIC DUV multi-patterning at 7nm-equivalent, proving technological resilience but at steep cost.',
+    strengths: [
+      'Proved technological resilience under US sanctions with domestic SMIC fabrication',
+      'DUV multi-patterning (SAQP) achieved 7nm-equivalent transistor densities without EUV',
+      'Fully integrated Balong 5G modem — complete self-sufficiency',
+      'Backed by China Big Fund III ($47.5B) national semiconductor initiative'
+    ],
+    risks: 'ASML EUV export embargo prevents access to advanced lithography. DUV multi-patterning incurs high defect rates, low wafer throughput, and estimated costs exceeding $140/die. Banned from TSMC and any foundry using US-origin technology.'
+  }
+];
+
+// ─── SEARCHABLE DATA ───
+const SEARCH_DATA = [
+  // Processors
+  ...PROCESSORS.map(p => ({
+    category: 'Processors',
+    icon: '🔲',
+    title: `${p.brand} ${p.name}`,
+    desc: `${p.node} · ${p.model} · ${p.bomCost}`,
+    badge: p.brand,
+    badgeColor: p.brandColor,
+    action: () => openProcessorModal(p.id),
+    keywords: `${p.brand} ${p.name} ${p.altName} ${p.cpu} ${p.node} ${p.foundry} ${p.model} ${p.modem} ${p.packaging}`.toLowerCase()
+  })),
+  // Foundries
+  { category: 'Foundries', icon: '🏭', title: 'TSMC', desc: '87% of sub-5nm advanced node manufacturing · Taiwan', badge: 'Foundry', badgeColor: '#f87171', action: () => scrollToSection('supply-chain'), keywords: 'tsmc taiwan semiconductor manufacturing company foundry 3nm 2nm n3e n3p wafer fab fabrication' },
+  { category: 'Foundries', icon: '🏭', title: 'Samsung Foundry', desc: '3nm GAA MBCFET · Pyeongtaek, South Korea', badge: 'Foundry', badgeColor: '#38bdf8', action: () => scrollToSection('supply-chain'), keywords: 'samsung foundry gaa gate all around mbcfet 3nm 4nm pyeongtaek hwaseong south korea' },
+  { category: 'Foundries', icon: '🏭', title: 'SMIC', desc: '7nm DUV multi-patterning · China domestic', badge: 'Foundry', badgeColor: '#fb923c', action: () => scrollToSection('supply-chain'), keywords: 'smic semiconductor manufacturing international corp china domestic duv 7nm sanctions huawei' },
+  // Equipment & IP
+  { category: 'Equipment & IP', icon: '🔬', title: 'ASML', desc: '100% monopoly on EUV lithography scanners · $180M–$350M+ per machine', badge: 'Monopoly', badgeColor: '#f43f5e', action: () => scrollToSection('geopolitics'), keywords: 'asml euv extreme ultraviolet lithography scanner veldhoven netherlands monopoly high-na' },
+  { category: 'Equipment & IP', icon: '💻', title: 'ARM Holdings', desc: 'Foundational ISA for 99%+ of mobile processors', badge: 'IP', badgeColor: '#a78bfa', action: () => scrollToSection('geopolitics'), keywords: 'arm holdings isa instruction set architecture cortex cpu ip licensing risc-v' },
+  { category: 'Equipment & IP', icon: '🖥️', title: 'Synopsys & Cadence', desc: 'EDA duopoly — 70%+ of Electronic Design Automation market', badge: 'EDA', badgeColor: '#34d399', action: () => scrollToSection('supply-chain'), keywords: 'synopsys cadence eda electronic design automation software placement timing' },
+  // Technologies
+  { category: 'Technologies', icon: '⚡', title: 'InFO-PoP Packaging', desc: 'TSMC Integrated Fan-Out Package-on-Package — DRAM stacking on SoC', badge: 'Packaging', badgeColor: '#06b6d4', action: () => scrollToSection('supply-chain'), keywords: 'info pop integrated fan out package on package tsmc dram stacking rdl redistribution' },
+  { category: 'Technologies', icon: '🧬', title: 'Gate-All-Around (GAA)', desc: '2nm nanosheet architecture — gate surrounds channel on all 4 sides', badge: 'Next-Gen', badgeColor: '#8b5cf6', action: () => scrollToSection('roadmap'), keywords: 'gaa gate all around nanosheet 2nm transistor architecture mbcfet samsung tsmc n2' },
+  { category: 'Technologies', icon: '🔋', title: 'Backside Power Delivery (BSPDN)', desc: 'Power rails moved to wafer backside — 15%+ density improvement', badge: 'Future', badgeColor: '#10b981', action: () => scrollToSection('roadmap'), keywords: 'bspdn backside power delivery network tsmc a16 intel powervia ir drop routing density' },
+  { category: 'Technologies', icon: '🧩', title: 'Mobile Chiplets (UCIe)', desc: '2nm compute + 6nm I/O modem chiplets via Universal Chiplet Interconnect', badge: 'Future', badgeColor: '#f59e0b', action: () => scrollToSection('roadmap'), keywords: 'chiplets ucie universal chiplet interconnect express disaggregated soc modular 3d hybrid bonding' },
+  // Geopolitics
+  { category: 'Geopolitics', icon: '🛡️', title: 'US CHIPS Act', desc: '$52.7B for domestic semiconductor manufacturing', badge: '$52.7B', badgeColor: '#6366f1', action: () => scrollToSection('geopolitics'), keywords: 'chips act us united states semiconductor manufacturing onshore domestic subsidies' },
+  { category: 'Geopolitics', icon: '🇹🇼', title: 'Taiwan Silicon Shield', desc: '60% of all semiconductors, 87% of sub-5nm from Taiwan', badge: 'Risk', badgeColor: '#f43f5e', action: () => scrollToSection('geopolitics'), keywords: 'taiwan silicon shield concentration risk cross strait geopolitical tsmc hsinchu' },
+  { category: 'Geopolitics', icon: '🚫', title: 'US Export Controls', desc: 'Entity list bans on EUV, EDA tools to China — BIS sanctions', badge: 'Sanctions', badgeColor: '#f59e0b', action: () => scrollToSection('geopolitics'), keywords: 'us export controls entity list bis sanctions china huawei hisilicon euv eda ban embargo' },
+  // Supply Chain
+  { category: 'Supply Chain', icon: '📊', title: 'Bullwhip Effect', desc: 'Demand amplification: ±5% retail → ±60% fab CapEx swings', badge: 'Risk', badgeColor: '#f43f5e', action: () => scrollToSection('analytics'), keywords: 'bullwhip effect demand amplification inventory semiconductor supply chain shortage glut' },
+  { category: 'Supply Chain', icon: '💰', title: 'BOM Cost Analysis', desc: 'SoC = 29.5% of flagship smartphone BOM ($165 out of $560)', badge: 'Analytics', badgeColor: '#06b6d4', action: () => scrollToSection('analytics'), keywords: 'bom bill of materials cost analysis flagship smartphone processor display camera' },
+];
+
+// ─── CHART COLORS ───
+const COLORS = {
+  indigo: '#6366f1',
+  cyan: '#06b6d4',
+  violet: '#8b5cf6',
+  rose: '#f43f5e',
+  amber: '#f59e0b',
+  emerald: '#10b981',
+  sky: '#38bdf8',
+  orange: '#fb923c',
+  pink: '#f472b6',
+  teal: '#14b8a6',
+};
+
+const CHART_FONT = { family: "'Inter', sans-serif" };
+
+// ─── CHART.JS DEFAULTS ───
+Chart.defaults.color = '#9da3b4';
+Chart.defaults.font.family = CHART_FONT.family;
+Chart.defaults.font.size = 12;
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.pointStyleWidth = 10;
+Chart.defaults.plugins.legend.labels.padding = 16;
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(12, 14, 22, 0.95)';
+Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: '600', family: CHART_FONT.family };
+Chart.defaults.plugins.tooltip.bodyFont = { size: 12, family: CHART_FONT.family };
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(99, 102, 241, 0.2)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
+Chart.defaults.plugins.tooltip.cornerRadius = 8;
+Chart.defaults.plugins.tooltip.padding = 12;
+Chart.defaults.elements.arc.borderWidth = 0;
+Chart.defaults.scale.grid = { color: 'rgba(255, 255, 255, 0.04)' };
+Chart.defaults.scale.border = { color: 'rgba(255, 255, 255, 0.06)' };
+
+// Register datalabels plugin
+Chart.register(ChartDataLabels);
+
+// ─── PRELOADER ───
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hidden');
+  }, 2000);
+});
+
+// ─── NAVBAR SCROLL ───
+const navbar = document.getElementById('navbar');
+const navLinks = document.querySelectorAll('.nav-link');
+
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 50);
+  updateActiveNav();
+});
+
+function updateActiveNav() {
+  const sections = document.querySelectorAll('.section, .hero');
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 100;
+    if (window.scrollY >= top) {
+      current = section.id;
+    }
+  });
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.dataset.section === current);
+  });
+}
+
+// ─── HAMBURGER ───
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobileNav');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  mobileNav.classList.toggle('open');
+});
+
+document.querySelectorAll('.mobile-nav-link').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    mobileNav.classList.remove('open');
+  });
+});
+
+// ─── SEARCH ───
+const searchTrigger = document.getElementById('searchTrigger');
+const searchOverlay = document.getElementById('searchOverlay');
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+function openSearch() {
+  searchOverlay.classList.add('open');
+  setTimeout(() => searchInput.focus(), 100);
+}
+
+function closeSearch() {
+  searchOverlay.classList.remove('open');
+  searchInput.value = '';
+  renderSearchResults('');
+}
+
+searchTrigger.addEventListener('click', openSearch);
+
+searchOverlay.addEventListener('click', (e) => {
+  if (e.target === searchOverlay) closeSearch();
+});
+
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openSearch();
+  }
+  if (e.key === 'Escape') closeSearch();
+});
+
+searchInput.addEventListener('input', (e) => {
+  renderSearchResults(e.target.value.trim().toLowerCase());
+});
+
+function renderSearchResults(query) {
+  if (!query) {
+    searchResults.innerHTML = `
+      <div class="search-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>Type to search across processors, technologies, and supply chain data</p>
+      </div>`;
+    return;
+  }
+
+  const filtered = SEARCH_DATA.filter(item =>
+    item.keywords.includes(query) ||
+    item.title.toLowerCase().includes(query) ||
+    item.desc.toLowerCase().includes(query)
+  );
+
+  if (filtered.length === 0) {
+    searchResults.innerHTML = `
+      <div class="search-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>No results found for "${query}"</p>
+      </div>`;
+    return;
+  }
+
+  // Group by category
+  const grouped = {};
+  filtered.forEach(item => {
+    if (!grouped[item.category]) grouped[item.category] = [];
+    grouped[item.category].push(item);
+  });
+
+  let html = '';
+  Object.entries(grouped).forEach(([category, items]) => {
+    html += `<div class="search-category-label">${category}</div>`;
+    items.forEach(item => {
+      html += `
+        <div class="search-result-item" data-action="${item.title}">
+          <div class="search-result-icon">${item.icon}</div>
+          <div class="search-result-info">
+            <div class="search-result-title">${highlightMatch(item.title, query)}</div>
+            <div class="search-result-desc">${item.desc}</div>
+          </div>
+          <span class="search-result-badge" style="background: ${item.badgeColor}15; color: ${item.badgeColor}; border: 1px solid ${item.badgeColor}30">${item.badge}</span>
+        </div>`;
+    });
+  });
+
+  searchResults.innerHTML = html;
+
+  // Add click events
+  searchResults.querySelectorAll('.search-result-item').forEach((el) => {
+    el.addEventListener('click', () => {
+      const title = el.dataset.action;
+      const item = SEARCH_DATA.find(d => d.title === title);
+      if (item) {
+        closeSearch();
+        item.action();
+      }
+    });
+  });
+}
+
+function highlightMatch(text, query) {
+  const idx = text.toLowerCase().indexOf(query);
+  if (idx === -1) return text;
+  return text.substring(0, idx) + '<strong style="color: var(--accent-indigo)">' + text.substring(idx, idx + query.length) + '</strong>' + text.substring(idx + query.length);
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── HERO PARTICLES ───
+function createParticles() {
+  const container = document.getElementById('heroParticles');
+  for (let i = 0; i < 30; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'hero-particle';
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.bottom = '-10px';
+    particle.style.animationDuration = (4 + Math.random() * 6) + 's';
+    particle.style.animationDelay = Math.random() * 5 + 's';
+    particle.style.width = (1 + Math.random() * 2) + 'px';
+    particle.style.height = particle.style.width;
+    particle.style.background = Math.random() > 0.5 ? COLORS.indigo : COLORS.cyan;
+    container.appendChild(particle);
+  }
+}
+createParticles();
+
+// ─── HERO COUNTER ANIMATION ───
+function animateCounters() {
+  const counters = [
+    { el: document.getElementById('statRevenue'), target: 45, prefix: '$', suffix: 'B', decimals: 0 },
+    { el: document.getElementById('statShipments'), target: 1.2, prefix: '', suffix: 'B', decimals: 1 },
+    { el: document.getElementById('statTSMC'), target: 87, prefix: '', suffix: '%', decimals: 0 },
+    { el: document.getElementById('statTransistors'), target: 20, prefix: '', suffix: 'B', decimals: 0 },
+  ];
+
+  counters.forEach(c => {
+    let current = 0;
+    const step = c.target / 60;
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= c.target) {
+        current = c.target;
+        clearInterval(interval);
+      }
+      c.el.textContent = c.prefix + current.toFixed(c.decimals) + c.suffix;
+    }, 25);
+  });
+}
+
+// Trigger on hero visibility
+const heroObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounters();
+      heroObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.3 });
+heroObserver.observe(document.getElementById('hero'));
+
+// ─── FADE IN OBSERVER ───
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.model-card, .chart-card, .tier-card, .risk-card, .invest-card, .timeline-item, .proc-card').forEach(el => {
+  el.classList.add('fade-in');
+  fadeObserver.observe(el);
+});
+
+// ─── PROCESSOR CARDS ───
+function renderProcessorCards() {
+  const grid = document.getElementById('processorGrid');
+  grid.innerHTML = PROCESSORS.map(p => `
+    <div class="proc-card fade-in" data-id="${p.id}" data-filter="${p.filter}">
+      <div class="proc-card-header">
+        <div>
+          <div class="proc-brand" style="color: ${p.brandColor}">${p.brand}</div>
+          <div class="proc-name">${p.name}</div>
+          <div class="proc-node">${p.node}</div>
+        </div>
+      </div>
+      <div class="proc-specs">
+        <div class="proc-spec">
+          <span class="proc-spec-label">Unit Share</span>
+          <span class="proc-spec-value">${p.unitShare}%</span>
+        </div>
+        <div class="proc-spec">
+          <span class="proc-spec-label">Revenue</span>
+          <span class="proc-spec-value">${p.revenueShare}%</span>
+        </div>
+        <div class="proc-spec">
+          <span class="proc-spec-label">BOM Cost</span>
+          <span class="proc-spec-value">${p.bomCost}</span>
+        </div>
+        <div class="proc-spec">
+          <span class="proc-spec-label">Foundry</span>
+          <span class="proc-spec-value" style="font-size:12px">${p.foundry.split('(')[0].trim()}</span>
+        </div>
+      </div>
+      <div class="proc-risk-badge risk-${p.riskLevel}-badge">${p.riskLabel}</div>
+    </div>
+  `).join('');
+
+  // Add click events
+  grid.querySelectorAll('.proc-card').forEach(card => {
+    card.addEventListener('click', () => openProcessorModal(card.dataset.id));
+    fadeObserver.observe(card);
+  });
+}
+renderProcessorCards();
+
+// ─── PROCESSOR FILTERS ───
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.proc-card').forEach(card => {
+      if (filter === 'all' || card.dataset.filter === filter) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+});
+
+// ─── PROCESSOR MODAL ───
+const processorModal = document.getElementById('processorModal');
+const modalContent = document.getElementById('modalContent');
+const modalClose = document.getElementById('modalClose');
+
+function openProcessorModal(id) {
+  const p = PROCESSORS.find(pr => pr.id === id);
+  if (!p) return;
+
+  modalContent.innerHTML = `
+    <span class="modal-brand" style="color: ${p.brandColor}">${p.brand}</span>
+    <h2>${p.name}</h2>
+    <div class="modal-section">
+      <h3>Specifications</h3>
+      <div class="modal-specs-grid">
+        <div class="modal-spec">
+          <div class="modal-spec-label">Process Node</div>
+          <div class="modal-spec-value">${p.node}</div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Business Model</div>
+          <div class="modal-spec-value">${p.model}</div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">CPU Architecture</div>
+          <div class="modal-spec-value">${p.cpu}</div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Primary Foundry</div>
+          <div class="modal-spec-value">${p.foundry}</div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Advanced Packaging</div>
+          <div class="modal-spec-value">${p.packaging}</div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Modem Integration</div>
+          <div class="modal-spec-value">${p.modem}</div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Unit Market Share</div>
+          <div class="modal-spec-value" style="color: ${p.brandColor}">${p.unitShare}%</div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">Revenue Market Share</div>
+          <div class="modal-spec-value" style="color: ${p.brandColor}">${p.revenueShare}%</div>
+        </div>
+        <div class="modal-spec">
+          <div class="modal-spec-label">BOM Cost (Per Unit)</div>
+          <div class="modal-spec-value">${p.bomCost}</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <h3>Overview</h3>
+      <p class="modal-desc">${p.description}</p>
+    </div>
+    <div class="modal-section">
+      <h3>Key Strengths</h3>
+      <div class="modal-strengths">
+        <ul>${p.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+      </div>
+    </div>
+    <div class="modal-section">
+      <h3>Primary Risk Factors</h3>
+      <div class="modal-risk">
+        <p>${p.risks}</p>
+      </div>
+    </div>
+  `;
+
+  processorModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProcessorModal() {
+  processorModal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+modalClose.addEventListener('click', closeProcessorModal);
+processorModal.addEventListener('click', (e) => {
+  if (e.target === processorModal) closeProcessorModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeProcessorModal();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════════════════════════
+
+// ─── Unit Market Share (Doughnut) ───
+new Chart(document.getElementById('chartUnitShare'), {
+  type: 'doughnut',
+  data: {
+    labels: ['MediaTek', 'Qualcomm', 'Apple', 'Samsung', 'HiSilicon', 'Google', 'Others'],
+    datasets: [{
+      data: [37, 28, 18, 5, 3, 1.5, 7.5],
+      backgroundColor: [COLORS.amber, COLORS.pink, COLORS.violet, COLORS.sky, COLORS.orange, COLORS.emerald, '#3f4255'],
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 14, font: { size: 11 } } },
+      datalabels: {
+        color: '#f0f1f5',
+        font: { weight: '600', size: 11 },
+        formatter: (v) => v >= 5 ? v + '%' : '',
+      }
+    }
+  }
+});
+
+// ─── Revenue Market Share (Doughnut) ───
+new Chart(document.getElementById('chartRevenueShare'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Apple', 'Qualcomm', 'MediaTek', 'Samsung', 'HiSilicon', 'Google', 'Others'],
+    datasets: [{
+      data: [38, 34, 17, 5, 3, 1, 2],
+      backgroundColor: [COLORS.violet, COLORS.pink, COLORS.amber, COLORS.sky, COLORS.orange, COLORS.emerald, '#3f4255'],
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '65%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 14, font: { size: 11 } } },
+      datalabels: {
+        color: '#f0f1f5',
+        font: { weight: '600', size: 11 },
+        formatter: (v) => v >= 5 ? v + '%' : '',
+      }
+    }
+  }
+});
+
+// ─── BOM Breakdown (Horizontal Bar) ───
+new Chart(document.getElementById('chartBOM'), {
+  type: 'bar',
+  data: {
+    labels: ['SoC + 5G Modem', 'Display (OLED)', 'Camera Modules', 'Memory (DRAM+Flash)', 'Enclosure', 'RF/Wi-Fi/BT', 'Power/Battery/Misc'],
+    datasets: [{
+      data: [165, 95, 88, 62, 58, 48, 44],
+      backgroundColor: [COLORS.indigo, COLORS.cyan, COLORS.rose, COLORS.violet, COLORS.amber, COLORS.emerald, COLORS.sky],
+      borderRadius: 6,
+      barThickness: 28,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+        color: '#9da3b4',
+        font: { weight: '600', size: 11 },
+        formatter: (v) => '$' + v,
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        max: 200,
+        ticks: { callback: v => '$' + v },
+      },
+      y: {
+        ticks: { font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ─── SoC Cost by Tier (Grouped Bar) ───
+new Chart(document.getElementById('chartSoCCost'), {
+  type: 'bar',
+  data: {
+    labels: ['Ultra-Flagship\n($1,000+ MSRP)', 'Premium Mid\n($400–$600)', 'Budget\n(<$200)'],
+    datasets: [
+      {
+        label: 'Low Range',
+        data: [150, 50, 18],
+        backgroundColor: COLORS.indigo + '99',
+        borderRadius: 6,
+      },
+      {
+        label: 'High Range',
+        data: [200, 75, 28],
+        backgroundColor: COLORS.cyan + '99',
+        borderRadius: 6,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      datalabels: {
+        color: '#f0f1f5',
+        font: { weight: '600', size: 11 },
+        formatter: (v) => '$' + v,
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: v => '$' + v },
+      }
+    }
+  }
+});
+
+// ─── Wafer Cost Progression (Line) ───
+new Chart(document.getElementById('chartWaferCost'), {
+  type: 'line',
+  data: {
+    labels: ['28nm', '16nm', '10nm', '7nm', '5nm', '3nm', '2nm (est.)'],
+    datasets: [{
+      label: 'Cost per 300mm Wafer',
+      data: [3200, 5400, 8500, 12000, 16600, 20500, 29000],
+      borderColor: COLORS.indigo,
+      backgroundColor: COLORS.indigo + '15',
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: COLORS.indigo,
+      pointBorderColor: COLORS.indigo,
+      pointRadius: 5,
+      pointHoverRadius: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        color: '#9da3b4',
+        font: { weight: '600', size: 10 },
+        anchor: 'end',
+        align: 'top',
+        formatter: (v) => '$' + (v / 1000).toFixed(1) + 'K',
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: v => '$' + (v / 1000) + 'K' },
+      }
+    }
+  }
+});
+
+// ─── Bullwhip Effect (Bar) ───
+new Chart(document.getElementById('chartBullwhip'), {
+  type: 'bar',
+  data: {
+    labels: ['Retail\nPhone Sales', 'OEM\nOrders', 'Fabless\nTape-Out', 'Foundry\nWafer Starts'],
+    datasets: [{
+      label: 'Demand Amplification',
+      data: [5, 15, 30, 60],
+      backgroundColor: [COLORS.emerald + 'cc', COLORS.cyan + 'cc', COLORS.amber + 'cc', COLORS.rose + 'cc'],
+      borderRadius: 8,
+      barThickness: 48,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        color: '#f0f1f5',
+        font: { weight: '700', size: 14 },
+        anchor: 'end',
+        align: 'top',
+        formatter: (v) => '±' + v + '%',
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 80,
+        ticks: { callback: v => '±' + v + '%' },
+        title: { display: true, text: 'Demand Shift Amplification', color: '#5f6580', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ─── Foundry Comparison (Radar) ───
+new Chart(document.getElementById('chartFoundryComparison'), {
+  type: 'radar',
+  data: {
+    labels: ['Yield Rate', 'Process Node', 'Capacity', 'Packaging', 'Cost Efficiency', 'Customer Trust'],
+    datasets: [
+      {
+        label: 'TSMC',
+        data: [95, 98, 90, 95, 85, 98],
+        borderColor: COLORS.indigo,
+        backgroundColor: COLORS.indigo + '20',
+        pointBackgroundColor: COLORS.indigo,
+        pointBorderColor: COLORS.indigo,
+      },
+      {
+        label: 'Samsung Foundry',
+        data: [55, 85, 65, 70, 75, 50],
+        borderColor: COLORS.sky,
+        backgroundColor: COLORS.sky + '20',
+        pointBackgroundColor: COLORS.sky,
+        pointBorderColor: COLORS.sky,
+      },
+      {
+        label: 'SMIC',
+        data: [45, 40, 50, 35, 60, 30],
+        borderColor: COLORS.orange,
+        backgroundColor: COLORS.orange + '20',
+        pointBackgroundColor: COLORS.orange,
+        pointBorderColor: COLORS.orange,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      datalabels: { display: false }
+    },
+    scales: {
+      r: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          stepSize: 20,
+          color: '#5f6580',
+          backdropColor: 'transparent',
+          font: { size: 10 }
+        },
+        grid: { color: 'rgba(255, 255, 255, 0.04)' },
+        angleLines: { color: 'rgba(255, 255, 255, 0.06)' },
+        pointLabels: { color: '#9da3b4', font: { size: 12, weight: '500' } }
+      }
+    }
+  }
+});
+
+// ─── Lead Times (Horizontal Bar) ───
+new Chart(document.getElementById('chartLeadTimes'), {
+  type: 'bar',
+  data: {
+    labels: ['Design Cycle (RTL → Tape-Out)', 'Photomask Fabrication', 'Wafer Fabrication', 'OSAT Packaging & Test', 'Logistics & Integration'],
+    datasets: [{
+      label: 'Lead Time (Weeks)',
+      data: [96, 6, 19, 4, 6],
+      backgroundColor: [COLORS.violet + 'cc', COLORS.rose + 'cc', COLORS.indigo + 'cc', COLORS.cyan + 'cc', COLORS.emerald + 'cc'],
+      borderRadius: 6,
+      barThickness: 32,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+        color: '#9da3b4',
+        font: { weight: '600', size: 11 },
+        formatter: (v) => {
+          if (v >= 8) return Math.round(v / 4.33) + ' months';
+          return v + ' weeks';
+        }
+      }
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        ticks: {
+          callback: v => {
+            if (v >= 8) return Math.round(v / 4.33) + 'mo';
+            return v + 'wk';
+          }
+        },
+        title: { display: true, text: 'Duration', color: '#5f6580', font: { size: 11 } }
+      },
+      y: {
+        ticks: { font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ─── ESG Environmental Impact (Polar Area) ───
+new Chart(document.getElementById('chartESG'), {
+  type: 'polarArea',
+  data: {
+    labels: ['Water Usage (UPW)', 'Energy (EUV)', 'Carbon Emissions', 'Conflict Minerals', 'Chemical Waste'],
+    datasets: [{
+      data: [85, 92, 70, 55, 65],
+      backgroundColor: [COLORS.cyan + '80', COLORS.amber + '80', COLORS.rose + '80', COLORS.violet + '80', COLORS.emerald + '80'],
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } },
+      datalabels: {
+        color: '#f0f1f5',
+        font: { weight: '600', size: 11 },
+        formatter: v => v + '/100',
+      }
+    },
+    scales: {
+      r: {
+        beginAtZero: true,
+        max: 100,
+        ticks: { display: false },
+        grid: { color: 'rgba(255, 255, 255, 0.04)' },
+      }
+    }
+  }
+});
+
+// ─── TSMC Energy (Line) ───
+new Chart(document.getElementById('chartEnergy'), {
+  type: 'line',
+  data: {
+    labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026 (est.)', '2028 (proj.)'],
+    datasets: [{
+      label: 'TSMC % of Taiwan Grid',
+      data: [5.5, 6.2, 6.8, 7.2, 7.8, 8, 9.2, 13],
+      borderColor: COLORS.amber,
+      backgroundColor: COLORS.amber + '15',
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: COLORS.amber,
+      pointBorderColor: COLORS.amber,
+      pointRadius: 4,
+      pointHoverRadius: 7,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      datalabels: {
+        color: '#9da3b4',
+        font: { weight: '600', size: 10 },
+        anchor: 'end',
+        align: 'top',
+        formatter: v => v + '%',
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 16,
+        ticks: { callback: v => v + '%' },
+        title: { display: true, text: '% of Taiwan Total Electricity', color: '#5f6580', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ─── Tech Roadmap (Multi-Line) ───
+new Chart(document.getElementById('chartRoadmap'), {
+  type: 'line',
+  data: {
+    labels: ['7nm\n(2018)', '5nm\n(2020)', '3nm\n(2023)', '2nm\n(2026)', '1.4nm\n(2028)', 'A14\n(2030)'],
+    datasets: [
+      {
+        label: 'Performance (rel. to 7nm)',
+        data: [100, 118, 140, 160, 185, 210],
+        borderColor: COLORS.indigo,
+        backgroundColor: COLORS.indigo + '15',
+        fill: false,
+        tension: 0.3,
+        pointBackgroundColor: COLORS.indigo,
+        pointRadius: 5,
+      },
+      {
+        label: 'Power Efficiency',
+        data: [100, 130, 160, 200, 240, 280],
+        borderColor: COLORS.emerald,
+        backgroundColor: COLORS.emerald + '15',
+        fill: false,
+        tension: 0.3,
+        pointBackgroundColor: COLORS.emerald,
+        pointRadius: 5,
+      },
+      {
+        label: 'Transistor Density',
+        data: [100, 180, 330, 500, 700, 950],
+        borderColor: COLORS.cyan,
+        backgroundColor: COLORS.cyan + '15',
+        fill: false,
+        tension: 0.3,
+        pointBackgroundColor: COLORS.cyan,
+        pointRadius: 5,
+      },
+      {
+        label: 'Wafer Cost',
+        data: [100, 138, 171, 242, 310, 380],
+        borderColor: COLORS.rose,
+        backgroundColor: COLORS.rose + '15',
+        fill: false,
+        tension: 0.3,
+        borderDash: [6, 4],
+        pointBackgroundColor: COLORS.rose,
+        pointRadius: 5,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom' },
+      datalabels: { display: false }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: v => v + '%' },
+        title: { display: true, text: 'Relative Index (7nm = 100%)', color: '#5f6580', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ─── SMOOTH SCROLL FOR ALL NAV LINKS ───
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 72;
+      const top = target.offsetTop - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
+console.log('%c ChipFlow Analytics Loaded ✦', 'color: #6366f1; font-weight: bold; font-size: 14px;');
+</script>
+<script>/* ChipFlow — Data & Sources section + live updates.
+ * Load AFTER app.js:  <script src="data-sources.js"><\/script>
+ * Pulls data from /api/data (live, via server.js). If the API is not reachable it falls back to
+ * data/data.json (static, not live).
+ */
+(function () {
+  'use strict';
+
+  var API = { data: '/api/data', sources: '/api/sources', stream: '/api/stream' };
+  var FALLBACK = { data: 'data/data.json', sources: 'data/sources.json' };
+  var STATUS = {
+    verified: ['Verified', 'ok'],
+    partial: ['Partly verified', 'warn'],
+    unverified: ['No source yet', 'bad'],
+    assessment: ['Author estimate', 'info'],
+    outdated: ['Outdated', 'bad']
+  };
+
+  var state = { data: null, sources: null, live: false, lastSync: null, connection: 'connecting' };
+  var openDetails = {};
+  var pollTimer = null;
+  var eventSource = null;
+
+  // ---------- helpers ----------
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function safeUrl(u) {
+    return /^https?:\/\//i.test(u) ? u : '#';
+  }
+  function fmt(n) {
+    return typeof n === 'number' ? n.toLocaleString('en-US') : esc(n);
+  }
+  function fetchJSON(url) {
+    return fetch(url, { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw new Error(url + ' -> ' + r.status);
+      return r.json();
+    });
+  }
+  function labelText(l) {
+    return String(l).replace(/\n/g, ' ');
+  }
+  function badge(status) {
+    var s = STATUS[status] || STATUS.unverified;
+    return '<span class="ds-badge ds-' + s[1] + '">' + esc(s[0]) + '</span>';
+  }
+
+  // ---------- mount ----------
+  function addNav(selector) {
+    var links = Array.prototype.slice.call(document.querySelectorAll(selector));
+    if (!links.length) return;
+    if (document.querySelector(selector + '[href="#data-sources"]')) return;
+    var last = links[links.length - 1];
+    var host = last.parentElement && last.parentElement.tagName === 'LI' ? last.parentElement : last;
+    var clone = host.cloneNode(true);
+    var a = clone.tagName === 'A' ? clone : clone.querySelector('a');
+    if (!a) return;
+    a.textContent = 'Data & Sources';
+    a.setAttribute('href', '#data-sources');
+    a.setAttribute('data-section', 'data-sources');
+    a.classList.remove('active');
+    host.parentNode.insertBefore(clone, host.nextSibling);
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var el = document.getElementById('data-sources');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  function mount() {
+    if (document.getElementById('data-sources')) return document.getElementById('data-sources');
+    var sec = document.createElement('section');
+    sec.id = 'data-sources';
+    sec.className = 'section ds-section';
+    sec.innerHTML = '<div class="ds-wrap"><p class="ds-loading">Loading data and sources…</p></div>';
+    var footer = document.querySelector('footer');
+    var parent = footer ? footer.parentNode : document.body;
+    parent.insertBefore(sec, footer || null);
+    addNav('.nav-link');
+    addNav('.mobile-nav-link');
+    return sec;
+  }
+
+  // ---------- render ----------
+  function render() {
+    var sec = mount();
+    var data = state.data;
+    var src = state.sources;
+    if (!data || !src) return;
+
+    // remember which dataset panels are open
+    Array.prototype.forEach.call(sec.querySelectorAll('details[data-ds]'), function (d) {
+      openDetails[d.getAttribute('data-ds')] = d.open;
+    });
+
+    var sourceIndex = {};
+    src.sources.forEach(function (s, i) {
+      sourceIndex[s.id] = i + 1;
+    });
+    function cites(ids) {
+      if (!ids || !ids.length) return '<span class="ds-muted">No source attached</span>';
+      return ids
+        .map(function (id) {
+          return '<a href="#src-' + esc(id) + '" class="ds-cite">[' + sourceIndex[id] + ']</a>';
+        })
+        .join(' ');
+    }
+
+    var datasetIds = Object.keys(data.datasets);
+    var counts = {};
+    datasetIds.forEach(function (id) {
+      var st = data.datasets[id].status;
+      counts[st] = (counts[st] || 0) + 1;
+    });
+
+    var html = '';
+    html += '<div class="ds-wrap">';
+    html += '<div class="ds-head"><div>';
+    html += '<span class="ds-eyebrow">Transparency</span>';
+    html += '<h2>Data &amp; Sources</h2>';
+    html += '<p class="ds-lead">Every chart on this site is built from the tables below. Each dataset shows where its numbers come from, how well they were checked, and what is still an estimate.</p>';
+    html += '</div><div class="ds-live" id="dsLive" role="status" aria-live="polite"></div></div>';
+
+    html += '<div class="ds-legend">';
+    Object.keys(STATUS).forEach(function (k) {
+      html += '<div>' + badge(k) + '<span>' + esc(src.statusLegend ? src.statusLegend[k] || '' : '') + '</span></div>';
+    });
+    html += '</div>';
+
+    // datasets
+    html += '<h3>Datasets behind the charts</h3>';
+    html += '<div class="ds-list">';
+    datasetIds.forEach(function (id) {
+      var d = data.datasets[id];
+      var isOpen = openDetails[id] ? ' open' : '';
+      html += '<details class="ds-card" data-ds="' + esc(id) + '"' + isOpen + '>';
+      html += '<summary><span class="ds-card-title">' + esc(d.title) + '</span>' + badge(d.status) + '</summary>';
+      html += '<div class="ds-card-body">';
+      html += '<p class="ds-note">' + esc(d.note) + '</p>';
+      html += '<div class="ds-meta"><span><b>Unit:</b> ' + esc(d.unit) + '</span><span><b>Period:</b> ' + esc(d.asOf) + '</span><span><b>Sources:</b> ' + cites(d.sourceIds) + '</span></div>';
+      html += '<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th>Item</th>';
+      d.series.forEach(function (s) {
+        html += '<th>' + esc(s.label) + '</th>';
+      });
+      html += '</tr></thead><tbody>';
+      d.labels.forEach(function (lab, i) {
+        html += '<tr><td>' + esc(labelText(lab)) + '</td>';
+        d.series.forEach(function (s) {
+          html += '<td>' + fmt(s.data[i]) + '</td>';
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+      if (!window.CHIPFLOW_STATIC) html += '<button type="button" class="ds-btn" data-csv="' + esc(id) + '">Download CSV</button>';
+      html += '</div></details>';
+    });
+    html += '</div>';
+
+    // processors
+    html += '<h3>Processor data</h3>';
+    html += '<p class="ds-note">Unit share is partly checked against Counterpoint Research (see the unit market share dataset). Revenue share and bill-of-materials costs have no source yet. Technical specifications (node, foundry, CPU, packaging, modem) have no individual source attached.</p>';
+    html += '<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th>Brand</th><th>Chip</th><th>Process node</th><th>Foundry</th><th>Unit share</th><th>Revenue share</th><th>BOM cost</th></tr></thead><tbody>';
+    data.processors.forEach(function (p) {
+      html += '<tr><td>' + esc(p.brand) + '</td><td>' + esc(p.name) + '</td><td>' + esc(p.node) + '</td><td>' + esc(p.foundry) + '</td><td>' + esc(p.unitShare) + '%</td><td>' + esc(p.revenueShare) + '%</td><td>' + esc(p.bomCost) + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+
+    // claims
+    html += '<h3>Claims checked against sources</h3>';
+    html += '<div class="ds-table-wrap"><table class="ds-table"><thead><tr><th>Claim</th><th>Where on the site</th><th>Status</th><th>What the check found</th><th>Sources</th></tr></thead><tbody>';
+    src.claims.forEach(function (c) {
+      html += '<tr><td>' + esc(c.claim) + '</td><td>' + esc(c.where) + '</td><td>' + badge(c.status) + '</td><td>' + esc(c.note) + '</td><td>' + cites(c.sourceIds) + '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+
+    // sources
+    html += '<h3>Source list</h3>';
+    html += '<ol class="ds-sources">';
+    src.sources.forEach(function (s) {
+      html += '<li id="src-' + esc(s.id) + '"><a href="' + esc(safeUrl(s.url)) + '" target="_blank" rel="noopener noreferrer">' + esc(s.title) + '</a>';
+      html += '<div class="ds-src-meta">' + esc(s.publisher) + ' · published ' + esc(s.date) + ' · accessed ' + esc(s.accessed) + '</div>';
+      html += '<div class="ds-src-supports">' + esc(s.supports) + '</div></li>';
+    });
+    html += '</ol>';
+
+    html += '<div class="ds-foot">' + (window.CHIPFLOW_STATIC ? '' : '<a class="ds-btn" href="' + (state.live ? API.data : FALLBACK.data) + '" target="_blank" rel="noopener">Open raw data (JSON)</a>');
+    html += '<span class="ds-muted">Dataset version ' + esc((data.meta || {}).version) + ' · data updated ' + esc(formatTime((data.meta || {}).updatedAt)) + '</span></div>';
+    html += '</div>';
+
+    sec.innerHTML = html;
+    paintLive();
+  }
+
+  function formatTime(iso) {
+    if (!iso) return 'unknown';
+    var d = new Date(iso);
+    return isNaN(d) ? iso : d.toLocaleString();
+  }
+
+  function paintLive() {
+    var el = document.getElementById('dsLive');
+    if (!el) return;
+    var text, cls;
+    if (!state.live) {
+      cls = 'off';
+      text = 'Static data · live server not connected';
+    } else if (state.connection === 'open') {
+      cls = 'on';
+      text = 'Live · synced ' + (state.lastSync ? state.lastSync.toLocaleTimeString() : '');
+    } else {
+      cls = 'wait';
+      text = 'Reconnecting to live server…';
+    }
+    el.className = 'ds-live ds-live-' + cls;
+    el.innerHTML = '<span class="ds-dot"></span>' + esc(text);
+  }
+
+  // ---------- push data into the existing site (charts + processor cards) ----------
+  function applyToSite() {
+    var datasets = state.data.datasets;
+    Object.keys(datasets).forEach(function (id) {
+      var d = datasets[id];
+      var canvas = document.getElementById(d.chartId);
+      if (!canvas || !window.Chart || !Chart.getChart) return;
+      var chart = Chart.getChart(canvas);
+      if (!chart) return;
+      var next = JSON.stringify({ l: d.labels, d: d.series.map(function (s) { return s.data; }) });
+      var cur = JSON.stringify({ l: chart.data.labels, d: chart.data.datasets.map(function (s) { return s.data; }) });
+      if (next === cur) return;
+      chart.data.labels = d.labels.slice();
+      d.series.forEach(function (s, i) {
+        if (chart.data.datasets[i]) chart.data.datasets[i].data = s.data.slice();
+      });
+      chart.update();
+    });
+
+    if (typeof PROCESSORS !== 'undefined' && Array.isArray(state.data.processors)) {
+      if (JSON.stringify(PROCESSORS) !== JSON.stringify(state.data.processors)) {
+        PROCESSORS.splice.apply(PROCESSORS, [0, PROCESSORS.length].concat(state.data.processors));
+        if (typeof renderProcessorCards === 'function') {
+          renderProcessorCards();
+          var active = document.querySelector('.filter-btn.active');
+          if (active) active.click();
+        }
+      }
+    }
+  }
+
+  // ---------- load + live connection ----------
+  function load() {
+    var embedded = window.CHIPFLOW_STATIC;
+    var source = embedded
+      ? Promise.resolve({ data: embedded.data, sources: embedded.sources, live: false })
+      : Promise.all([fetchJSON(API.data), fetchJSON(API.sources)])
+          .then(function (r) {
+            return { data: r[0], sources: r[1], live: true };
+          })
+          .catch(function () {
+            return Promise.all([fetchJSON(FALLBACK.data), fetchJSON(FALLBACK.sources)]).then(function (r) {
+              return { data: r[0], sources: r[1], live: false };
+            });
+          });
+    return source
+      .then(function (r) {
+        var firstLoad = !state.data;
+        state.data = r.data;
+        state.sources = r.sources;
+        state.live = r.live;
+        state.lastSync = new Date();
+        render();
+        applyToSite();
+        if (firstLoad) startLive();
+      })
+      .catch(function (e) {
+        var sec = mount();
+        sec.innerHTML = '<div class="ds-wrap"><h2>Data &amp; Sources</h2><p class="ds-note">Could not load the data files (' + esc(e.message) + '). Check that data/data.json and data/sources.json exist.</p></div>';
+      });
+  }
+
+  function startPolling() {
+    if (pollTimer) return;
+    pollTimer = setInterval(function () {
+      fetchJSON(API.data)
+        .then(function (d) {
+          var m = d.meta || {};
+          var cur = (state.data && state.data.meta) || {};
+          state.connection = 'open';
+          if (m.version !== cur.version || m.updatedAt !== cur.updatedAt) return load();
+          state.lastSync = new Date();
+          paintLive();
+        })
+        .catch(function () {
+          state.connection = 'closed';
+          paintLive();
+        });
+    }, 30000);
+  }
+
+  function startLive() {
+    if (!state.live) return; // not served by server.js, nothing to subscribe to
+    if (!window.EventSource) {
+      state.connection = 'open';
+      paintLive();
+      return startPolling();
+    }
+    eventSource = new EventSource(API.stream);
+    eventSource.addEventListener('hello', function () {
+      state.connection = 'open';
+      paintLive();
+    });
+    eventSource.addEventListener('update', function () {
+      load();
+    });
+    eventSource.onerror = function () {
+      state.connection = 'closed';
+      paintLive();
+      if (eventSource.readyState === 2) startPolling(); // browser gave up reconnecting
+    };
+  }
+
+  // ---------- start ----------
+  function init() {
+    var cssId = 'ds-css';
+    if (!document.getElementById(cssId) && !document.querySelector('link[href$="data-sources.css"]')) {
+      var l = document.createElement('link');
+      l.id = cssId;
+      l.rel = 'stylesheet';
+      l.href = 'data-sources.css';
+      document.head.appendChild(l);
+    }
+    mount();
+    load();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+
+</body></html>

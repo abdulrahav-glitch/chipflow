@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Mobile Processor Supply Chain Analysis & Executive Presentation</title>
+  <meta name="description" content="In-depth Supply Chain Analysis of Mobile Phone Processors across Apple, Qualcomm, MediaTek, Samsung, Google and HiSilicon. Features interactive 20-slide presentation, interactive BOM simulator, company comparator, and research report.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="dark-theme">
+  <!-- Top Navigation Header -->
+  <header class="app-header" id="mainHeader">
+    <div class="header-left">
+      <div class="logo-badge">
+        <span class="chip-icon">⚡</span>
+        <span class="logo-text">SILICON<span class="accent-text">CHAIN</span></span>
+      </div>
+      <div class="project-pill">Academic & Executive Strategy Report 2026</div>
+      <!-- Quick Switcher to Fashion Retail Project -->
+      <a href="fashion_retail/index.html" class="project-switch-link" title="Switch to Fashion Retail Sales Project">
+        <span>👗</span> Fashion Retail Project
+      </a>
+    </div>
+
+    <!-- Mode Switcher -->
+    <nav class="nav-tabs" id="navTabs">
+      <button class="nav-tab active" data-view="presentation" id="tabPresentation">
+        <span class="tab-icon">🖥️</span> Slide Deck
+      </button>
+      <button class="nav-tab" data-view="report" id="tabReport">
+        <span class="tab-icon">📑</span> Research Report
+      </button>
+      <button class="nav-tab" data-view="charts" id="tabCharts">
+        <span class="tab-icon">📊</span> Chart Intelligence
+      </button>
+    </nav>
+
+    <!-- Header Actions & Interactive Tools -->
+    <div class="header-right">
+      <button class="btn-tool-action" id="btnOpenComparator" title="Compare Any 2 Chipmakers Side-by-Side (C)">
+        <span>⚖️</span> Compare
+      </button>
+      <button class="btn-tool-action" id="btnOpenSimulator" title="Interactive Smartphone BOM & Margin Simulator (B)">
+        <span>🧮</span> BOM Sim
+      </button>
+      <a href="mobile_processor_supply_chain_presentation.pptx" download class="btn-download" id="btnDownloadPPTX" title="Download genuine Microsoft PowerPoint (.pptx) file">
+        <span class="icon">📥</span> Download PPTX (1.3 MB)
+      </a>
+      <button class="btn-icon" id="btnToggleFullscreen" title="Toggle Fullscreen (F)">
+        <span>⛶</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App Container -->
+  <main class="app-main">
+
+    <!-- ================= VIEW 1: PRESENTATION SLIDE DECK ================= -->
+    <section class="view-section active" id="viewPresentation">
+      <!-- Presentation Player Toolbar -->
+      <div class="deck-toolbar">
+        <div class="slide-indicator">
+          <span class="indicator-title">SLIDE</span>
+          <span class="current-num" id="currentSlideNum">01</span>
+          <span class="divider">/</span>
+          <span class="total-num" id="totalSlidesNum">20</span>
+          <span class="slide-category-badge" id="slideCategoryBadge">OVERVIEW</span>
+        </div>
+
+        <div class="progress-bar-container" title="Presentation Progress">
+          <div class="progress-bar" id="presentationProgressBar"></div>
+          <div class="autoplay-timer-bar" id="autoplayTimerBar"></div>
+        </div>
+
+        <div class="deck-controls">
+          <button class="deck-btn" id="btnPrevSlide" title="Previous Slide (← / Space)">
+            <span>◀</span> Prev
+          </button>
+          <button class="deck-btn btn-primary" id="btnNextSlide" title="Next Slide (→)">
+            Next <span>▶</span>
+          </button>
+          
+          <div class="control-divider"></div>
+
+          <!-- Autoplay Button -->
+          <button class="deck-btn btn-feature" id="btnToggleAutoplay" title="Toggle Auto-Play Slides (P)">
+            <span id="autoplayIcon">▶</span> <span id="autoplayLabel">Auto</span>
+          </button>
+
+          <!-- Laser Pointer Button -->
+          <button class="deck-btn btn-feature" id="btnToggleLaser" title="Toggle Interactive Laser Pointer (L)">
+            <span>🔴</span> Laser
+          </button>
+
+          <!-- Grid Drawer -->
+          <button class="deck-btn btn-outline" id="btnSlideDrawer" title="View All Slides Grid (G)">
+            <span>📑</span> Grid
+          </button>
+
+          <!-- Speaker Notes -->
+          <button class="deck-btn btn-outline" id="btnToggleNotes" title="Toggle Presenter Speaker Notes (N)">
+            <span>💬</span> Notes
+          </button>
+
+          <!-- Shortcuts Guide -->
+          <button class="deck-btn btn-icon-only" id="btnOpenShortcuts" title="Keyboard Shortcuts (?)">
+            <span>⌨️</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Slide Viewport (16:9 Aspect Ratio Container) -->
+      <div class="slide-viewport-wrapper" id="slideViewportWrapper">
+        <!-- Ambient Circuit Canvas -->
+        <canvas class="ambient-canvas" id="ambientCanvas"></canvas>
+
+        <!-- Laser Pointer Element -->
+        <div class="laser-pointer" id="laserPointer"></div>
+
+        <!-- Slide Stage with Transition Animations -->
+        <div class="slide-stage" id="slideStage">
+          <!-- Slide contents dynamically rendered here -->
+        </div>
+
+        <!-- Slide Navigation Overlay Floaters (Hover Accessible) -->
+        <button class="slide-nav-arrow arrow-left" id="arrowPrev" title="Previous Slide">‹</button>
+        <button class="slide-nav-arrow arrow-right" id="arrowNext" title="Next Slide">›</button>
+      </div>
+
+      <!-- Presenter Speaker Notes Panel (Collapsible) -->
+      <aside class="speaker-notes-panel" id="speakerNotesPanel">
+        <div class="notes-header">
+          <div class="notes-title">
+            <span>🎙️</span> Presenter Speaker Notes & Talking Points
+          </div>
+          <button class="notes-close" id="btnCloseNotes">✕</button>
+        </div>
+        <div class="notes-content" id="speakerNotesText">
+          Select or navigate to a slide to inspect executive speaking talking points.
+        </div>
+      </aside>
+
+      <!-- Slide Drawer (Modal Grid of all 20 Slides) -->
+      <div class="slide-drawer-overlay" id="slideDrawerOverlay">
+        <div class="slide-drawer-modal">
+          <div class="drawer-header">
+            <div>
+              <h3>Jump to Slide</h3>
+              <p class="drawer-sub">Select any of the 20 comprehensive slides to navigate instantly</p>
+            </div>
+            <div class="drawer-header-actions">
+              <input type="text" id="slideSearchInput" class="slide-search-input" placeholder="Filter slides (e.g., TSMC, Apple, BOM)...">
+              <button class="drawer-close" id="btnCloseDrawer">✕</button>
+            </div>
+          </div>
+          <div class="drawer-grid" id="drawerGrid">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Keyboard Shortcuts Modal -->
+      <div class="modal-overlay" id="shortcutsModalOverlay">
+        <div class="custom-modal modal-sm">
+          <div class="modal-header">
+            <h3><span>⌨️</span> Presentation Keyboard Shortcuts</h3>
+            <button class="modal-close" id="btnCloseShortcuts">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="shortcuts-grid">
+              <div class="shortcut-item"><kbd>→</kbd> or <kbd>Space</kbd> <span>Next Slide</span></div>
+              <div class="shortcut-item"><kbd>←</kbd> <span>Previous Slide</span></div>
+              <div class="shortcut-item"><kbd>P</kbd> <span>Play / Pause Autoplay</span></div>
+              <div class="shortcut-item"><kbd>L</kbd> <span>Toggle Laser Pointer</span></div>
+              <div class="shortcut-item"><kbd>C</kbd> <span>Open Company Comparator</span></div>
+              <div class="shortcut-item"><kbd>B</kbd> <span>Open BOM Simulator</span></div>
+              <div class="shortcut-item"><kbd>G</kbd> <span>Open Slides Grid Drawer</span></div>
+              <div class="shortcut-item"><kbd>N</kbd> <span>Toggle Speaker Notes</span></div>
+              <div class="shortcut-item"><kbd>F</kbd> <span>Toggle Fullscreen</span></div>
+              <div class="shortcut-item"><kbd>Home</kbd> / <kbd>End</kbd> <span>First / Last Slide</span></div>
+              <div class="shortcut-item"><kbd>Esc</kbd> <span>Close Any Modal</span></div>
+              <div class="shortcut-item"><kbd>?</kbd> <span>Open This Shortcuts HUD</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Competitor Comparator Modal -->
+      <div class="modal-overlay" id="comparatorModalOverlay">
+        <div class="custom-modal modal-lg">
+          <div class="modal-header">
+            <div>
+              <h3><span>⚖️</span> Head-to-Head Mobile Silicon Comparator</h3>
+              <p class="modal-sub">Select any two semiconductor firms to benchmark their architecture, foundry allocation, economics, and supply resilience.</p>
+            </div>
+            <button class="modal-close" id="btnCloseComparator">✕</button>
+          </div>
+          <div class="modal-body">
+            <!-- Company Selection Dropdowns -->
+            <div class="comparator-selectors">
+              <div class="selector-box">
+                <label>Company A:</label>
+                <select id="selectCompA" class="custom-select">
+                  <option value="apple">Apple Silicon</option>
+                  <option value="qualcomm" selected>Qualcomm Snapdragon</option>
+                  <option value="mediatek">MediaTek Dimensity</option>
+                  <option value="samsung">Samsung Exynos</option>
+                  <option value="google">Google Tensor</option>
+                  <option value="hisilicon">HiSilicon (Huawei)</option>
+                </select>
+              </div>
+
+              <div class="vs-badge">VS</div>
+
+              <div class="selector-box">
+                <label>Company B:</label>
+                <select id="selectCompB" class="custom-select">
+                  <option value="apple" selected>Apple Silicon</option>
+                  <option value="qualcomm">Qualcomm Snapdragon</option>
+                  <option value="mediatek">MediaTek Dimensity</option>
+                  <option value="samsung">Samsung Exynos</option>
+                  <option value="google">Google Tensor</option>
+                  <option value="hisilicon">HiSilicon (Huawei)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Dynamic Comparison Grid -->
+            <div class="comparison-results" id="comparisonResults">
+              <!-- Rendered dynamically via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Smartphone BOM & Margin Simulator Modal -->
+      <div class="modal-overlay" id="simulatorModalOverlay">
+        <div class="custom-modal modal-xl">
+          <div class="modal-header">
+            <div>
+              <h3><span>🧮</span> Interactive Smartphone BOM & Hardware Margin Simulator</h3>
+              <p class="modal-sub">Simulate component cost trade-offs, foundry node pricing, and observe the direct impact of silicon costs on OEM profitability.</p>
+            </div>
+            <button class="modal-close" id="btnCloseSimulator">✕</button>
+          </div>
+          <div class="modal-body simulator-body">
+            <!-- Left: Configurator Controls -->
+            <div class="sim-controls">
+              <div class="sim-group">
+                <label class="sim-label">Preset Smartphone Tier:</label>
+                <div class="sim-preset-buttons">
+                  <button class="btn-preset active" data-preset="ultra_flagship">Ultra Flagship ($1,199)</button>
+                  <button class="btn-preset" data-preset="flagship">Standard Flagship ($799)</button>
+                  <button class="btn-preset" data-preset="midrange">Upper Mid-Tier ($499)</button>
+                  <button class="btn-preset" data-preset="budget">Budget ($199)</button>
+                </div>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Application Processor (SoC) & Node:</label>
+                <select id="simSoC" class="custom-select">
+                  <option value="185">3nm N3E Flagship SoC (Apple A18 / Snap 8 Elite) — $185</option>
+                  <option value="130">3nm Value Flagship (MediaTek Dimensity 9400) — $130</option>
+                  <option value="75">4nm Sub-Flagship (Snapdragon 7+ Gen 3 / Exynos 2400) — $75</option>
+                  <option value="42">6nm High-Volume Mid-Tier (Dimensity 7050) — $42</option>
+                  <option value="22">12nm Entry-Level 4G/5G (Unisoc T616) — $22</option>
+                </select>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Display Subsystem:</label>
+                <select id="simDisplay" class="custom-select">
+                  <option value="95">6.8" LTPO 120Hz Curved OLED (Samsung/LG) — $95</option>
+                  <option value="55">6.7" Rigid 120Hz OLED (BOE/Visionox) — $55</option>
+                  <option value="25">6.6" 90Hz FHD+ IPS LCD — $25</option>
+                </select>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Camera Array Subsystem:</label>
+                <select id="simCamera" class="custom-select">
+                  <option value="90">Triple 50MP Array + Periscope 5x Zoom (Sony Sensors) — $90</option>
+                  <option value="50">Dual 50MP Main + Ultra-Wide — $50</option>
+                  <option value="20">Single 50MP Main + 2MP Macro — $20</option>
+                </select>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Memory & Storage (DRAM + Flash):</label>
+                <select id="simMemory" class="custom-select">
+                  <option value="65">16GB LPDDR5X + 512GB UFS 4.0 Storage — $65</option>
+                  <option value="42">12GB LPDDR5X + 256GB UFS 3.1 Storage — $42</option>
+                  <option value="22">6GB LPDDR4X + 128GB UFS 2.2 Storage — $22</option>
+                </select>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Casing Materials & Frame:</label>
+                <select id="simCasing" class="custom-select">
+                  <option value="58">Grade 5 Titanium Frame + Ceramic Shield Glass — $58</option>
+                  <option value="34">Aviation Aluminum Frame + Gorilla Glass Victus — $34</option>
+                  <option value="14">Polycarbonate Composite Frame — $14</option>
+                </select>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Target Smartphone Retail Price (MSRP):</label>
+                <div class="slider-row">
+                  <input type="range" id="simRetailSlider" min="150" max="1500" step="10" value="1199" class="custom-slider">
+                  <span class="slider-val" id="simRetailVal">$1,199</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Real-time Profitability & BOM Breakdown Output -->
+            <div class="sim-output">
+              <div class="output-card highlight">
+                <div class="out-title">Total Hardware Bill of Materials (BOM)</div>
+                <div class="out-value" id="simTotalBOM">$532</div>
+                <div class="out-sub" id="simBOMSub">Excludes licensing royalties, software & freight</div>
+              </div>
+
+              <div class="output-row">
+                <div class="output-card">
+                  <div class="out-title">SoC Cost Share of BOM</div>
+                  <div class="out-value accent-cyan" id="simSoCShare">34.8%</div>
+                  <div class="out-sub" id="simSoCAmount">$185.00 allocated</div>
+                </div>
+
+                <div class="output-card">
+                  <div class="out-title">Gross Hardware Margin</div>
+                  <div class="out-value accent-emerald" id="simGrossMargin">$667 (55.6%)</div>
+                  <div class="out-sub" id="simMarginHealth">Health: Premium Margin</div>
+                </div>
+              </div>
+
+              <!-- Live Visual BOM Stack Bar -->
+              <div class="bom-bar-wrap">
+                <div class="bom-bar-label">Live BOM Subsystem Composition:</div>
+                <div class="bom-stacked-bar" id="bomStackedBar">
+                  <div class="stack-seg seg-soc" id="segSoC" style="width: 35%;" title="SoC & Modem"></div>
+                  <div class="stack-seg seg-display" id="segDisplay" style="width: 18%;" title="Display"></div>
+                  <div class="stack-seg seg-camera" id="segCamera" style="width: 17%;" title="Cameras"></div>
+                  <div class="stack-seg seg-memory" id="segMemory" style="width: 12%;" title="Memory"></div>
+                  <div class="stack-seg seg-casing" id="segCasing" style="width: 11%;" title="Casing"></div>
+                  <div class="stack-seg seg-other" id="segOther" style="width: 7%;" title="RF/Power/Passives"></div>
+                </div>
+                <div class="bom-legend">
+                  <span><i class="dot dot-soc"></i> SoC</span>
+                  <span><i class="dot dot-display"></i> Display</span>
+                  <span><i class="dot dot-camera"></i> Camera</span>
+                  <span><i class="dot dot-memory"></i> Memory</span>
+                  <span><i class="dot dot-casing"></i> Casing</span>
+                  <span><i class="dot dot-other"></i> RF/Assembly</span>
+                </div>
+              </div>
+
+              <!-- Strategic Insight Callout -->
+              <div class="sim-insight-box" id="simInsightBox">
+                <strong>Executive Reviewer Takeaway:</strong> With a 3nm flagship processor at $185, the processor alone represents over 34% of the phone's physical hardware costs. Only phones priced above $900 can sustain healthy gross margins (>50%) under cutting-edge node economics.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= VIEW 2: RESEARCH REPORT ================= -->
+    <section class="view-section" id="viewReport">
+      <div class="report-layout">
+        <!-- Sticky Table of Contents -->
+        <aside class="report-sidebar">
+          <div class="sidebar-sticky">
+            <h4 class="sidebar-heading">REPORT NAVIGATION</h4>
+            <ul class="toc-list" id="reportTOC">
+              <li><a href="#rep-exec">1. Executive Summary</a></li>
+              <li><a href="#rep-models">2. Business Models (Fabless vs IDM)</a></li>
+              <li><a href="#rep-matrix">3. Competitor Matrix</a></li>
+              <li><a href="#rep-apple">4. Apple Silicon Deep Dive</a></li>
+              <li><a href="#rep-qualcomm">5. Qualcomm Snapdragon</a></li>
+              <li><a href="#rep-mediatek">6. MediaTek Dimensity</a></li>
+              <li><a href="#rep-samsung">7. Samsung Exynos & Foundry</a></li>
+              <li><a href="#rep-special">8. Google Tensor & HiSilicon</a></li>
+              <li><a href="#rep-tiers">9. 5-Tier Supply Chain Architecture</a></li>
+              <li><a href="#rep-bom">10. Smartphone Bill of Materials</a></li>
+              <li><a href="#rep-risks">11. Bullwhip Effect & Lead Times</a></li>
+              <li><a href="#rep-geopolitics">12. Geopolitics & CHIPS Acts</a></li>
+              <li><a href="#rep-future">13. 2nm GAA & Future Silicon</a></li>
+              <li><a href="#rep-recommendations">14. Strategic Recommendations</a></li>
+            </ul>
+
+            <div class="sidebar-download-card">
+              <h5>Official Presentation Deck</h5>
+              <p>Download the fully editable widescreen .pptx presentation file.</p>
+              <a href="mobile_processor_supply_chain_presentation.pptx" download class="btn-sidebar-download">
+                📥 Download Presentation (.pptx)
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Report Body -->
+        <article class="report-body" id="reportBody">
+          <div class="report-hero">
+            <span class="report-tag">COMPREHENSIVE RESEARCH REPORT</span>
+            <h1 class="report-title">Global Mobile Phone Processor Supply Chain Analysis</h1>
+            <p class="report-subtitle">A Strategic Evaluation of Foundry Geopolitics, Advanced Packaging, Microarchitectural Shifts, and End-to-End Value Chains</p>
+            <div class="report-meta">
+              <span><strong>Author:</strong> Supply Chain Systems Research</span>
+              <span><strong>Coverage:</strong> Apple, Qualcomm, MediaTek, Samsung, Google, HiSilicon, TSMC, ASML, ARM</span>
+              <span><strong>Date:</strong> October 2026</span>
+            </div>
+          </div>
+
+          <!-- Section 1 -->
+          <section class="report-section" id="rep-exec">
+            <h2>1. Executive Summary</h2>
+            <p>The modern smartphone application processor (System-on-Chip, or SoC) represents the pinnacle of precision manufacturing, integrating between 15 billion and 20 billion transistors onto a single sliver of monocrystalline silicon measuring 100 to 125 square millimeters. In 2025–2026, the global smartphone processor industry commands over <strong>$45 billion in annual revenue</strong>, serving more than <strong>1.2 billion smartphones</strong> shipped globally each year.</p>
+            
+            <div class="report-kpi-grid">
+              <div class="kpi-card accent-blue">
+                <div class="kpi-val">$45B+</div>
+                <div class="kpi-lbl">Global SoC Market Value</div>
+                <div class="kpi-sub">Annual silicon revenues</div>
+              </div>
+              <div class="kpi-card accent-rose">
+                <div class="kpi-val">&gt;87%</div>
+                <div class="kpi-lbl">Sub-5nm Taiwan Share</div>
+                <div class="kpi-sub">Concentrated at TSMC</div>
+              </div>
+              <div class="kpi-card accent-orange">
+                <div class="kpi-val">$180+</div>
+                <div class="kpi-lbl">Flagship SoC Cost</div>
+                <div class="kpi-sub">+157% vs 2019 baseline</div>
+              </div>
+              <div class="kpi-card accent-emerald">
+                <div class="kpi-val">100%</div>
+                <div class="kpi-lbl">ASML EUV Monopoly</div>
+                <div class="kpi-sub">Sole sub-7nm lithography</div>
+              </div>
+            </div>
+
+            <p>While historically designed to balance raw CPU performance with battery life, mobile silicon has shifted radically into <strong>heterogeneous AI acceleration</strong>. The inclusion of high-throughput Neural Processing Units (NPUs) delivering 45–50+ TOPS, desktop-class ray tracing graphics, and integrated 5G/6G modems has made the processor the single costliest component in smartphones, commanding upwards of <strong>25% to 32% of total hardware Bill of Materials (BOM)</strong>.</p>
+          </section>
+
+          <!-- Section 2: Business Models -->
+          <section class="report-section" id="rep-models">
+            <h2>2. Semiconductor Operating Models: Fabless vs. IDM vs. Pure-Play Foundry</h2>
+            <div class="models-grid">
+              <div class="model-box">
+                <div class="model-badge">MODEL 1</div>
+                <h3>Captive Fabless (Apple, Google)</h3>
+                <p>Silicon is engineered exclusively for proprietary first-party devices. Chips are treated as a system enabler rather than an independent profit center, amortized across retail device price tags exceeding $1,000. Apple leverages massive cash reserves to pre-buy entire initial node runs (such as TSMC's 3nm N3B).</p>
+              </div>
+              <div class="model-box">
+                <div class="model-badge">MODEL 2</div>
+                <h3>Merchant Fabless (Qualcomm, MediaTek)</h3>
+                <p>Silicon is designed and sold to third-party smartphone OEMs globally. Highly vulnerable to OEM ordering cycles and consumer replacement volatility. Must balance aggressive R&D tape-out expenses against OEM margin resistance.</p>
+              </div>
+              <div class="model-box">
+                <div class="model-badge">MODEL 3</div>
+                <h3>Integrated Device Manufacturer (Samsung)</h3>
+                <p>System LSI designs processors, while Samsung Foundry manufactures them. Internal friction frequently arises when captive mobile divisions (Samsung Galaxy MX) reject internal Exynos silicon due to lower foundry yields or thermal throttling compared to TSMC-made Snapdragon chips.</p>
+              </div>
+              <div class="model-box">
+                <div class="model-badge">MODEL 4</div>
+                <h3>Pure-Play Foundry (TSMC)</h3>
+                <p>Dedicated contract manufacturing. By pledging never to create competing consumer hardware, TSMC commands the trust of direct competitors (Apple, Qualcomm, MediaTek, AMD, Nvidia), yielding colossal manufacturing scale and unrivaled yield learning curves.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 3: Comparative Matrix -->
+          <section class="report-section" id="rep-matrix">
+            <h2>3. Cross-Company Comparative Matrix</h2>
+            <div class="table-responsive">
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Flagship Chip</th>
+                    <th>Model</th>
+                    <th>CPU Architecture</th>
+                    <th>Foundry</th>
+                    <th>Node</th>
+                    <th>Unit Share</th>
+                    <th>Rev Share</th>
+                    <th>Est. Cost</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Apple</strong></td>
+                    <td>A18 Pro / A17 Pro</td>
+                    <td>Captive Fabless</td>
+                    <td>Custom Apple ARMv9</td>
+                    <td>TSMC</td>
+                    <td>3nm (N3B/E)</td>
+                    <td>18%</td>
+                    <td>38%</td>
+                    <td>$110-$135</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Qualcomm</strong></td>
+                    <td>Snapdragon 8 Elite</td>
+                    <td>Merchant Fabless</td>
+                    <td>Custom Oryon (Nuvia)</td>
+                    <td>TSMC</td>
+                    <td>3nm (N3E)</td>
+                    <td>28%</td>
+                    <td>34%</td>
+                    <td>$180-$200</td>
+                  </tr>
+                  <tr>
+                    <td><strong>MediaTek</strong></td>
+                    <td>Dimensity 9400</td>
+                    <td>Merchant Fabless</td>
+                    <td>All-Big ARM Cortex</td>
+                    <td>TSMC</td>
+                    <td>3nm (N3E)</td>
+                    <td>37%</td>
+                    <td>17%</td>
+                    <td>$120-$140</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Samsung</strong></td>
+                    <td>Exynos 2400 / 2500</td>
+                    <td>Hybrid IDM</td>
+                    <td>Stock ARM Cortex</td>
+                    <td>Samsung</td>
+                    <td>4nm / 3nm GAA</td>
+                    <td>5%</td>
+                    <td>5%</td>
+                    <td>$100-$120</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Google</strong></td>
+                    <td>Tensor G4 / G5</td>
+                    <td>Captive Fabless</td>
+                    <td>Custom TPU / ARM</td>
+                    <td>Samsung &rarr; TSMC</td>
+                    <td>4nm &rarr; 3nm</td>
+                    <td>1.5%</td>
+                    <td>1%</td>
+                    <td>$90-$110</td>
+                  </tr>
+                  <tr>
+                    <td><strong>HiSilicon</strong></td>
+                    <td>Kirin 9010 / 9000s</td>
+                    <td>Captive (Sanctioned)</td>
+                    <td>Custom Taishan</td>
+                    <td>SMIC</td>
+                    <td>7nm DUV Multi</td>
+                    <td>3%</td>
+                    <td>3%</td>
+                    <td>$140+ equiv.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Section 4: Supply Chain Tiers -->
+          <section class="report-section" id="rep-tiers">
+            <h2>4. The 5-Tier Supply Chain Architecture</h2>
+            <div class="tier-flow">
+              <div class="tier-card tier-4">
+                <div class="tier-tag">TIER 4</div>
+                <h4>Raw Materials & Specialty Chemicals</h4>
+                <p>Electronic-grade polysilicon refined to 99.999999999% purity. 300mm silicon ingots sliced by <strong>Shin-Etsu</strong> and <strong>SUMCO</strong> (Japan, >55% market share). High-purity photoresists from JSR/TOK, ultra-pure hydrogen fluoride, and noble gases (purified Neon from Ukraine/regional refiners).</p>
+              </div>
+              <div class="tier-card tier-3">
+                <div class="tier-tag">TIER 3</div>
+                <h4>Equipment (SME), EDA Software & Architectural IP</h4>
+                <p>The <strong>ASML EUV Lithography</strong> monopoly (Netherlands). Etch and deposition equipment from Applied Materials, Lam Research, and Tokyo Electron. Logic synthesis and place-and-route software duopoly from <strong>Synopsys</strong> and <strong>Cadence</strong>. Architectural foundation from <strong>ARM Holdings</strong>.</p>
+              </div>
+              <div class="tier-card tier-2">
+                <div class="tier-tag">TIER 2</div>
+                <h4>Advanced Wafer Fabrication (Foundries)</h4>
+                <p>Pure-play foundry giant <strong>TSMC</strong> fabricates >87% of all sub-5nm mobile processors in Taiwan (GigaFabs in Tainan and Hsinchu). Secondary fabrication at Samsung Foundry (S. Korea) and SMIC (China). Cycle time spans 16 to 22 weeks through 1,500+ chemical and laser steps.</p>
+              </div>
+              <div class="tier-card tier-1">
+                <div class="tier-tag">TIER 1</div>
+                <h4>Advanced Packaging, Assembly & Test (OSAT)</h4>
+                <p>Wafer-Level Fan-Out (TSMC InFO-PoP) stacking LPDDR5X DRAM directly on top of the SoC via micro-copper pillars. Merchant packaging handled by <strong>ASE Group</strong>, <strong>Amkor</strong>, and <strong>JCET</strong>. Automated Test Equipment (ATE) verification by Advantest and Teradyne.</p>
+              </div>
+              <div class="tier-card tier-0">
+                <div class="tier-tag">TIER 0</div>
+                <h4>OEM Surface Mount Integration & Global Distribution</h4>
+                <p>Surface Mount Technology (SMT) onto main logic boards by Foxconn, Pegatron, Luxshare, and Samsung Vietnam. High-value, temperature-controlled air freight delivery to international distribution centers in Anchorage, Louisville, Frankfurt, and Dubai.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 5: BOM Cost Breakdown -->
+          <section class="report-section" id="rep-bom">
+            <h2>5. Bill of Materials (BOM) & Economic Escalation</h2>
+            <p>Process node migration is experiencing sharp cost inflation. While a 28nm processed wafer cost ~$3,000 in 2011, a cutting-edge 3nm wafer exceeds $20,500, and upcoming 2nm GAA wafers are slated to hit $28,000 to $30,000. In a flagship smartphone with an overall hardware BOM of ~$560, the application processor and 5G RF subsystem account for roughly <strong>$165 (29.5%)</strong>, surpassing the display ($95) and camera modules ($88).</p>
+            
+            <div class="chart-embed-box">
+              <img src="charts/bom_cost_breakdown.png" alt="Smartphone BOM Cost Breakdown" class="report-img">
+              <div class="img-caption">Figure 1: Hardware Bill of Materials (BOM) allocation in a premium flagship smartphone ($560 Total BOM).</div>
+            </div>
+          </section>
+
+          <!-- Section 6: Geopolitics -->
+          <section class="report-section" id="rep-geopolitics">
+            <h2>6. Geopolitical Realignment & CHIPS Acts</h2>
+            <p>The geographic concentration of advanced semiconductor manufacturing in Taiwan poses an unprecedented single-point-of-failure risk to the global economy. In response, Western governments have initiated multi-billion-dollar industrial reshoring initiatives:</p>
+            <ul>
+              <li><strong>US CHIPS and Science Act ($52.7B):</strong> Subsidizing TSMC's $65B Fab 21 in Phoenix, Arizona, and Samsung's advanced foundry complex in Taylor, Texas. However, the lack of domestic US advanced packaging (InFO/CoWoS) means Arizona-made wafers must still be shipped back to Taiwan for packaging.</li>
+              <li><strong>European Chips Act (€43B):</strong> Focused on automotive and industrial semiconductors, highlighted by TSMC's ESMC fab joint-venture in Dresden, Germany.</li>
+              <li><strong>Chinese Domestic Substitution:</strong> Spurred by US Entity List restrictions, China has directed hundreds of billions into its domestic IC ecosystem, relying on SMIC and DUV multi-patterning to preserve domestic mobile silicon autonomy.</li>
+            </ul>
+          </section>
+
+          <!-- Section 7: Future Outlook -->
+          <section class="report-section" id="rep-future">
+            <h2>7. Future Technology Roadmaps (2026–2030)</h2>
+            <div class="tech-card-grid">
+              <div class="tech-card">
+                <h4>2nm Gate-All-Around (GAA)</h4>
+                <p>Nanosheet transistor channels surrounded on all four sides by the gate electrode, eliminating quantum leakage and boosting power efficiency by 25-30%.</p>
+              </div>
+              <div class="tech-card">
+                <h4>Backside Power Delivery (BSPDN)</h4>
+                <p>Moving power distribution rails to the reverse side of the silicon wafer (TSMC A16 / Intel PowerVia), eliminating IR drop and boosting clock frequencies.</p>
+              </div>
+              <div class="tech-card">
+                <h4>Mobile Disaggregated Chiplets</h4>
+                <p>Partitioning monolithic processors into modular compute chiplets (2nm) and I/O modem chiplets (6nm/7nm) connected via UCIe low-latency interfaces.</p>
+              </div>
+              <div class="tech-card">
+                <h4>On-Device Generative AI Real Estate</h4>
+                <p>NPU silicon allocation expanding to >20% of the total die area, paired with high-bandwidth LPDDR6 memory delivering >150 GB/s bandwidth.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 8: Recommendations -->
+          <section class="report-section" id="rep-recommendations">
+            <h2>8. Strategic Recommendations</h2>
+            <div class="recommendations-container">
+              <div class="rec-column">
+                <h3>For Smartphone OEMs</h3>
+                <ol>
+                  <li><strong>Diversify Silicon Sourcing:</strong> Avoid exclusive dependency on Qualcomm by dual-sourcing MediaTek Dimensity across regional SKUs to maintain bargaining leverage.</li>
+                  <li><strong>12-to-18-Month Allocation Contracts:</strong> Transition from short-term spot purchases to rolling capacity commitments with take-or-pay flexibility.</li>
+                  <li><strong>Software-Silicon Co-Design:</strong> Optimize internal neural runtimes to maximize TOPS efficiency on mature nodes.</li>
+                </ol>
+              </div>
+              <div class="rec-column">
+                <h3>For Chip Designers</h3>
+                <ol>
+                  <li><strong>Maintain Dual-Foundry Portability:</strong> Design Process Design Kits (PDKs) with cross-foundry compatibility between TSMC and Samsung Foundry.</li>
+                  <li><strong>Hedge Architectural Royalties:</strong> Expand R&D into the open-source <strong>RISC-V</strong> architecture to insulate corporate profit pools from Arm licensing changes.</li>
+                  <li><strong>Pioneer Mobile Chiplets:</strong> Disaggregate analog RF modems from compute dies to reduce exposure to $28,000+ 2nm wafer costs.</li>
+                </ol>
+              </div>
+            </div>
+          </section>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: CHART GALLERY ================= -->
+    <section class="view-section" id="viewCharts">
+      <div class="charts-view-container">
+        <div class="charts-header">
+          <h2>Semiconductor Supply Chain Visual Intelligence</h2>
+          <p>High-resolution empirical datasets, market distribution models, and economic cost breakdown charts.</p>
+        </div>
+
+        <div class="charts-grid">
+          <!-- Chart 1 -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <span class="chart-tag">MARKET SHARE</span>
+              <h3>Global Smartphone SoC Market Share: Units vs. Value Capture</h3>
+            </div>
+            <div class="chart-image-wrap">
+              <img src="charts/market_share_soc.png" alt="Market Share by Volume vs Revenue" class="gallery-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> MediaTek commands the unit volume leadership (~37%) via mass-market budget devices, while Apple (~38%) and Qualcomm (~34%) capture over 72% of all dollar revenues in the global industry.
+            </div>
+          </div>
+
+          <!-- Chart 2 -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-rose">FOUNDRY CONCENTRATION</span>
+              <h3>Sub-5nm Advanced Node Wafer Fabrication Capacity (<5nm)</h3>
+            </div>
+            <div class="chart-image-wrap">
+              <img src="charts/foundry_advanced_nodes.png" alt="Advanced Node Foundry Share" class="gallery-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> TSMC in Taiwan controls 87% of the world's sub-5nm fabrication capacity. Samsung Foundry holds ~10%, while Intel Foundry and SMIC account for the remainder.
+            </div>
+          </div>
+
+          <!-- Chart 3 -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-orange">WAFER ECONOMICS</span>
+              <h3>Escalation of Advanced Semiconductor Wafer Costs by Node</h3>
+            </div>
+            <div class="chart-image-wrap">
+              <img src="charts/wafer_cost_escalation.png" alt="Wafer Cost Escalation" class="gallery-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> Moore's Law cost-per-transistor scaling has ended. Processed 300mm wafer costs have increased from $3,000 at 28nm to $20,500 at 3nm, approaching $28,000 for 2nm GAA.
+            </div>
+          </div>
+
+          <!-- Chart 4 -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-purple">HARDWARE BOM ALLOCATION</span>
+              <h3>Estimated Bill of Materials (BOM) Breakdown - Flagship Tier</h3>
+            </div>
+            <div class="chart-image-wrap">
+              <img src="charts/bom_cost_breakdown.png" alt="Smartphone BOM Breakdown" class="gallery-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> The application processor and RF modem subsystem ($165) constitute 29.5% of total hardware BOM, exceeding displays ($95), camera arrays ($88), and memory ($62).
+            </div>
+          </div>
+
+          <!-- Chart 5 -->
+          <div class="chart-card full-width">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-emerald">STRATEGIC RESILIENCE</span>
+              <h3>Supply Chain Resilience & Strategic Control Comparison (Radar Chart)</h3>
+            </div>
+            <div class="chart-image-wrap center">
+              <img src="charts/company_resilience_radar.png" alt="Company Resilience Radar" class="gallery-img radar-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> Apple excels in margins, custom microarchitecture, and packaging control, but faces extreme single-source Taiwan foundry risk. Samsung boasts geographic insulation and in-house foundries, but trails in node yields and margins.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JavaScript application logic -->
+  <script src="index.js"></script>
+</body>
+</html>

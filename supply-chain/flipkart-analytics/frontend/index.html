@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Flipkart Catalog Analytics — Enterprise Intelligence</title>
+  <meta name="description" content="High-performance catalog intelligence and financial scenario simulation for 20,000 Flipkart listings.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Loading indicator badge -->
+  <div class="loading-indicator" id="loadingIndicator">
+    <div class="spinner"></div>
+    <span>Crunching catalog data…</span>
+  </div>
+
+  <header>
+    <div class="header-top">
+      <div>
+        <h1>
+          <span>Flipkart Catalog Analytics</span>
+          <span class="brand-badge">FastAPI + SQLite</span>
+        </h1>
+        <p>20,000 product listings crawled Dec 2015 – Jun 2016. Sub-millisecond server analytics with interactive filtering.</p>
+      </div>
+      <div class="api-badge">
+        <span class="status-dot"></span>
+        <span id="backendStatus">Backend Online</span>
+      </div>
+    </div>
+
+    <!-- Global Interactive Filter Bar -->
+    <div class="ctl">
+      <select id="cat" aria-label="Category">
+        <option value="">All Categories</option>
+      </select>
+      <select id="sub" aria-label="Sub-category">
+        <option value="">All Sub-categories</option>
+      </select>
+      <input id="q" type="search" placeholder="Search product name, brand, or specs…" aria-label="Search">
+      <select id="fk" aria-label="Flipkart Advantage">
+        <option value="-1">All Listings</option>
+        <option value="1">Flipkart Advantage Only</option>
+        <option value="0">Non-Advantage Only</option>
+      </select>
+      <button class="clear-btn" id="clearFiltersBtn" title="Reset all filters">Reset Filters</button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav id="nav">
+      <button class="on" data-view="0">Overview</button>
+      <button data-view="1">Pricing & Drill-down</button>
+      <button data-view="2">Ratings & Brands</button>
+      <button data-view="3">Order Scenario</button>
+      <button data-view="4">Data Reference</button>
+      <button data-view="5">Unit Economics & Profit</button>
+    </nav>
+  </header>
+
+  <!-- View 0: Overview -->
+  <main id="v0" class="on">
+    <section class="kpis" id="kpis"></section>
+    
+    <div class="card w12">
+      <h2>Key Findings & Strategic Insights</h2>
+      <ul class="ins" id="ins"></ul>
+    </div>
+
+    <div class="card">
+      <h2>Listings by Category <small>click row to filter</small></h2>
+      <div class="bar-chart-container" id="bCat"></div>
+    </div>
+
+    <div class="card">
+      <h2>Discount Depth Distribution <small>% off list price</small></h2>
+      <div class="bar-chart-container" id="bDisc"></div>
+    </div>
+
+    <div class="card">
+      <h2>Selling Price Bands <small>actual selling price in ₹</small></h2>
+      <div class="bar-chart-container" id="bPrice"></div>
+    </div>
+
+    <div class="card">
+      <h2>Listings by Crawl Month <small>Dec 2015 – Jun 2016</small></h2>
+      <div class="cols" id="cMon"></div>
+    </div>
+  </main>
+
+  <!-- View 1: Pricing & Drill-down -->
+  <main id="v1">
+    <div class="card w12">
+      <h2>Price vs Discount Scatter Plot <small>Each dot is a listing (up to 2,500 sampled); Blue = Flipkart Advantage</small></h2>
+      <div id="sc-container">
+        <canvas id="sc-canvas"></canvas>
+        <div class="sc-tooltip" id="scTooltip"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Average Discount by Category <small>% off list price</small></h2>
+      <div class="bar-chart-container" id="bAD"></div>
+    </div>
+
+    <div class="card">
+      <h2>Flipkart Advantage vs Other Listings <small>Fulfillment comparison</small></h2>
+      <div style="overflow-x:auto">
+        <table id="fkT">
+          <thead>
+            <tr>
+              <th>Fulfillment Type</th>
+              <th class="n">Listings</th>
+              <th class="n">Avg Retail</th>
+              <th class="n">Avg Selling</th>
+              <th class="n">Avg Discount</th>
+              <th class="n">Avg Rating</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card w12">
+      <h2>Sub-category Drill-down <small>Click any row to filter catalog</small></h2>
+      <div style="overflow-x:auto; max-height: 440px;">
+        <table id="subT">
+          <thead>
+            <tr>
+              <th>Sub-Category</th>
+              <th>Parent Category</th>
+              <th class="n">Listings</th>
+              <th class="n">Avg Retail</th>
+              <th class="n">Avg Selling</th>
+              <th class="n">Avg Discount</th>
+              <th class="n">% Advantage</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- View 2: Ratings & Brands -->
+  <main id="v2">
+    <div class="card">
+      <h2>Rating Distribution <small>Rated products only</small></h2>
+      <div class="cols" id="cRat"></div>
+    </div>
+
+    <div class="card">
+      <h2>Average Discount by Rating Tier <small>Promotional pricing correlation</small></h2>
+      <div class="bar-chart-container" id="bRD"></div>
+    </div>
+
+    <div class="card w12">
+      <h2>Brand Leaderboard <small>Top 30 named brands by listing volume</small></h2>
+      <div style="overflow-x:auto; max-height: 480px;">
+        <table id="brT">
+          <thead>
+            <tr>
+              <th>Brand Name</th>
+              <th class="n">Listings</th>
+              <th class="n">Avg Selling Price</th>
+              <th class="n">Avg Discount</th>
+              <th class="n">Avg Rating</th>
+              <th class="n">Rating Count</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- View 3: Order Scenario Planner -->
+  <main id="v3">
+    <div class="card w12">
+      <h2>Order Scenario Demand Planner</h2>
+      <p style="margin: 0 0 14px; color: var(--mute)">
+        The dataset contains crawled product listings without transactional order logs. This interactive simulation models projected Gross Merchandise Value (GMV) and promotional discounts given away across various unit demand assumptions.
+      </p>
+      
+      <div class="sl">
+        <div class="sl-group">
+          <label for="u">Hypothetical Units Sold per Listing: <b id="uv">5</b></label>
+          <input id="u" type="range" min="1" max="50" value="5">
+        </div>
+      </div>
+
+      <div class="kpis" id="sk"></div>
+    </div>
+
+    <div class="card">
+      <h2>Projected Sales Value by Category <small>GMV in ₹</small></h2>
+      <div class="bar-chart-container" id="bGMV"></div>
+    </div>
+
+    <div class="card">
+      <h2>Discount Given Away by Category <small>Total savings in ₹</small></h2>
+      <div class="bar-chart-container" id="bDG"></div>
+    </div>
+  </main>
+
+  <!-- View 4: Data Reference & Catalog Explorer -->
+  <main id="v4">
+    <div class="card w12">
+      <h2>Catalog Data Reference <small id="cnt"></small></h2>
+      <p style="margin: 0 0 14px; color: var(--mute)">
+        Browse, filter, and inspect all 20,000 product listings loaded from <code>flipkart_com-ecommerce_sample.csv</code>. Click any row to expand high-resolution photos, parsed technical specifications, and metadata.
+      </p>
+      
+      <div style="overflow-x:auto">
+        <table id="dt">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th class="sortable" data-sort="name">Product Name</th>
+              <th class="sortable" data-sort="category">Category</th>
+              <th class="n sortable" data-sort="retail_price">Retail (₹)</th>
+              <th class="n sortable" data-sort="discounted_price">Selling (₹)</th>
+              <th class="n sortable" data-sort="discount_pct">Discount</th>
+              <th class="n sortable" data-sort="rating">Rating</th>
+              <th>Advantage</th>
+              <th>Brand</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="pg">
+        <button class="b" id="pv">Previous</button>
+        <span id="pn">Page 1 of 1</span>
+        <button class="b" id="nx">Next</button>
+      </div>
+
+      <!-- Detail Card Drawer -->
+      <div class="det" id="det"></div>
+    </div>
+
+    <div class="card w12">
+      <h2>Dataset Column Dictionary <small>15 Metadata Fields</small></h2>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Field Name</th>
+              <th>Data Type</th>
+              <th>Description & Schema Notes</th>
+            </tr>
+          </thead>
+          <tbody id="dict"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- View 5: Unit Economics & Profit Simulator -->
+  <main id="v5">
+    <div class="card w12">
+      <h2>Total Sales & Net Profit Simulator <small>Unit Economics Model</small></h2>
+      <p style="margin: 0 0 14px; color: var(--mute)">
+        Test business viability and profitability across catalog categories. Profit is calculated as <code>(Selling Price − Product Cost − Commission − Shipping) × Units</code> for every individual listing.
+      </p>
+
+      <div class="sl">
+        <div class="sl-group">
+          <label for="pu">Units per listing: <b id="puv">5</b></label>
+          <input id="pu" type="range" min="1" max="50" value="5">
+        </div>
+        <div class="sl-group">
+          <label for="pc">Product cost (% of list MRP): <b id="pcv">35%</b></label>
+          <input id="pc" type="range" min="10" max="90" value="35">
+        </div>
+        <div class="sl-group">
+          <label for="pm">Commission (% of selling price): <b id="pmv">8%</b></label>
+          <input id="pm" type="range" min="0" max="25" value="8">
+        </div>
+        <div class="sl-group">
+          <label for="ps">Shipping per unit: <b id="psv">₹40</b></label>
+          <input id="ps" type="range" min="0" max="200" step="5" value="40">
+        </div>
+      </div>
+
+      <div class="kpis" id="pk"></div>
+    </div>
+
+    <div class="card">
+      <h2>Projected Sales by Category <small>₹ Revenue</small></h2>
+      <div class="bar-chart-container" id="pS"></div>
+    </div>
+
+    <div class="card">
+      <h2>Estimated Profit by Category <small>₹ Net Profit</small></h2>
+      <div class="bar-chart-container" id="pP"></div>
+    </div>
+
+    <div class="card">
+      <h2>Profit by Crawl Month <small>Historical monthly economics</small></h2>
+      <div class="bar-chart-container" id="pM"></div>
+    </div>
+
+    <div class="card">
+      <h2>Profit by Discount Depth <small>Margin erosion vs volume</small></h2>
+      <div class="bar-chart-container" id="pD"></div>
+    </div>
+
+    <div class="card">
+      <h2>Top 10 Most Profitable Listings <small>High-margin contributors</small></h2>
+      <div class="bar-chart-container" id="pT"></div>
+    </div>
+
+    <div class="card">
+      <h2>Top 10 Least Profitable Listings <small>Loss-makers after COGS & fees</small></h2>
+      <div class="bar-chart-container" id="pL"></div>
+    </div>
+
+    <div class="card w12">
+      <h2>Full Profit & Loss Breakdown by Category</h2>
+      <div style="overflow-x:auto">
+        <table id="plT">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th class="n">Listings</th>
+              <th class="n">Gross Sales</th>
+              <th class="n">COGS (Cost)</th>
+              <th class="n">Commission</th>
+              <th class="n">Shipping</th>
+              <th class="n">Net Profit</th>
+              <th class="n">Net Margin %</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

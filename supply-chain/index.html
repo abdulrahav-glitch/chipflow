@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChipFlow — Mobile Processor Supply Chain Intelligence</title>
+  <meta name="description" content="Interactive supply chain analytics dashboard for global mobile phone processors. Explore market share, BOM costs, geopolitical risks, and technology roadmaps for Apple, Qualcomm, MediaTek, Samsung, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="chart.min.js"></script>
+  <script src="chartjs-plugin-datalabels.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════ PRELOADER ═══════════════════════ -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-inner">
+      <div class="chip-icon">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="16" y="16" width="32" height="32" rx="4" stroke="url(#grad)" stroke-width="2.5"/>
+          <rect x="22" y="22" width="20" height="20" rx="2" fill="url(#grad)" opacity="0.15"/>
+          <rect x="26" y="26" width="12" height="12" rx="1" fill="url(#grad)" opacity="0.4"/>
+          <!-- Pins -->
+          <line x1="20" y1="16" x2="20" y2="6" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="28" y1="16" x2="28" y2="6" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="36" y1="16" x2="36" y2="6" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="16" x2="44" y2="6" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="20" y1="48" x2="20" y2="58" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="28" y1="48" x2="28" y2="58" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="36" y1="48" x2="36" y2="58" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="44" y1="48" x2="44" y2="58" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="20" x2="6" y2="20" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="28" x2="6" y2="28" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="36" x2="6" y2="36" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="44" x2="6" y2="44" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="20" x2="58" y2="20" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="28" x2="58" y2="28" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="36" x2="58" y2="36" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="48" y1="44" x2="58" y2="44" stroke="url(#grad)" stroke-width="2" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="64" y2="64">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <p class="preloader-text">Initializing ChipFlow Analytics…</p>
+      <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+  <nav id="navbar" class="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none"><rect x="8" y="8" width="16" height="16" rx="2" stroke="url(#navGrad)" stroke-width="1.5"/><rect x="11" y="11" width="10" height="10" rx="1" fill="url(#navGrad)" opacity=".3"/><line x1="12" y1="8" x2="12" y2="3" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="16" y1="8" x2="16" y2="3" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="20" y1="8" x2="20" y2="3" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="12" y1="24" x2="12" y2="29" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="16" y1="24" x2="16" y2="29" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="20" y1="24" x2="20" y2="29" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="12" x2="3" y2="12" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="16" x2="3" y2="16" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="8" y1="20" x2="3" y2="20" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="24" y1="12" x2="29" y2="12" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="24" y1="16" x2="29" y2="16" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><line x1="24" y1="20" x2="29" y2="20" stroke="url(#navGrad)" stroke-width="1.2" stroke-linecap="round"/><defs><linearGradient id="navGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+        <span>ChipFlow</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#overview" class="nav-link" data-section="overview">Overview</a></li>
+        <li><a href="#processors" class="nav-link" data-section="processors">Processors</a></li>
+        <li><a href="#supply-chain" class="nav-link" data-section="supply-chain">Supply Chain</a></li>
+        <li><a href="#analytics" class="nav-link" data-section="analytics">Analytics</a></li>
+        <li><a href="#geopolitics" class="nav-link" data-section="geopolitics">Geopolitics</a></li>
+        <li><a href="#roadmap" class="nav-link" data-section="roadmap">Roadmap</a></li>
+      </ul>
+      <div class="nav-actions">
+        <div class="search-trigger" id="searchTrigger">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="search-shortcut">⌘K</span>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════ SEARCH MODAL ═══════════════════════ -->
+  <div class="search-overlay" id="searchOverlay">
+    <div class="search-modal">
+      <div class="search-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search processors, foundries, technologies…" autocomplete="off" />
+        <kbd class="search-esc">ESC</kbd>
+      </div>
+      <div class="search-results" id="searchResults">
+        <div class="search-empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>Type to search across processors, technologies, and supply chain data</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ MOBILE NAV ═══════════════════════ -->
+  <div class="mobile-nav" id="mobileNav">
+    <ul class="mobile-nav-links">
+      <li><a href="#overview" class="mobile-nav-link">Overview</a></li>
+      <li><a href="#processors" class="mobile-nav-link">Processors</a></li>
+      <li><a href="#supply-chain" class="mobile-nav-link">Supply Chain</a></li>
+      <li><a href="#analytics" class="mobile-nav-link">Analytics</a></li>
+      <li><a href="#geopolitics" class="mobile-nav-link">Geopolitics</a></li>
+      <li><a href="#roadmap" class="mobile-nav-link">Roadmap</a></li>
+    </ul>
+  </div>
+
+  <main>
+    <!-- ═══════════════════════ HERO ═══════════════════════ -->
+    <section id="hero" class="hero">
+      <div class="hero-bg">
+        <div class="hero-grid"></div>
+        <div class="hero-glow hero-glow-1"></div>
+        <div class="hero-glow hero-glow-2"></div>
+        <div class="hero-particles" id="heroParticles"></div>
+      </div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          <span>Live Data — October 2026</span>
+        </div>
+        <h1 class="hero-title">
+          Global Mobile Processor<br/>
+          <span class="hero-gradient-text">Supply Chain Intelligence</span>
+        </h1>
+        <p class="hero-subtitle">
+          Explore the $45B ecosystem powering 1.2 billion smartphones. Interactive analytics across foundries, geopolitics, costs, and next-gen technology roadmaps.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat" data-count="45">
+            <span class="hero-stat-value" id="statRevenue">$0B</span>
+            <span class="hero-stat-label">Annual Revenue</span>
+          </div>
+          <div class="hero-stat" data-count="1.2">
+            <span class="hero-stat-value" id="statShipments">0B</span>
+            <span class="hero-stat-label">Smartphones Shipped</span>
+          </div>
+          <div class="hero-stat" data-count="87">
+            <span class="hero-stat-value" id="statTSMC">0%</span>
+            <span class="hero-stat-label">Sub-5nm at TSMC</span>
+          </div>
+          <div class="hero-stat" data-count="20">
+            <span class="hero-stat-value" id="statTransistors">0B</span>
+            <span class="hero-stat-label">Transistors per SoC</span>
+          </div>
+        </div>
+        <div class="hero-cta">
+          <a href="#overview" class="btn btn-primary">
+            Explore Analytics
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#processors" class="btn btn-ghost">
+            View Processors
+          </a>
+        </div>
+      </div>
+      <div class="scroll-indicator">
+        <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+        <span>Scroll to explore</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ OVERVIEW ═══════════════════════ -->
+    <section id="overview" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Executive Overview</span>
+          <h2 class="section-title">Industry at a Glance</h2>
+          <p class="section-subtitle">The mobile SoC market spans captive fabless, merchant fabless, IDM hybrid, and pure-play foundry models — each with distinct strategic implications.</p>
+        </div>
+
+        <div class="business-models-grid">
+          <div class="model-card" data-model="captive">
+            <div class="model-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+            </div>
+            <h3>Captive Fabless</h3>
+            <p>Design proprietary silicon for own hardware. Zero merchant sales.</p>
+            <div class="model-companies">
+              <span class="company-chip apple">Apple</span>
+              <span class="company-chip google">Google</span>
+            </div>
+          </div>
+          <div class="model-card" data-model="merchant">
+            <div class="model-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            </div>
+            <h3>Merchant Fabless</h3>
+            <p>Design & sell processors to third-party OEMs worldwide.</p>
+            <div class="model-companies">
+              <span class="company-chip qualcomm">Qualcomm</span>
+              <span class="company-chip mediatek">MediaTek</span>
+            </div>
+          </div>
+          <div class="model-card" data-model="idm">
+            <div class="model-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+            </div>
+            <h3>Integrated IDM</h3>
+            <p>Designs, fabricates, and assembles — vertically integrated.</p>
+            <div class="model-companies">
+              <span class="company-chip samsung">Samsung</span>
+            </div>
+          </div>
+          <div class="model-card" data-model="foundry">
+            <div class="model-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 20h20"/><path d="M5 20V8l4-4 4 4v12"/><path d="M13 20V10l4-3 4 3v10"/><rect x="8" y="12" width="2" height="2" fill="currentColor" opacity=".5"/><rect x="16" y="12" width="2" height="2" fill="currentColor" opacity=".5"/></svg>
+            </div>
+            <h3>Pure-Play Foundry</h3>
+            <p>Manufactures wafers on contract. Zero competing products.</p>
+            <div class="model-companies">
+              <span class="company-chip tsmc">TSMC</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Market share charts row -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Unit Market Share</h3>
+              <span class="chart-badge">2026 Estimated</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartUnitShare"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Revenue Market Share</h3>
+              <span class="chart-badge">$45B+ Market</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartRevenueShare"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ PROCESSORS ═══════════════════════ -->
+    <section id="processors" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Processor Intelligence</span>
+          <h2 class="section-title">Explore Mobile Processors</h2>
+          <p class="section-subtitle">Deep-dive into specifications, foundry partnerships, costs, and competitive positioning of each major SoC.</p>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="apple">Apple</button>
+          <button class="filter-btn" data-filter="qualcomm">Qualcomm</button>
+          <button class="filter-btn" data-filter="mediatek">MediaTek</button>
+          <button class="filter-btn" data-filter="samsung">Samsung</button>
+          <button class="filter-btn" data-filter="google">Google</button>
+          <button class="filter-btn" data-filter="hisilicon">HiSilicon</button>
+        </div>
+
+        <!-- Processor cards -->
+        <div class="processor-grid" id="processorGrid">
+          <!-- Cards are generated by JS -->
+        </div>
+
+        <!-- Processor detail modal -->
+        <div class="processor-modal-overlay" id="processorModal">
+          <div class="processor-modal">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-content" id="modalContent">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ SUPPLY CHAIN ═══════════════════════ -->
+    <section id="supply-chain" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">5-Tier Architecture</span>
+          <h2 class="section-title">End-to-End Supply Chain</h2>
+          <p class="section-subtitle">From quartz mining to your pocket — trace every tier of the world's most complex manufacturing pipeline.</p>
+        </div>
+
+        <div class="supply-chain-visual">
+          <div class="tier-card" data-tier="4">
+            <div class="tier-number">Tier 4</div>
+            <div class="tier-content">
+              <h3>Raw Materials & Chemicals</h3>
+              <p>Electronic-grade polysilicon (99.999999999% purity), photoresists, ultra-pure HF, purified Neon gas</p>
+              <div class="tier-companies">
+                <span>Shin-Etsu</span><span>SUMCO</span><span>JSR</span><span>TOK</span><span>Daikin</span>
+              </div>
+              <div class="tier-stat">
+                <strong>55%</strong> of 300mm wafers by 2 Japanese firms
+              </div>
+            </div>
+            <div class="tier-connector">
+              <svg viewBox="0 0 24 60"><line x1="12" y1="0" x2="12" y2="48" stroke="url(#tierGrad)" stroke-width="2" stroke-dasharray="4 4"/><polygon points="6,48 18,48 12,58" fill="url(#tierGrad)"/><defs><linearGradient id="tierGrad" x1="0" y1="0" x2="0" y2="60"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            </div>
+          </div>
+
+          <div class="tier-card" data-tier="3">
+            <div class="tier-number">Tier 3</div>
+            <div class="tier-content">
+              <h3>Equipment, EDA & IP</h3>
+              <p>EUV lithography, etch/deposition tools, EDA software, ARM architecture licensing</p>
+              <div class="tier-companies">
+                <span>ASML</span><span>Applied Materials</span><span>Lam Research</span><span>Synopsys</span><span>Cadence</span><span>ARM</span>
+              </div>
+              <div class="tier-stat">
+                <strong>$350M+</strong> per High-NA EUV scanner
+              </div>
+            </div>
+            <div class="tier-connector">
+              <svg viewBox="0 0 24 60"><line x1="12" y1="0" x2="12" y2="48" stroke="url(#tierGrad2)" stroke-width="2" stroke-dasharray="4 4"/><polygon points="6,48 18,48 12,58" fill="url(#tierGrad2)"/><defs><linearGradient id="tierGrad2" x1="0" y1="0" x2="0" y2="60"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            </div>
+          </div>
+
+          <div class="tier-card" data-tier="2">
+            <div class="tier-number">Tier 2</div>
+            <div class="tier-content">
+              <h3>Wafer Fabrication</h3>
+              <p>1,500+ chemical/plasma steps over 16–22 weeks in ISO Class 1 cleanrooms</p>
+              <div class="tier-companies">
+                <span>TSMC</span><span>Samsung Foundry</span><span>SMIC</span>
+              </div>
+              <div class="tier-stat">
+                <strong>$20,500</strong> per 3nm 300mm wafer
+              </div>
+            </div>
+            <div class="tier-connector">
+              <svg viewBox="0 0 24 60"><line x1="12" y1="0" x2="12" y2="48" stroke="url(#tierGrad3)" stroke-width="2" stroke-dasharray="4 4"/><polygon points="6,48 18,48 12,58" fill="url(#tierGrad3)"/><defs><linearGradient id="tierGrad3" x1="0" y1="0" x2="0" y2="60"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            </div>
+          </div>
+
+          <div class="tier-card" data-tier="1">
+            <div class="tier-number">Tier 1</div>
+            <div class="tier-content">
+              <h3>Advanced Packaging & Test</h3>
+              <p>InFO-PoP, DRAM stacking, micro-bump bonding, automated wafer testing</p>
+              <div class="tier-companies">
+                <span>TSMC InFO</span><span>ASE Group</span><span>Amkor</span><span>JCET</span><span>Advantest</span>
+              </div>
+              <div class="tier-stat">
+                <strong>3–5 weeks</strong> packaging & test cycle
+              </div>
+            </div>
+            <div class="tier-connector">
+              <svg viewBox="0 0 24 60"><line x1="12" y1="0" x2="12" y2="48" stroke="url(#tierGrad4)" stroke-width="2" stroke-dasharray="4 4"/><polygon points="6,48 18,48 12,58" fill="url(#tierGrad4)"/><defs><linearGradient id="tierGrad4" x1="0" y1="0" x2="0" y2="60"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            </div>
+          </div>
+
+          <div class="tier-card" data-tier="0">
+            <div class="tier-number">Tier 0</div>
+            <div class="tier-content">
+              <h3>OEM Integration & Logistics</h3>
+              <p>Surface mount assembly, final device testing, temperature-controlled air freight</p>
+              <div class="tier-companies">
+                <span>Foxconn</span><span>Pegatron</span><span>Luxshare</span><span>Samsung Vietnam</span>
+              </div>
+              <div class="tier-stat">
+                <strong>$150+</strong> per 2g SoC via air freight
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lead times chart -->
+        <div class="charts-row">
+          <div class="chart-card chart-card-wide">
+            <div class="chart-header">
+              <h3>Silicon Lead Time Breakdown</h3>
+              <span class="chart-badge">6–8 Months Total</span>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chartLeadTimes"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ ANALYTICS ═══════════════════════ -->
+    <section id="analytics" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Data Analytics</span>
+          <h2 class="section-title">Deep Analytics Dashboard</h2>
+          <p class="section-subtitle">Comprehensive cost analysis, BOM breakdowns, foundry economics, and bullwhip effect modeling.</p>
+        </div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>BOM Cost Breakdown</h3>
+              <span class="chart-badge">$1,000+ Flagship</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartBOM"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>SoC Cost by Tier</h3>
+              <span class="chart-badge">Per-Unit USD</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartSoCCost"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Wafer Cost Progression</h3>
+              <span class="chart-badge">Per 300mm Wafer</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartWaferCost"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Bullwhip Effect Amplification</h3>
+              <span class="chart-badge">Demand → CapEx</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartBullwhip"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foundry comparison -->
+        <div class="charts-row">
+          <div class="chart-card chart-card-wide">
+            <div class="chart-header">
+              <h3>Foundry Node Comparison</h3>
+              <span class="chart-badge">Key Metrics</span>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chartFoundryComparison"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ GEOPOLITICS ═══════════════════════ -->
+    <section id="geopolitics" class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Geopolitical Risk</span>
+          <h2 class="section-title">Strategic Vulnerabilities</h2>
+          <p class="section-subtitle">Mapping the concentration risks, export controls, and decoupling strategies reshaping the global semiconductor landscape.</p>
+        </div>
+
+        <div class="risk-grid">
+          <div class="risk-card risk-critical">
+            <div class="risk-level">CRITICAL</div>
+            <h3>Taiwan Strait Concentration</h3>
+            <p>87% of sub-5nm logic is fabricated by TSMC in Taiwan. A military conflict or blockade would erase <strong>$1–2 trillion</strong> from global GDP within the first year.</p>
+            <div class="risk-metric">
+              <div class="risk-bar" style="--risk-pct: 87%"><div class="risk-bar-fill"></div></div>
+              <span>87% concentration</span>
+            </div>
+          </div>
+          <div class="risk-card risk-high">
+            <div class="risk-level">HIGH</div>
+            <h3>ASML EUV Monopoly</h3>
+            <p>100% of EUV lithography systems come from a single Dutch company. Lead times exceed 18–24 months with annual output capped at ~50–60 units.</p>
+            <div class="risk-metric">
+              <div class="risk-bar" style="--risk-pct: 100%"><div class="risk-bar-fill"></div></div>
+              <span>100% monopoly</span>
+            </div>
+          </div>
+          <div class="risk-card risk-high">
+            <div class="risk-level">HIGH</div>
+            <h3>US Export Controls</h3>
+            <p>BIS entity list bans block EUV tools and advanced EDA to China. HiSilicon forced onto SMIC 7nm DUV multi-patterning at >$140/die costs.</p>
+            <div class="risk-metric">
+              <div class="risk-bar" style="--risk-pct: 75%"><div class="risk-bar-fill"></div></div>
+              <span>75% supply disruption</span>
+            </div>
+          </div>
+          <div class="risk-card risk-medium">
+            <div class="risk-level">MEDIUM</div>
+            <h3>ARM Licensing Disputes</h3>
+            <p>99%+ of mobile SoCs rely on ARM ISA. Qualcomm vs. ARM litigation threatens architectural licensing stability for the entire ecosystem.</p>
+            <div class="risk-metric">
+              <div class="risk-bar" style="--risk-pct: 55%"><div class="risk-bar-fill"></div></div>
+              <span>55% ecosystem exposure</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHIPS Act & Investment -->
+        <div class="investment-cards">
+          <div class="invest-card">
+            <div class="invest-icon">🇺🇸</div>
+            <h4>US CHIPS Act</h4>
+            <div class="invest-value">$52.7B</div>
+            <p>Federal subsidies for domestic semiconductor manufacturing and R&D</p>
+          </div>
+          <div class="invest-card">
+            <div class="invest-icon">🇹🇼</div>
+            <h4>TSMC Arizona</h4>
+            <div class="invest-value">$65B</div>
+            <p>Three-phase investment in Fab 21 — 4nm pilot production began late 2024</p>
+          </div>
+          <div class="invest-card">
+            <div class="invest-icon">🇨🇳</div>
+            <h4>China Big Fund III</h4>
+            <div class="invest-value">$47.5B</div>
+            <p>Third-phase national IC fund targeting domestic EUV and advanced node self-sufficiency</p>
+          </div>
+          <div class="invest-card">
+            <div class="invest-icon">🇰🇷</div>
+            <h4>Samsung Taylor TX</h4>
+            <div class="invest-value">$6.4B</div>
+            <p>Federal subsidies for advanced foundry and packaging fabs in Texas</p>
+          </div>
+        </div>
+
+        <!-- Environmental/ESG -->
+        <div class="charts-row">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Environmental Impact</h3>
+              <span class="chart-badge">Sustainability</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartESG"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>TSMC Energy Consumption</h3>
+              <span class="chart-badge">% of Taiwan Grid</span>
+            </div>
+            <div class="chart-body">
+              <canvas id="chartEnergy"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ ROADMAP ═══════════════════════ -->
+    <section id="roadmap" class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Future Outlook</span>
+          <h2 class="section-title">Technology Roadmap 2026–2030</h2>
+          <p class="section-subtitle">Next-generation architectures from 3nm FinFET to 2nm GAA nanosheets, backside power delivery, and mobile chiplets.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item" data-year="2024-2025">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2024–2025</span>
+              <h3>3nm FinFET / GAA</h3>
+              <p>TSMC N3E/N3P powering Apple A18, Snapdragon 8 Elite, Dimensity 9400. Samsung 3nm GAA (MBCFET) enters production with yield challenges.</p>
+              <div class="timeline-chips">
+                <span>Apple A18 Pro</span><span>SD 8 Elite</span><span>Dimensity 9400</span>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-item" data-year="2025-2027">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2025–2027</span>
+              <h3>2nm Gate-All-Around Nanosheet</h3>
+              <p>TSMC N2 & Samsung SF2 adopt High-NA EUV. Nanosheet channels surrounded on all 4 sides — 25–30% power reduction at iso-speed.</p>
+              <div class="timeline-chips">
+                <span>10–15% Speed↑</span><span>25–30% Power↓</span><span>High-NA EUV</span>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-item" data-year="2027-2028">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2027–2028</span>
+              <h3>Backside Power Delivery (BSPDN)</h3>
+              <p>TSMC A16 / Intel PowerVia — power rails move to wafer backside, eliminating IR drop and freeing 15%+ front-side routing density.</p>
+              <div class="timeline-chips">
+                <span>TSMC A16</span><span>Intel PowerVia</span><span>15% Density↑</span>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-item" data-year="2028-2030">
+            <div class="timeline-dot"></div>
+            <div class="timeline-card">
+              <span class="timeline-year">2028–2030</span>
+              <h3>3D Hybrid Bonding & Chiplets</h3>
+              <p>Disaggregated SoCs: 2nm compute chiplet + 6nm I/O modem chiplet. Copper-to-copper wafer stacking (TSMC SoIC) for 3D SRAM cache.</p>
+              <div class="timeline-chips">
+                <span>UCIe</span><span>TSMC SoIC</span><span>Mobile Chiplets</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Roadmap performance chart -->
+        <div class="charts-row">
+          <div class="chart-card chart-card-wide">
+            <div class="chart-header">
+              <h3>Node Performance Trajectory</h3>
+              <span class="chart-badge">Relative to 7nm Baseline</span>
+            </div>
+            <div class="chart-body chart-body-tall">
+              <canvas id="chartRoadmap"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="nav-logo">
+            <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none"><rect x="8" y="8" width="16" height="16" rx="2" stroke="url(#fGrad)" stroke-width="1.5"/><rect x="11" y="11" width="10" height="10" rx="1" fill="url(#fGrad)" opacity=".3"/><defs><linearGradient id="fGrad" x1="0" y1="0" x2="32" y2="32"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+            <span>ChipFlow</span>
+          </span>
+          <p>Global Mobile Processor Supply Chain Intelligence Platform</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Sections</h4>
+            <a href="#overview">Overview</a>
+            <a href="#processors">Processors</a>
+            <a href="#supply-chain">Supply Chain</a>
+          </div>
+          <div class="footer-col">
+            <h4>Analytics</h4>
+            <a href="#analytics">Cost Analytics</a>
+            <a href="#geopolitics">Geopolitics</a>
+            <a href="#roadmap">Roadmap</a>
+          </div>
+          <div class="footer-col">
+            <h4>Data Sources</h4>
+            <a href="#">Industry Reports</a>
+            <a href="#">Academic Research</a>
+            <a href="#">October 2026</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 ChipFlow Analytics — Supply Chain Research Platform. Data compiled for Academic & Executive Strategy Evaluation.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

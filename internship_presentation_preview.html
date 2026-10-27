@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internship Report & Project Review-1 | Global Mobile Processor Supply Chain</title>
+  <style>
+    :root {
+      --bg-wood: #E4CCA8;
+      --ribbon-dark: #2D2620;
+      --card-white: #FFFFFF;
+      --border-olive: #556B2F;
+      --border-light: #D1D5DB;
+      --title-crimson: #A51D24;
+      --title-dark: #232D1E;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --box-bg: #F8FAFC;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #1E293B;
+      color: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Toolbar */
+    .toolbar {
+      background: #0F172A;
+      border-bottom: 1px solid #334155;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .toolbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #E2E8F0;
+      letter-spacing: 0.3px;
+    }
+
+    .slide-badge {
+      background: #334155;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #38BDF8;
+    }
+
+    .toolbar-center {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-nav {
+      background: #1E293B;
+      color: #E2E8F0;
+      border: 1px solid #475569;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-nav:hover {
+      background: #334155;
+      border-color: #64748B;
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    select.slide-select {
+      background: #1E293B;
+      color: #E2E8F0;
+      border: 1px solid #475569;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-download {
+      background: #A51D24;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-download:hover {
+      background: #85161C;
+    }
+
+    /* Presentation Canvas Area */
+    .canvas-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: auto;
+      background: #0B1120;
+    }
+
+    /* 16:9 Slide Frame */
+    .slide-viewport {
+      width: 100%;
+      max-width: 1200px;
+      aspect-ratio: 16 / 9;
+      position: relative;
+      border-radius: 4px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      background-color: var(--bg-wood);
+      background-image: repeating-linear-gradient(0deg, #E4CCA8, #E4CCA8 2px, #DFC59F 3px, #E4CCA8 4px);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Horizontal Dark Ribbon */
+    .slide-ribbon {
+      position: absolute;
+      top: 44%;
+      left: 0;
+      width: 100%;
+      height: 12%;
+      background-color: var(--ribbon-dark);
+      z-index: 1;
+    }
+
+    /* Centered White Card */
+    .slide-card {
+      position: relative;
+      width: 88%;
+      height: 86%;
+      background-color: #FFFFFF;
+      border: 1px solid var(--border-light);
+      border-radius: 2px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+      z-index: 2;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Inner Olive Green Border */
+    .slide-inner-frame {
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--border-olive);
+      padding: 20px 32px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Slide Titles */
+    .slide-header {
+      margin-bottom: 12px;
+    }
+
+    .slide-title {
+      font-family: "Georgia", "Times New Roman", serif;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--title-crimson);
+      margin-bottom: 6px;
+    }
+
+    .slide-title.cover-title {
+      text-align: center;
+      font-size: 30px;
+      color: var(--title-dark);
+      margin-top: 10px;
+      line-height: 1.25;
+    }
+
+    .slide-title.section-title {
+      text-align: center;
+      font-size: 36px;
+      margin-top: 40px;
+    }
+
+    .slide-divider {
+      width: 100%;
+      height: 2px;
+      background-color: var(--border-olive);
+      margin-bottom: 12px;
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      color: var(--text-main);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    /* Component Styles inside Slides */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      height: 100%;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 14px;
+      height: 100%;
+    }
+
+    .info-card {
+      background: var(--box-bg);
+      border: 1px solid #CBD5E1;
+      border-radius: 6px;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-card.crimson-tint {
+      background: #FEF2F2;
+      border-color: #F87171;
+    }
+
+    .info-card.green-tint {
+      background: #F0FDF4;
+      border-color: #86EFAC;
+    }
+
+    .info-card.amber-tint {
+      background: #FFFBEB;
+      border-color: #FCD34D;
+    }
+
+    .card-heading {
+      font-family: "Georgia", serif;
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--title-crimson);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-heading.green { color: #15803D; }
+    .card-heading.dark { color: #1E293B; }
+    .card-heading.amber { color: #B45309; }
+
+    ul.bullet-list {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    ul.bullet-list li {
+      position: relative;
+      padding-left: 16px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: var(--text-main);
+    }
+
+    ul.bullet-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--border-olive);
+      font-weight: bold;
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    ul.bullet-list.cross li::before {
+      content: "❌";
+      font-size: 10px;
+      left: -2px;
+    }
+
+    ul.bullet-list.check li::before {
+      content: "✔";
+      font-size: 11px;
+      color: #15803D;
+      left: -2px;
+    }
+
+    /* Subtitle Tag */
+    .subtitle-tag {
+      font-family: "Georgia", serif;
+      font-size: 11px;
+      font-weight: bold;
+      color: var(--border-olive);
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    /* Certificate Slide */
+    .cert-frame {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .cert-frame img {
+      max-height: 380px;
+      max-width: 90%;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Architecture Slide */
+    .arch-frame {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .arch-frame img {
+      max-height: 360px;
+      max-width: 98%;
+      border-radius: 4px;
+      border: 1px solid #CBD5E1;
+    }
+
+    /* Print styles */
+    @media print {
+      .toolbar { display: none; }
+      body { background: transparent; }
+      .canvas-container { padding: 0; background: transparent; }
+      .slide-viewport { box-shadow: none; max-width: 100%; page-break-after: always; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="toolbar-title">Internship Report & Project Review-1</div>
+      <div class="slide-badge" id="slideIndicator">Slide 1 / 17</div>
+    </div>
+
+    <div class="toolbar-center">
+      <button class="btn-nav" id="prevBtn" onclick="prevSlide()">◀ Previous</button>
+      <select class="slide-select" id="slideSelect" onchange="jumpToSlide(this.value)">
+        <!-- Options populated dynamically -->
+      </select>
+      <button class="btn-nav" id="nextBtn" onclick="nextSlide()">Next ▶</button>
+    </div>
+
+    <div class="toolbar-right">
+      <button class="btn-nav" onclick="toggleFullScreen()">⛶ Fullscreen</button>
+      <button class="btn-nav" onclick="window.print()">🖨️ Print / PDF</button>
+      <a href="Internship_Report_Project_Review_1_Mobile_Processor_Supply_Chain.pptx" download class="btn-download">
+        📥 Download PPTX
+      </a>
+    </div>
+  </div>
+
+  <!-- Canvas Container -->
+  <div class="canvas-container">
+    <div class="slide-viewport">
+      <div class="slide-ribbon"></div>
+      
+      <div class="slide-card">
+        <div class="slide-inner-frame" id="slideFrame">
+          <!-- Slide Content Injected by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const slidesData = [
+      // Slide 1
+      {
+        type: 'cover',
+        render: () => `
+          <div style="text-align: center; padding-top: 10px;">
+            <div class="slide-title cover-title">
+              INTERNSHIP<br>REPORT & PROJECT REVIEW-1
+            </div>
+            
+            <div style="background: #FEF3C7; border: 1.5px solid #D97706; border-radius: 8px; padding: 10px 16px; margin: 20px auto 26px auto; max-width: 800px;">
+              <div style="font-family: Georgia, serif; font-size: 13px; font-weight: bold; color: #92400E; letter-spacing: 0.5px;">
+                PROJECT: GLOBAL SUPPLY CHAIN ANALYSIS & ARCHITECTURAL RESILIENCE OF ADVANCED MOBILE PROCESSORS (SUB-5nm SoCs)
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; max-width: 780px; margin: 0 auto; text-align: center;">
+              <div>
+                <span style="font-family: Georgia, serif; font-size: 14px; font-weight: bold; color: var(--title-crimson);">INTERNSHIP PERIOD: </span>
+                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">01 JUNE 2026 TO 31 JULY 2026 (8 WEEKS RESEARCH TRACK)</span>
+              </div>
+              <div>
+                <span style="font-family: Georgia, serif; font-size: 14px; font-weight: bold; color: var(--title-crimson);">STUDENT DETAILS: </span>
+                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">ABDUL REHMAN  |  ROLL NO: 22CST048  |  IV CST - SEC B</span>
+              </div>
+              <div>
+                <span style="font-family: Georgia, serif; font-size: 14px; font-weight: bold; color: var(--title-crimson);">REVIEW DETAILS: </span>
+                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">PROJECT REVIEW - 1  |  DATE: 21 OCTOBER 2026</span>
+              </div>
+              <div>
+                <span style="font-family: Georgia, serif; font-size: 14px; font-weight: bold; color: var(--title-crimson);">INTERNSHIP MENTOR: </span>
+                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">DR. K. V. RAMANA, PROFESSOR & HEAD (DEPT. OF CST)</span>
+              </div>
+              <div>
+                <span style="font-family: Georgia, serif; font-size: 14px; font-weight: bold; color: var(--title-crimson);">INDUSTRY COLLABORATOR: </span>
+                <span style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">SEMICONDUCTOR INSIGHTS & MICROELECTRONICS LAB (SI-AMRL)</span>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 2
+      {
+        title: "ABOUT INDUSTRY/ORGANIZATION DETAILS",
+        render: () => `
+          <div class="slide-content" style="gap: 12px;">
+            <div class="info-card">
+              <div class="card-heading">ORGANIZATION PROFILE & SECTOR CLASSIFICATION</div>
+              <ul class="bullet-list">
+                <li><strong>Entity Name:</strong> Semiconductor Insights & Advanced Microelectronics Research Lab (SI-AMRL)</li>
+                <li><strong>Industry Domain:</strong> Semiconductor Fabrications, Fabless IC Design Verification & Global Technology Supply Chain Intelligence.</li>
+                <li><strong>Strategic Mandate:</strong> Providing deep quantitative telemetry on leading-edge node lithography, wafer yield dynamics, advanced packaging (InFO/CoWoS), and geopolitical vulnerability stress-testing.</li>
+              </ul>
+            </div>
+
+            <div class="info-card">
+              <div class="card-heading">CORE INDUSTRIAL PROCESSES & SERVICES DELIVERED</div>
+              <ul class="bullet-list">
+                <li><strong>1. Multi-Tier Supply Telemetry:</strong> Continuous tracking across Tier-4 chemical precursors (photoresists, EGS), Tier-3 lithography scanners (ASML EUV), Tier-2 foundries (TSMC, Samsung, SMIC), and Tier-1 OSAT assembly.</li>
+                <li><strong>2. Wafer Yield & Defect Density Physics:</strong> Algorithmic modeling of defect densities (D₀) using Murphy's and Seeds equations across sub-5nm FinFET and Gate-All-Around (GAA) nodes.</li>
+                <li><strong>3. Bill-of-Materials (BOM) & Microarchitecture Benchmarking:</strong> Hardware cost decomposition of flagship mobile SoCs (Apple A18 Pro, Snapdragon 8 Elite, Dimensity 9400) and thermal envelope profiling.</li>
+                <li><strong>4. Geopolitical Shock Simulation:</strong> Network graph modeling of critical semiconductor chokepoints and maritime blockades.</li>
+              </ul>
+            </div>
+
+            <div class="info-card" style="border-left: 4px solid var(--border-olive);">
+              <div class="card-heading green">ORGANIZATION HEADQUARTERS & RESEARCH FACILITIES ADDRESS</div>
+              <ul class="bullet-list">
+                <li><strong>Primary R&D Center:</strong> Semiconductor Innovation Hub, Cyber Tech Corridor, Phase 1, Electronic City, Bangalore - 560100, Karnataka, India.</li>
+                <li><strong>Global Liaison Nodes:</strong> Hsinchu Science Park, Taiwan & High-Tech Campus, Veldhoven, Netherlands.</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+      // Slide 3
+      {
+        title: "Internship Certificate",
+        render: () => `
+          <div class="slide-content cert-frame">
+            <img src="internship_certificate.png" alt="Internship Certificate">
+            <div style="font-size: 11px; color: var(--text-muted); margin-top: 10px; text-align: center;">
+              Verified Institutional Record: Certificate ID SI-AMRL-2026-INT-8842  |  Student can replace container with physical scan.
+            </div>
+          </div>
+        `
+      },
+      // Slide 4
+      {
+        title: "My Internship",
+        render: () => `
+          <div class="slide-content">
+            <div class="grid-2">
+              <div class="info-card">
+                <div class="card-heading">INTERNSHIP DESCRIPTION</div>
+                <ul class="bullet-list" style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><strong>Domain & Scope:</strong> Technical and quantitative investigation into the global mobile System-on-Chip (SoC) semiconductor ecosystem powering 1.2B annual smartphones.</li>
+                  <li><strong>Value Chain Tiers:</strong> Deconstructed 5 critical layers: Tier-4 Raw Chemicals (polysilicon, photoresists), Tier-3 Equipment (ASML EUV, EDA software), Tier-2 Foundries (TSMC, Samsung), Tier-1 OSAT (InFO-PoP packaging), and Tier-0 OEM SMT.</li>
+                  <li><strong>Technology Stack:</strong> Utilized Python (Pandas, NumPy, NetworkX, SciPy, Matplotlib), Neo4j Graph DB, and automated Bill-of-Materials cost decomposition models.</li>
+                  <li><strong>Analytical Focus:</strong> Algorithmic wafer yield calculations, Moore's Law cost escalations ($20.5K/wafer at 3nm), and microarchitectural shifts (ARM vs. custom Oryon).</li>
+                </ul>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading">THINGS LEARNED</div>
+                <ul class="bullet-list" style="display: flex; flex-direction: column; gap: 6px;">
+                  <li><strong>Foundry Geopolitics:</strong> Over 87% of sub-5nm advanced node logic is concentrated in Taiwan (TSMC), making the Taiwan Strait the world's most critical single point of failure.</li>
+                  <li><strong>Monopoly Chokepoints:</strong> A single firm—ASML (Netherlands)—holds a 100% monopoly on Extreme Ultraviolet (EUV) scanners ($180M–$350M/machine, 18-24 mo lead time).</li>
+                  <li><strong>Yield & Cost Physics:</strong> Mastered Murphy's Defect Density model; evaluated how 3nm wafer costs escalate to ~$20,500, making the SoC ~30% ($165-$200) of smartphone BOM.</li>
+                  <li><strong>Packaging Value Shift:</strong> Learned that as lateral 2D scaling slows, InFO-PoP and 3D direct DRAM stacking become the primary drivers of thermal and latency gains.</li>
+                  <li><strong>Architectural Divergence:</strong> Studied Qualcomm's Oryon CPU pivot and the industry-wide hedge toward RISC-V to avoid ARM royalty fee increases.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 5
+      {
+        title: "SPECIFIC TASKS",
+        subtitle: "MODULE-WISE & WEEK-WISE TECHNICAL ROADMAP (WEEKS 1 TO 4)",
+        render: () => `
+          <div class="slide-content" style="gap: 10px;">
+            <div class="info-card">
+              <div class="card-heading">WEEK 1: Domain Immersion & Ecosystem Mapping</div>
+              <ul class="bullet-list">
+                <li>Deconstructed the 5-tier semiconductor pyramid (Raw Materials -> SME Lithography -> Foundries -> OSAT Packaging -> OEM SMT).</li>
+                <li>Setup Python analytical environment and collected architecture datasheets for Apple A18 Pro, Snapdragon 8 Elite, Dimensity 9400, and Exynos 2500.</li>
+                <li>Defined baseline parameters: transistor density, die size (mm²), NPU TOPS, and TDP envelope.</li>
+              </ul>
+            </div>
+
+            <div class="info-card">
+              <div class="card-heading">WEEK 2: Upstream Chokepoints & Lithography Modeling</div>
+              <ul class="bullet-list">
+                <li>Quantified supply vulnerabilities: ASML EUV scanner annual output (~55 units/year, 13.5nm wavelength, 150 metric tons).</li>
+                <li>Mapped Japanese chemical monopolies: Shin-Etsu and SUMCO controlling >55% of 300mm silicon wafers; JSR and TOK in EUV photoresists.</li>
+                <li>Documented purified Neon and noble gas supply chain sensitivities following regional European conflicts.</li>
+              </ul>
+            </div>
+
+            <div class="info-card">
+              <div class="card-heading">WEEK 3: Comparative SoC Microarchitecture Benchmarking</div>
+              <ul class="bullet-list">
+                <li>Analyzed architectural divergence: ARM standard Cortex vs. custom Qualcomm Oryon (Nuvia) and Apple Silicon.</li>
+                <li>Evaluated MediaTek's 'All-Big-Core' design (Dimensity 9400) versus traditional Big-Little clusters.</li>
+                <li>Benchmarked heterogeneous AI acceleration capabilities (45+ TOPS NPUs) required for local on-device 7B-parameter LLMs.</li>
+              </ul>
+            </div>
+
+            <div class="info-card">
+              <div class="card-heading">WEEK 4: Wafer Yield & Defect Density Algorithm Development</div>
+              <ul class="bullet-list">
+                <li>Programmed Python engine calculating theoretical dies per 300mm wafer: N = (π × r²)/A - (2π × r)/√(2A).</li>
+                <li>Implemented Murphy's defect density equation (D₀ = 0.08 def/cm²) to model yield curves from experimental to mature nodes.</li>
+                <li>Modeled wafer fabrication economics: TSMC 3nm wafer at $20,500 yielding ~$44 raw silicon cost per die at 80% yield.</li>
+              </ul>
+            </div>
+          </div>
+        `
+      },
+      // Slide 6
+      {
+        title: "SPECIFIC TASKS",
+        subtitle: "TECHNICAL ROADMAP (WEEKS 5 TO 8) & ASSESSMENT EVALUATION",
+        render: () => `
+          <div class="slide-content">
+            <div class="grid-2">
+              <div class="info-card">
+                <div class="card-heading">WEEKS 5 TO 8 TECHNICAL IMPLEMENTATION</div>
+                <ul class="bullet-list" style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><strong>Week 5 (Graph Modeling):</strong> Built directed graph in NetworkX with 142 supply chain entities and 318 trade dependencies. Calculated Betweenness Centrality for TSMC Fab 18 and ASML.</li>
+                  <li><strong>Week 6 (Risk Simulation):</strong> Simulated 3 crisis scenarios: Taiwan Strait naval blockade, ASML export embargo expansion, and US CHIPS Act Arizona packaging bottlenecks.</li>
+                  <li><strong>Week 7 (BOM & Bullwhip Modeling):</strong> Analyzed Bullwhip Effect dynamics (±5% phone demand swing -> ±60% fab CapEx swing). Decomposed smartphone BOM: mobile SoC = 29.5% ($165) of $560 BOM.</li>
+                  <li><strong>Week 8 (Executive Defense):</strong> Consolidated findings into interactive dashboards, generated automated visualization charts, completed mentor verification and defense.</li>
+                </ul>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading">ASSESSMENTS & EVALUATION RECORD</div>
+                <ul class="bullet-list check" style="display: flex; flex-direction: column; gap: 8px;">
+                  <li>
+                    <strong>Milestone Assessment 1 (Physics & Nodes):</strong><br>
+                    <span style="color: var(--text-muted); font-size: 11px;">Scope: Node scaling, lithography limits, chemical precursors</span><br>
+                    <span style="color: #15803D; font-weight: bold;">Score: 95 / 100 | Grade: O (Outstanding)</span>
+                  </li>
+                  <li>
+                    <strong>Milestone Assessment 2 (Graph Analytics):</strong><br>
+                    <span style="color: var(--text-muted); font-size: 11px;">Scope: Network centrality, supply graph mapping, chokepoints</span><br>
+                    <span style="color: #15803D; font-weight: bold;">Score: 98 / 100 | Grade: O (Outstanding)</span>
+                  </li>
+                  <li>
+                    <strong>Milestone Assessment 3 (Yield & BOM Physics):</strong><br>
+                    <span style="color: var(--text-muted); font-size: 11px;">Scope: Murphy yield modeling, BOM teardowns, shock simulation</span><br>
+                    <span style="color: #15803D; font-weight: bold;">Score: 94 / 100 | Grade: A+ (Excellent)</span>
+                  </li>
+                  <li>
+                    <strong>Final Defense & Viva-Voce:</strong><br>
+                    <span style="color: var(--text-muted); font-size: 11px;">Comprehensive Project Review & Strategy Defense</span><br>
+                    <span style="color: #15803D; font-weight: bold;">Score: 97 / 100 | Grade: O (Outstanding)</span>
+                  </li>
+                </ul>
+
+                <div style="margin-top: 10px; background: #FEF3C7; border: 1px solid #D97706; border-radius: 4px; padding: 6px; text-align: center;">
+                  <strong style="color: #92400E; font-size: 11px;">CUMULATIVE INTERNSHIP GPA: 9.6 / 10.0 (RANK 1)</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 7
+      {
+        type: 'section',
+        render: () => `
+          <div style="text-align: center; padding-top: 40px;">
+            <div class="slide-title section-title">The Project Proposal</div>
+            <div style="width: 180px; height: 3px; background: var(--border-olive); margin: 16px auto 24px auto;"></div>
+            
+            <p style="font-family: Georgia, serif; font-size: 16px; color: var(--text-main); max-width: 780px; margin: 0 auto; line-height: 1.6;">
+              A Quantitative Framework for Supply Chain Vulnerability Modeling, Wafer Yield Economics, and Architectural Resilience in Mobile Application Processors
+            </p>
+
+            <div style="background: var(--box-bg); border: 1px solid #CBD5E1; border-radius: 8px; padding: 14px 20px; max-width: 820px; margin: 36px auto 0 auto;">
+              <div style="font-family: Georgia, serif; font-size: 12px; font-weight: bold; color: var(--border-olive); margin-bottom: 6px;">CORE RESEARCH PILLARS</div>
+              <div style="font-size: 13px; font-weight: 600; color: var(--text-main);">
+                1. Multi-Tier Graph Modeling  •  2. Murphy Wafer Yield Physics  •  3. Monte Carlo Disruption Simulation  •  4. RISC-V & Chiplet De-Risking
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 8
+      {
+        title: "Title of your project",
+        render: () => `
+          <div class="slide-content" style="gap: 16px;">
+            <div style="background: #FEF2F2; border: 2px solid var(--title-crimson); border-radius: 8px; padding: 16px; text-align: center;">
+              <div style="font-family: Georgia, serif; font-size: 11px; font-weight: bold; color: var(--border-olive); margin-bottom: 4px;">PROJECT TITLE</div>
+              <div style="font-family: Georgia, serif; font-size: 18px; font-weight: bold; color: var(--title-crimson); line-height: 1.4;">
+                Global Supply Chain Vulnerability & Architectural Resilience Analysis<br>of Advanced Mobile Application Processors (Sub-5nm SoCs)
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div class="info-card">
+                <div class="card-heading dark">✔ DOMAIN CLASSIFICATION</div>
+                <div style="font-size: 12px; color: var(--text-main);">
+                  Advanced Microelectronics, IC Design Economics & Computational Supply Chain Analytics.
+                </div>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading dark">✔ TARGET PROCESS NODES</div>
+                <div style="font-size: 12px; color: var(--text-main);">
+                  TSMC 3nm (N3E/N3P) & 2nm (N2), Samsung 3nm GAA MBCFET, SMIC 7nm DUV Multi-patterning.
+                </div>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading dark">✔ KEY COMPANIES ANALYZED</div>
+                <div style="font-size: 12px; color: var(--text-main);">
+                  Apple Silicon, Qualcomm Snapdragon, MediaTek Dimensity, Samsung Exynos, TSMC, ASML, ARM Holdings.
+                </div>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading dark">✔ KEY PROJECT DELIVERABLE</div>
+                <div style="font-size: 12px; color: var(--text-main);">
+                  Multi-Tier Graph Network Engine, Murphy Yield Simulator, and Strategic Resilience Action Plan.
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 9
+      {
+        title: "Objective of your project (in 3 to 4 lines)",
+        subtitle: "PROJECT OBJECTIVES (STRICTLY FORMULATED IN 4 IMPACT LINES)",
+        render: () => `
+          <div class="slide-content" style="gap: 12px;">
+            <div class="info-card" style="background: #EFF6FF; border-color: #3B82F6;">
+              <div class="card-heading" style="color: #1D4ED8;">LINE 1: MULTI-TIER NETWORK GRAPH MAPPING</div>
+              <div style="font-size: 12.5px; color: var(--text-main);">
+                To model the global mobile application processor value chain as an end-to-end multi-tier dependency graph from raw chemicals to OEM packaging, mathematically exposing hidden single-point-of-failure bottlenecks.
+              </div>
+            </div>
+
+            <div class="info-card amber-tint">
+              <div class="card-heading amber">LINE 2: SEMICONDUCTOR YIELD & WAFER COST PHYSICS</div>
+              <div style="font-size: 12.5px; color: var(--text-main);">
+                To formulate Murphy's defect density algorithms to model die yield dynamics and the staggering escalation of 3nm/2nm wafer costs ($20,500/wafer) across flagship mobile chipmakers.
+              </div>
+            </div>
+
+            <div class="info-card crimson-tint">
+              <div class="card-heading">LINE 3: GEOPOLITICAL DISRUPTION & SHOCK SIMULATION</div>
+              <div style="font-size: 12.5px; color: var(--text-main);">
+                To simulate geopolitical embargoes, Taiwan Strait maritime blockades, and lithography tool shortages using Betweenness Centrality and Monte Carlo shock propagation algorithms.
+              </div>
+            </div>
+
+            <div class="info-card green-tint">
+              <div class="card-heading green">LINE 4: STRATEGIC ARCHITECTURAL DE-RISKING</div>
+              <div style="font-size: 12.5px; color: var(--text-main);">
+                To establish actionable resilience frameworks—including multi-foundry Process Design Kit (PDK) portability, modular 3D chiplets, and open-source RISC-V adoption—to insulate next-generation mobile SoCs from systemic disruption.
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 10
+      {
+        title: "Abstract",
+        subtitle: "AROUND 300 WORDS (COMPLETE PROJECT OVERVIEW)",
+        render: () => `
+          <div class="slide-content" style="gap: 12px;">
+            <div class="info-card" style="font-size: 12px; line-height: 1.5; color: var(--text-main);">
+              <p style="margin-bottom: 8px;">
+                The modern mobile application processor (System-on-Chip, or SoC) represents the pinnacle of nanoscale engineering, integrating up to 20 billion transistors on a fingernail-sized piece of silicon (110 mm²) to power on-device Generative AI, desktop-tier ray-tracing graphics, and multi-gigabit 5G modems. In 2025–2026, the global smartphone processor market exceeds $45 billion in annual revenue across 1.2 billion device shipments. However, the multi-tier supply chain underpinning these chips is among the most hyper-concentrated, capital-intensive, and geopolitically fragile infrastructures in the world. Over 87% of sub-5nm advanced node manufacturing is concentrated in Taiwan within TSMC, while 100% of the Extreme Ultraviolet (EUV) lithography systems required to pattern these chips are monopolized by ASML in the Netherlands. Furthermore, the economic cost of advancing Moore's Law has escalated, with 3nm wafers exceeding $20,500, driving processor costs to $165–$200 per unit (approaching 30% of total smartphone hardware Bill of Materials).
+              </p>
+              <p>
+                This project presents an end-to-end quantitative supply chain analysis and predictive disruption modeling system for advanced mobile processors. By synthesizing telemetry across Tier-4 raw chemical specialists (Shin-Etsu, JSR), Tier-3 equipment monopolies (ASML, Applied Materials, Synopsys), Tier-2 foundries (TSMC, Samsung, SMIC), and Tier-1 advanced packaging providers (TSMC InFO-PoP, ASE), we construct a 142-node directed dependency network. We implement Murphy's defect density equation to model wafer yield learning curves, and deploy Betweenness Centrality and Monte Carlo simulations to stress-test geopolitical blockade scenarios. Our findings demonstrate that while fab onshoring initiatives like the US CHIPS Act add domestic wafer capacity, the absence of localized InFO packaging preserves severe cross-oceanic bottlenecks. Finally, we formulate concrete architectural de-risking roadmaps, highlighting multi-foundry Process Design Kit (PDK) portability, 3D modular chiplets, and RISC-V instruction set hedging.
+              </p>
+            </div>
+
+            <div style="background: #FEF3C7; border: 1px solid #D97706; border-radius: 4px; padding: 6px 12px; text-align: center;">
+              <strong style="font-family: Georgia, serif; font-size: 11px; color: #92400E;">KEY METRICS: 87% Sub-5nm Fab Concentration in Taiwan  |  100% ASML EUV Monopoly  |  $20,500 Wafer Cost  |  29.5% Smartphone BOM Share</strong>
+            </div>
+          </div>
+        `
+      },
+      // Slide 11
+      {
+        title: "Existing system with its disadvantages",
+        render: () => `
+          <div class="slide-content">
+            <div class="grid-2">
+              <div class="info-card">
+                <div class="card-heading dark">EXISTING SYSTEM ARCHITECTURE</div>
+                <ul class="bullet-list" style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><strong>Conventional ERP Platforms:</strong> Traditional supply chain monitoring relies on enterprise tools (SAP, Oracle) that manage procurement through linear, transactional purchase orders.</li>
+                  <li><strong>Tier-1 Siloed Visibility:</strong> OEMs only track their direct tier-1 contract manufacturers (Foxconn, Pegatron) and primary merchant silicon providers (Qualcomm, MediaTek).</li>
+                  <li><strong>Static Lead-Time Assumptions:</strong> Sourcing models rely on rigid contractual lead-time estimates and historical demand extrapolation without real-time fab-level telemetry.</li>
+                  <li><strong>Homogeneous Commodity Modeling:</strong> Advanced nanoscale silicon processors are treated like standard electronic components, ignoring physical cleanroom and lithographic constraints.</li>
+                </ul>
+              </div>
+
+              <div class="info-card crimson-tint">
+                <div class="card-heading">CRITICAL DISADVANTAGES & BLIND SPOTS</div>
+                <ul class="bullet-list cross" style="display: flex; flex-direction: column; gap: 6px;">
+                  <li><strong>Deep Multi-Tier Blindness:</strong> Zero visibility into Tier-2 to Tier-4 single points of failure (ASML EUV optics, Japanese photoresists, purified Neon gas reserves).</li>
+                  <li><strong>Bullwhip Amplification:</strong> Linear models fail to anticipate demand oscillation: a ±5% shift in retail phone sales amplifies into a ±60% swing in foundry wafer bookings.</li>
+                  <li><strong>No Yield Physics Integration:</strong> Blind to wafer defect densities (D₀) and experimental node learning curve failures (e.g. Samsung 3nm GAA yield struggles).</li>
+                  <li><strong>Geopolitical Risk Blindness:</strong> Incapable of quantifying financial and operational exposure to Taiwan Strait naval blockades or US export entity list sanctions.</li>
+                  <li><strong>Static Lagging Indicators:</strong> Provides retrospective post-mortem failure reports rather than predictive risk mitigation, preventing timely multi-foundry re-tapeouts.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 12
+      {
+        title: "Proposed system with advantages",
+        render: () => `
+          <div class="slide-content">
+            <div class="grid-2">
+              <div class="info-card">
+                <div class="card-heading dark">PROPOSED SYSTEM FRAMEWORK</div>
+                <ul class="bullet-list" style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><strong>Multi-Tier Graph Intelligence Engine:</strong> A unified, data-driven platform that models the semiconductor supply chain as a multi-tier directed network graph.</li>
+                  <li><strong>Physical Semiconductor Yield Modeling:</strong> Ingests defect density data and lithographic scanner parameters to calculate dynamic cost-per-good-die in real time.</li>
+                  <li><strong>Stochastic Disruption Simulation:</strong> Deploys Monte Carlo algorithms and graph centrality measures to model shockwave propagations and supply deficits.</li>
+                  <li><strong>Continuous Telemetry Integration:</strong> Synthesizes foundry capacity disclosures, ASML equipment backlog, and BOM component pricing indices.</li>
+                </ul>
+              </div>
+
+              <div class="info-card green-tint">
+                <div class="card-heading green">MAJOR SYSTEM ADVANTAGES</div>
+                <ul class="bullet-list check" style="display: flex; flex-direction: column; gap: 6px;">
+                  <li><strong>End-to-End Multi-Tier Transparency:</strong> Maps 142 supply chain entities from Tier-4 quartz mining to Tier-0 OEM SMT assembly, revealing hidden chokepoints.</li>
+                  <li><strong>Physics-Based Wafer Yield & Cost Engine:</strong> Applies Murphy's yield equation to accurately predict functional die counts and cost amortization across TSMC, Samsung, and SMIC.</li>
+                  <li><strong>Predictive Disruption Stress-Testing:</strong> Simulates geopolitical embargoes, fab shutdowns, and packaging shortages using Betweenness Centrality, calculating Value-at-Risk (VaR).</li>
+                  <li><strong>Dynamic Bullwhip Mitigation:</strong> Tracks rolling inventory buffers across OEM and foundry tiers to prevent destructive double-ordering cycles.</li>
+                  <li><strong>Actionable Strategic Roadmaps:</strong> Generates algorithmic recommendations for multi-foundry PDK portability, 3D chiplet decomposition, and RISC-V IP hedging.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 13
+      {
+        title: "Hardware & Software Requirements",
+        subtitle: "DEVELOPMENT WORKSTATION, PROGRAMMING LANGUAGES, FRAMEWORKS & DATABASE SPECIFICATIONS",
+        render: () => `
+          <div class="slide-content">
+            <div class="grid-4">
+              <div class="info-card" style="background: #EFF6FF; border-color: #93C5FD;">
+                <div class="card-heading" style="color: #1D4ED8;">HARDWARE REQUIREMENTS</div>
+                <ul class="bullet-list" style="font-size: 11.5px;">
+                  <li><strong>CPU:</strong> Multi-core 64-bit (Intel i7/i9, AMD Ryzen 7, Apple M-Series)</li>
+                  <li><strong>RAM:</strong> 16 GB DDR4/DDR5 (32 GB for Monte Carlo simulations)</li>
+                  <li><strong>Storage:</strong> 512 GB NVMe High-Speed Solid State Drive</li>
+                  <li><strong>Display:</strong> 1080p Full HD / 4K multi-monitor setup</li>
+                </ul>
+              </div>
+
+              <div class="info-card amber-tint">
+                <div class="card-heading amber">LANGUAGES & CORE TOOLS</div>
+                <ul class="bullet-list" style="font-size: 11.5px;">
+                  <li><strong>Python 3.11+:</strong> Data science, yield physics & graph modeling</li>
+                  <li><strong>TypeScript / JS:</strong> Client-side reactive UI logic</li>
+                  <li><strong>Cypher & SQL:</strong> Declarative graph & relational query languages</li>
+                  <li><strong>Shell & Make:</strong> Automation scripts and ingestion tasks</li>
+                </ul>
+              </div>
+
+              <div class="info-card green-tint">
+                <div class="card-heading green">FRONT-END DESIGN & UI</div>
+                <ul class="bullet-list" style="font-size: 11.5px;">
+                  <li><strong>React.js & Vite:</strong> Fast, modular component architecture</li>
+                  <li><strong>Vanilla CSS:</strong> Executive design tokens, dark/light views</li>
+                  <li><strong>D3.js & Chart.js:</strong> Interactive network graphs, Sankey flows</li>
+                  <li><strong>Lucide Icons:</strong> Lightweight SVG iconography</li>
+                </ul>
+              </div>
+
+              <div class="info-card" style="background: #FAF5FF; border-color: #D8B4FE;">
+                <div class="card-heading" style="color: #7E22CE;">BACK-END & DATABASE</div>
+                <ul class="bullet-list" style="font-size: 11.5px;">
+                  <li><strong>FastAPI / Flask:</strong> High-concurrency RESTful APIs</li>
+                  <li><strong>Neo4j Graph DB:</strong> Multi-tier supplier relationship mapping</li>
+                  <li><strong>PostgreSQL 15:</strong> Relational tables for BOM costs & yields</li>
+                  <li><strong>Redis & Docker:</strong> In-memory caching & orchestration</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 14
+      {
+        title: "System Architecture",
+        render: () => `
+          <div class="slide-content arch-frame">
+            <img src="system_architecture_diagram.png" alt="System Architecture Diagram">
+            <div style="font-family: Georgia, serif; font-size: 11px; font-weight: bold; color: var(--title-dark); margin-top: 8px; text-align: center;">
+              PIPELINE FLOW: Ingestion (Tier 1) ➔ Normalization & ETL (Tier 2) ➔ Network & Yield Physics Engines (Tier 3) ➔ Neo4j/Postgres Storage (Tier 4) ➔ Interactive Dashboard (Tier 5)
+            </div>
+          </div>
+        `
+      },
+      // Slide 15
+      {
+        title: "Methodologies Used for Implementation",
+        subtitle: "MATHEMATICAL FORMULATIONS, ALGORITHMIC TECHNIQUES & QUANTITATIVE MODELS",
+        render: () => `
+          <div class="slide-content">
+            <div class="grid-4">
+              <div class="info-card">
+                <div class="card-heading">1. GRAPH THEORY & CENTRALITY ALGORITHM</div>
+                <ul class="bullet-list" style="font-size: 11px;">
+                  <li>Modeled supply network as directed graph G = (V, E) with 142 nodes and 318 edges.</li>
+                  <li>Applied <strong>Betweenness Centrality:</strong> C_B(v) = ∑ (σ_st(v) / σ_st) to identify critical bottlenecks.</li>
+                  <li>Identified ASML EUV lithography and TSMC Fab 18 as maximum centrality choke points.</li>
+                </ul>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading">2. SEMICONDUCTOR YIELD & WAFER COST</div>
+                <ul class="bullet-list" style="font-size: 11px;">
+                  <li>Implemented <strong>Murphy's Yield Model:</strong> Y = [(1 - e^(-A·D₀)) / (A·D₀)]² where A = 110 mm² and D₀ = 0.08 def/cm².</li>
+                  <li>Calculated Net Die Cost: Die Cost = (Wafer Cost / [Gross Dies × Yield]) + Packaging + Test.</li>
+                  <li>Modeled 3nm wafer cost ($20,500) yielding ~$44 raw silicon cost per die at 80% yield.</li>
+                </ul>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading">3. MONTE CARLO DISRUPTION SIMULATION</div>
+                <ul class="bullet-list" style="font-size: 11px;">
+                  <li>Executed 10,000 stochastic simulation iterations varying disruption duration (30 to 180 days).</li>
+                  <li>Simulated shock propagation under Taiwan Strait blockades and Dutch ASML export ban expansions.</li>
+                  <li>Computed Value-at-Risk (VaR) and smartphone production deficit distributions.</li>
+                </ul>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading">4. MULTI-CRITERIA DECISION ANALYSIS (AHP)</div>
+                <ul class="bullet-list" style="font-size: 11px;">
+                  <li>Implemented Analytic Hierarchy Process (AHP) to evaluate foundry dual-sourcing feasibility.</li>
+                  <li>Weighted 6 criteria: PDK maturity (25%), Yield stability (20%), Geopolitical risk (20%), Wafer pricing (15%), Advanced packaging (10%), Lead times (10%).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 16
+      {
+        title: "References",
+        subtitle: "ACADEMIC LITERATURE, INDUSTRY TECHNICAL REPORTS, BOOKS & GOVERNMENT FILINGS",
+        render: () => `
+          <div class="slide-content">
+            <div class="info-card" style="gap: 8px;">
+              <div>
+                <strong>1. Miller, Chris (2022).</strong> <em>"Chip War: The Fight for the World's Most Critical Technology."</em> Scribner / Simon & Schuster, New York, ISBN: 978-1982172008.
+              </div>
+              <div>
+                <strong>2. Semiconductor Industry Association & BCG (2021).</strong> <em>"Strengthening the Global Semiconductor Supply Chain in an Uncertain Era."</em> SIA / Boston Consulting Group Technical Whitepaper.
+              </div>
+              <div>
+                <strong>3. TSMC Corporate Filings & Symposiums (2024–2026).</strong> <em>"Annual Reports, SEC Form 20-F & Technical Symposium Proceedings on N3E, N3P, N2 and InFO-PoP Packaging."</em> Hsinchu, Taiwan.
+              </div>
+              <div>
+                <strong>4. ASML Holding N.V. (2024–2025).</strong> <em>"Extreme Ultraviolet (EUV) & High-NA EUV Lithography Technical Documentation and SEC Annual Disclosures."</em> Veldhoven, Netherlands.
+              </div>
+              <div>
+                <strong>5. Counterpoint Technology Market Research & TechInsights (2025–2026).</strong> <em>"Global Smartphone Application Processor Market Share, Teardowns & Bill of Materials (BOM) Benchmarking Reports."</em> London & Ottawa.
+              </div>
+              <div>
+                <strong>6. IEEE Micro & ACM Transactions on Computer Systems (2024).</strong> <em>"Heterogeneous Mobile SoCs, Advanced Fan-Out Wafer-Level Packaging, and On-Device Generative AI Hardware Acceleration."</em> IEEE Computer Society.
+              </div>
+              <div>
+                <strong>7. Congressional Research Service (CRS) (2024).</strong> <em>"Semiconductor Manufacturing and the CHIPS and Science Act: Implementation and Global Geopolitical Dynamics."</em> U.S. Library of Congress, Washington D.C.
+              </div>
+            </div>
+          </div>
+        `
+      },
+      // Slide 17
+      {
+        title: "Conclusion",
+        subtitle: "SUMMARY OF RESEARCH FINDINGS, KEY OUTCOMES & PHASE-2 ROADMAP",
+        render: () => `
+          <div class="slide-content">
+            <div class="grid-2">
+              <div class="info-card">
+                <div class="card-heading">KEY PROJECT FINDINGS & VALUE DELIVERED</div>
+                <ul class="bullet-list check" style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><strong>Hyper-Concentration Vulnerability:</strong> Quantified that 87% of sub-5nm logic fabrication in Taiwan and 100% EUV lithography monopoly in the Netherlands form catastrophic single points of failure for the $45B smartphone processor market.</li>
+                  <li><strong>Silicon Wafer Economics:</strong> Demonstrated that 3nm wafer costs ($20,500/wafer) drive flagship processor BOM share to ~30% ($165–$200), shifting competitive advantage toward defect density reduction and yield learning curve acceleration.</li>
+                  <li><strong>The Packaging Chokepoint:</strong> Discovered that wafer fab onshoring (e.g. US CHIPS Act) without domestic advanced packaging (InFO-PoP) fails to eliminate trans-Pacific shipping risks.</li>
+                  <li><strong>Microarchitectural Independence:</strong> Established that custom CPU microarchitectures (Qualcomm Oryon) and the industry-wide hedge toward RISC-V provide vital margin defense against ARM licensing restructuring.</li>
+                </ul>
+              </div>
+
+              <div class="info-card">
+                <div class="card-heading green">FUTURE WORK FOR REVIEW-2 / PHASE-2</div>
+                <ul class="bullet-list" style="display: flex; flex-direction: column; gap: 8px;">
+                  <li><strong>➔ Real-Time Automated Data Ingestion:</strong> Deploy automated web-scraping agents to ingest real-time trade tariff changes, semiconductor export bans, and wafer fab lead-time updates.</li>
+                  <li><strong>➔ 2nm High-NA EUV & BSPDN Yield Modeling:</strong> Incorporate yield learning curves for next-generation High-NA EUV scanners ($350M/unit) and Backside Power Delivery Networks (BSPDN / A16 node).</li>
+                  <li><strong>➔ Multi-Foundry PDK Portability Engine:</strong> Develop algorithmic translators for Process Design Kit (PDK) rules to enable rapid tape-out migration between TSMC and Samsung Foundry.</li>
+                  <li><strong>➔ Interactive Web Portal & API:</strong> Deploy full reactive web dashboard with live Monte Carlo disruption slider controls for executive decision support.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let currentSlide = 0;
+    const totalSlides = slidesData.length;
+
+    function renderSlide(index) {
+      const data = slidesData[index];
+      const frame = document.getElementById('slideFrame');
+
+      if (data.type === 'cover' || data.type === 'section') {
+        frame.innerHTML = data.render();
+      } else {
+        frame.innerHTML = `
+          <div class="slide-header">
+            <div class="slide-title">${data.title}</div>
+            ${data.subtitle ? `<div class="subtitle-tag">${data.subtitle}</div>` : ''}
+            <div class="slide-divider"></div>
+          </div>
+          ${data.render()}
+        `;
+      }
+
+      document.getElementById('slideIndicator').innerText = `Slide ${index + 1} / ${totalSlides}`;
+      document.getElementById('slideSelect').value = index;
+      document.getElementById('prevBtn').disabled = (index === 0);
+      document.getElementById('nextBtn').disabled = (index === totalSlides - 1);
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        renderSlide(currentSlide);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        renderSlide(currentSlide);
+      }
+    }
+
+    function jumpToSlide(val) {
+      currentSlide = parseInt(val, 10);
+      renderSlide(currentSlide);
+    }
+
+    function toggleFullScreen() {
+      const el = document.querySelector('.slide-viewport');
+      if (!document.fullscreenElement) {
+        el.requestFullscreen().catch(err => alert(err.message));
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Populate Slide Dropdown
+    const select = document.getElementById('slideSelect');
+    slidesData.forEach((s, idx) => {
+      const opt = document.createElement('option');
+      opt.value = idx;
+      opt.text = `Slide ${idx + 1}: ${s.title || (s.type === 'cover' ? 'Title Cover' : 'The Project Proposal')}`;
+      select.appendChild(opt);
+    });
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      }
+    });
+
+    // Initial render
+    renderSlide(currentSlide);
+  </script>
+</body>
+</html>

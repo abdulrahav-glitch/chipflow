@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Fashion Retail Sales Analysis & Executive Presentation 2026</title>
+  <meta name="description" content="Strategic Fashion Retail Sales Analysis across Zara, Shein, Nike, LVMH, and Uniqlo. Features interactive 20-slide presentation, markdown & margin simulator, brand comparator, and research report.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="dark-theme">
+  <!-- Top Navigation Header -->
+  <header class="app-header" id="mainHeader">
+    <div class="header-left">
+      <div class="logo-badge">
+        <span class="fashion-icon">✨</span>
+        <span class="logo-text">ATELIER<span class="accent-gold">RETAIL</span></span>
+      </div>
+      <div class="project-pill">Global Fashion Strategy 2026</div>
+
+      <!-- Quick Switcher to Other Project -->
+      <a href="../index.html" class="project-switch-link" title="Switch to Mobile Processor Supply Chain Project">
+        <span>🔄</span> Mobile Silicon Project
+      </a>
+    </div>
+
+    <!-- Mode Switcher -->
+    <nav class="nav-tabs" id="navTabs">
+      <button class="nav-tab active" data-view="presentation" id="tabPresentation">
+        <span class="tab-icon">🖥️</span> Slide Deck
+      </button>
+      <button class="nav-tab" data-view="report" id="tabReport">
+        <span class="tab-icon">📑</span> Research Report
+      </button>
+      <button class="nav-tab" data-view="charts" id="tabCharts">
+        <span class="tab-icon">📊</span> Chart Intelligence
+      </button>
+    </nav>
+
+    <!-- Header Actions & Interactive Tools -->
+    <div class="header-right">
+      <button class="btn-tool-action" id="btnOpenComparator" title="Compare Any 2 Fashion Brands Side-by-Side (C)">
+        <span>⚖️</span> Compare
+      </button>
+      <button class="btn-tool-action" id="btnOpenSimulator" title="Interactive Fashion Markdown & Margin Simulator (B)">
+        <span>🧮</span> Markdown Sim
+      </button>
+      <a href="fashion_retail_sales_presentation.pptx" download class="btn-download" id="btnDownloadPPTX" title="Download genuine Microsoft PowerPoint (.pptx) file">
+        <span class="icon">📥</span> Download PPTX (1.6 MB)
+      </a>
+      <button class="btn-icon" id="btnToggleFullscreen" title="Toggle Fullscreen (F)">
+        <span>⛶</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main App Container -->
+  <main class="app-main">
+
+    <!-- ================= VIEW 1: PRESENTATION SLIDE DECK ================= -->
+    <section class="view-section active" id="viewPresentation">
+      <!-- Presentation Player Toolbar -->
+      <div class="deck-toolbar">
+        <div class="slide-indicator">
+          <span class="indicator-title">SLIDE</span>
+          <span class="current-num" id="currentSlideNum">01</span>
+          <span class="divider">/</span>
+          <span class="total-num" id="totalSlidesNum">20</span>
+          <span class="slide-category-badge" id="slideCategoryBadge">OVERVIEW</span>
+        </div>
+
+        <div class="progress-bar-container" title="Presentation Progress">
+          <div class="progress-bar" id="presentationProgressBar"></div>
+          <div class="autoplay-timer-bar" id="autoplayTimerBar"></div>
+        </div>
+
+        <div class="deck-controls">
+          <button class="deck-btn" id="btnPrevSlide" title="Previous Slide (← / Space)">
+            <span>◀</span> Prev
+          </button>
+          <button class="deck-btn btn-primary" id="btnNextSlide" title="Next Slide (→)">
+            Next <span>▶</span>
+          </button>
+          
+          <div class="control-divider"></div>
+
+          <!-- Autoplay Button -->
+          <button class="deck-btn btn-feature" id="btnToggleAutoplay" title="Toggle Auto-Play Slides (P)">
+            <span id="autoplayIcon">▶</span> <span id="autoplayLabel">Auto</span>
+          </button>
+
+          <!-- Laser Pointer Button -->
+          <button class="deck-btn btn-feature" id="btnToggleLaser" title="Toggle Interactive Laser Pointer (L)">
+            <span>🔴</span> Laser
+          </button>
+
+          <!-- Grid Drawer -->
+          <button class="deck-btn btn-outline" id="btnSlideDrawer" title="View All Slides Grid (G)">
+            <span>📑</span> Grid
+          </button>
+
+          <!-- Speaker Notes -->
+          <button class="deck-btn btn-outline" id="btnToggleNotes" title="Toggle Presenter Speaker Notes (N)">
+            <span>💬</span> Notes
+          </button>
+
+          <!-- Shortcuts Guide -->
+          <button class="deck-btn btn-icon-only" id="btnOpenShortcuts" title="Keyboard Shortcuts (?)">
+            <span>⌨️</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Slide Viewport (16:9 Aspect Ratio Container) -->
+      <div class="slide-viewport-wrapper" id="slideViewportWrapper">
+        <!-- Ambient Gold Sparkle Canvas -->
+        <canvas class="ambient-canvas" id="ambientCanvas"></canvas>
+
+        <!-- Laser Pointer Element -->
+        <div class="laser-pointer" id="laserPointer"></div>
+
+        <!-- Slide Stage with Transition Animations -->
+        <div class="slide-stage" id="slideStage">
+          <!-- Slide contents dynamically rendered here -->
+        </div>
+
+        <!-- Slide Navigation Overlay Floaters (Hover Accessible) -->
+        <button class="slide-nav-arrow arrow-left" id="arrowPrev" title="Previous Slide">‹</button>
+        <button class="slide-nav-arrow arrow-right" id="arrowNext" title="Next Slide">›</button>
+      </div>
+
+      <!-- Presenter Speaker Notes Panel (Collapsible) -->
+      <aside class="speaker-notes-panel" id="speakerNotesPanel">
+        <div class="notes-header">
+          <div class="notes-title">
+            <span>🎙️</span> Fashion Strategy Presenter Notes & Talking Points
+          </div>
+          <button class="notes-close" id="btnCloseNotes">✕</button>
+        </div>
+        <div class="notes-content" id="speakerNotesText">
+          Select or navigate to a slide to inspect executive speaking talking points.
+        </div>
+      </aside>
+
+      <!-- Slide Drawer (Modal Grid of all 20 Slides) -->
+      <div class="slide-drawer-overlay" id="slideDrawerOverlay">
+        <div class="slide-drawer-modal">
+          <div class="drawer-header">
+            <div>
+              <h3>Jump to Slide</h3>
+              <p class="drawer-sub">Select any of the 20 comprehensive fashion strategy slides</p>
+            </div>
+            <div class="drawer-header-actions">
+              <input type="text" id="slideSearchInput" class="slide-search-input" placeholder="Filter slides (e.g., Zara, Shein, Returns)...">
+              <button class="drawer-close" id="btnCloseDrawer">✕</button>
+            </div>
+          </div>
+          <div class="drawer-grid" id="drawerGrid">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Keyboard Shortcuts Modal -->
+      <div class="modal-overlay" id="shortcutsModalOverlay">
+        <div class="custom-modal modal-sm">
+          <div class="modal-header">
+            <h3><span>⌨️</span> Presentation Keyboard Shortcuts</h3>
+            <button class="modal-close" id="btnCloseShortcuts">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="shortcuts-grid">
+              <div class="shortcut-item"><kbd>→</kbd> or <kbd>Space</kbd> <span>Next Slide</span></div>
+              <div class="shortcut-item"><kbd>←</kbd> <span>Previous Slide</span></div>
+              <div class="shortcut-item"><kbd>P</kbd> <span>Play / Pause Autoplay</span></div>
+              <div class="shortcut-item"><kbd>L</kbd> <span>Toggle Laser Pointer</span></div>
+              <div class="shortcut-item"><kbd>C</kbd> <span>Open Brand Comparator</span></div>
+              <div class="shortcut-item"><kbd>B</kbd> <span>Open Markdown & Margin Simulator</span></div>
+              <div class="shortcut-item"><kbd>G</kbd> <span>Open Slides Grid Drawer</span></div>
+              <div class="shortcut-item"><kbd>N</kbd> <span>Toggle Speaker Notes</span></div>
+              <div class="shortcut-item"><kbd>F</kbd> <span>Toggle Fullscreen</span></div>
+              <div class="shortcut-item"><kbd>Home</kbd> / <kbd>End</kbd> <span>First / Last Slide</span></div>
+              <div class="shortcut-item"><kbd>Esc</kbd> <span>Close Any Modal</span></div>
+              <div class="shortcut-item"><kbd>?</kbd> <span>Open This Shortcuts HUD</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Brand Comparator Modal -->
+      <div class="modal-overlay" id="comparatorModalOverlay">
+        <div class="custom-modal modal-lg">
+          <div class="modal-header">
+            <div>
+              <h3><span>⚖️</span> Head-to-Head Fashion Brand Comparator</h3>
+              <p class="modal-sub">Benchmark business models, design-to-rack speed, inventory turns, full-price sell-through, and margin resilience.</p>
+            </div>
+            <button class="modal-close" id="btnCloseComparator">✕</button>
+          </div>
+          <div class="modal-body">
+            <!-- Brand Selection Dropdowns -->
+            <div class="comparator-selectors">
+              <div class="selector-box">
+                <label>Brand A:</label>
+                <select id="selectCompA" class="custom-select">
+                  <option value="zara" selected>Inditex / Zara</option>
+                  <option value="shein">Shein (Ultra-Fast)</option>
+                  <option value="nike">Nike Inc.</option>
+                  <option value="lvmh">LVMH (Luxury)</option>
+                  <option value="uniqlo">Fast Retailing (Uniqlo)</option>
+                  <option value="hm">H&M Group</option>
+                </select>
+              </div>
+
+              <div class="vs-badge">VS</div>
+
+              <div class="selector-box">
+                <label>Brand B:</label>
+                <select id="selectCompB" class="custom-select">
+                  <option value="zara">Inditex / Zara</option>
+                  <option value="shein" selected>Shein (Ultra-Fast)</option>
+                  <option value="nike">Nike Inc.</option>
+                  <option value="lvmh">LVMH (Luxury)</option>
+                  <option value="uniqlo">Fast Retailing (Uniqlo)</option>
+                  <option value="hm">H&M Group</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Dynamic Comparison Grid -->
+            <div class="comparison-results" id="comparisonResults">
+              <!-- Rendered dynamically via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Fashion Retail Markdown & Margin Simulator Modal -->
+      <div class="modal-overlay" id="simulatorModalOverlay">
+        <div class="custom-modal modal-xl">
+          <div class="modal-header">
+            <div>
+              <h3><span>🧮</span> Interactive Fashion Markdown & Margin Simulator</h3>
+              <p class="modal-sub">Simulate seasonal sell-through rates, clearance discounts, and e-commerce return rates to observe retail profitability.</p>
+            </div>
+            <button class="modal-close" id="btnCloseSimulator">✕</button>
+          </div>
+          <div class="modal-body simulator-body">
+            <!-- Left: Configurator Controls -->
+            <div class="sim-controls">
+              <div class="sim-group">
+                <label class="sim-label">Preset Garment Archetype:</label>
+                <div class="sim-preset-buttons">
+                  <button class="btn-preset active" data-preset="luxury_coat">Haute Couture Coat ($950)</button>
+                  <button class="btn-preset" data-preset="tailored_blazer">Zara Tailored Blazer ($120)</button>
+                  <button class="btn-preset" data-preset="athleisure_hoodie">Nike Tech Hoodie ($95)</button>
+                  <button class="btn-preset" data-preset="fast_dress">Shein Summer Dress ($22)</button>
+                </div>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Initial Full Retail Tag Price (MSRP):</label>
+                <div class="slider-row">
+                  <input type="range" id="simMSRP" min="15" max="1200" step="5" value="120" class="custom-slider">
+                  <span class="slider-val" id="simMSRPVal">$120</span>
+                </div>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Production & CMT Manufacturing Cost per Unit:</label>
+                <div class="slider-row">
+                  <input type="range" id="simCOGS" min="4" max="250" step="1" value="26" class="custom-slider">
+                  <span class="slider-val" id="simCOGSVal">$26</span>
+                </div>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">Full-Price Sell-Through Rate (% sold before discount):</label>
+                <div class="slider-row">
+                  <input type="range" id="simFullPriceSellThrough" min="20" max="95" step="1" value="68" class="custom-slider">
+                  <span class="slider-val" id="simFullPriceVal">68%</span>
+                </div>
+                <span class="slider-hint">Industry Avg: 45% | Zara: 68% | Luxury: 95%+</span>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">End-of-Season Markdown Discount Rate:</label>
+                <select id="simMarkdownDiscount" class="custom-select">
+                  <option value="0.20">20% Off (Gentle Seasonal Sale)</option>
+                  <option value="0.40" selected>40% Off (Standard Semi-Annual Clearance)</option>
+                  <option value="0.60">60% Off (Aggressive Liquidation Sale)</option>
+                </select>
+              </div>
+
+              <div class="sim-group">
+                <label class="sim-label">E-Commerce Return Rate:</label>
+                <div class="slider-row">
+                  <input type="range" id="simReturnRate" min="5" max="45" step="1" value="25" class="custom-slider">
+                  <span class="slider-val" id="simReturnVal">25%</span>
+                </div>
+                <span class="slider-hint">In-Store Avg: 8-10% | Online Apparel Avg: 25-35%</span>
+              </div>
+            </div>
+
+            <!-- Right: Real-time Profitability Output -->
+            <div class="sim-output">
+              <div class="output-card highlight">
+                <div class="out-title">Average Realized Selling Price</div>
+                <div class="out-value accent-gold" id="simRealizedPrice">$104.64</div>
+                <div class="out-sub" id="simRealizedSub">Effective net revenue after markdown discounts</div>
+              </div>
+
+              <div class="output-row">
+                <div class="output-card">
+                  <div class="out-title">Effective Gross Margin</div>
+                  <div class="out-value accent-emerald" id="simGrossMarginPct">59.8%</div>
+                  <div class="out-sub" id="simGrossMarginDollar">$62.50 per unit</div>
+                </div>
+
+                <div class="output-card">
+                  <div class="out-title">Net Operating Profit (EBIT)</div>
+                  <div class="out-value accent-cyan" id="simNetMarginDollar">$14.20 (13.6%)</div>
+                  <div class="out-sub" id="simMarginHealth">Health: Strong Profitability</div>
+                </div>
+              </div>
+
+              <!-- Live Cost Allocation Stacked Bar -->
+              <div class="bom-bar-wrap">
+                <div class="bom-bar-label">Unit Revenue Allocation Breakdown:</div>
+                <div class="bom-stacked-bar" id="fashionStackedBar">
+                  <div class="stack-seg seg-cogs" id="segCOGS" style="width: 25%;" title="Manufacturing COGS"></div>
+                  <div class="stack-seg seg-store" id="segStore" style="width: 24%;" title="Store Labor & Rent"></div>
+                  <div class="stack-seg seg-marketing" id="segMarketing" style="width: 14%;" title="Marketing & CAC"></div>
+                  <div class="stack-seg seg-returns" id="segReturns" style="width: 11%;" title="Returns & Freight"></div>
+                  <div class="stack-seg seg-markdown" id="segMarkdown" style="width: 12%;" title="Markdown Loss"></div>
+                  <div class="stack-seg seg-profit" id="segProfit" style="width: 14%;" title="Net EBIT Profit"></div>
+                </div>
+                <div class="bom-legend">
+                  <span><i class="dot dot-cogs"></i> Manufacturing</span>
+                  <span><i class="dot dot-store"></i> Store & Rent</span>
+                  <span><i class="dot dot-marketing"></i> Marketing</span>
+                  <span><i class="dot dot-returns"></i> Returns</span>
+                  <span><i class="dot dot-markdown"></i> Markdown Loss</span>
+                  <span><i class="dot dot-profit"></i> Net Profit</span>
+                </div>
+              </div>
+
+              <!-- Strategic Insight Box -->
+              <div class="sim-insight-box" id="simInsightBox">
+                <strong>Executive Reviewer Takeaway:</strong> With a 68% full-price sell-through rate, the retailer recovers strong gross margins. Boosting full-price sales by just 10% delivers a 2.4x higher profit increase than attempting to cut fabric manufacturing costs.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= VIEW 2: RESEARCH REPORT ================= -->
+    <section class="view-section" id="viewReport">
+      <div class="report-layout">
+        <!-- Sticky Table of Contents -->
+        <aside class="report-sidebar">
+          <div class="sidebar-sticky">
+            <h4 class="sidebar-heading">REPORT NAVIGATION</h4>
+            <ul class="toc-list" id="reportTOC">
+              <li><a href="#rep-exec">1. Executive Summary</a></li>
+              <li><a href="#rep-models">2. Business Models & Archetypes</a></li>
+              <li><a href="#rep-matrix">3. Competitor Matrix</a></li>
+              <li><a href="#rep-tiers">4. 5-Tier Supply Chain Architecture</a></li>
+              <li><a href="#rep-omnichannel">5. Omnichannel & 50/50 Channel Split</a></li>
+              <li><a href="#rep-economics">6. Unit Economics of $100 Garment</a></li>
+              <li><a href="#rep-returns">7. Reverse Logistics & Returns</a></li>
+              <li><a href="#rep-markdowns">8. Markdown Science & AI Pricing</a></li>
+              <li><a href="#rep-tech">9. Tech Stack, RFID & Computer Vision</a></li>
+              <li><a href="#rep-sustainability">10. ESG, Circularity & Strategic Playbook</a></li>
+            </ul>
+
+            <div class="sidebar-download-card">
+              <h5>Official Presentation Deck</h5>
+              <p>Download the fully editable widescreen .pptx presentation file.</p>
+              <a href="fashion_retail_sales_presentation.pptx" download class="btn-sidebar-download">
+                📥 Download Presentation (.pptx)
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Report Body -->
+        <article class="report-body" id="reportBody">
+          <div class="report-hero">
+            <span class="report-tag">COMPREHENSIVE RESEARCH REPORT</span>
+            <h1 class="report-title">Global Fashion Retail Sales & Omnichannel Strategy Analysis</h1>
+            <p class="report-subtitle">A Strategic Evaluation of Inventory Velocity, Markdown Optimization, Omnichannel Fulfillment, and Supply Chain Agility</p>
+            <div class="report-meta">
+              <span><strong>Author:</strong> Fashion Retail Analytics Group</span>
+              <span><strong>Coverage:</strong> Inditex (Zara), Shein, Nike, LVMH, Fast Retailing (Uniqlo), H&M</span>
+              <span><strong>Date:</strong> October 2026</span>
+            </div>
+          </div>
+
+          <!-- Section 1 -->
+          <section class="report-section" id="rep-exec">
+            <h2>1. Executive Summary</h2>
+            <p>The global apparel and footwear retail market represents an economic colossus valued at <strong>over $1.73 trillion annually</strong>, supporting millions of global manufacturing and retail jobs. Historically driven by traditional six-month seasonal cycles (Spring/Summer and Autumn/Winter), the fashion industry has undergone a seismic revolution catalyzed by <strong>omnichannel shopping, algorithmic trend discovery, agile supply chain nearshoring, and ultra-fast on-demand manufacturing</strong>.</p>
+            
+            <div class="report-kpi-grid">
+              <div class="kpi-card accent-gold">
+                <div class="kpi-val">$1.73T</div>
+                <div class="kpi-lbl">Global Market Value</div>
+                <div class="kpi-sub">Apparel & Footwear Retail</div>
+              </div>
+              <div class="kpi-card accent-emerald">
+                <div class="kpi-val">68%</div>
+                <div class="kpi-lbl">Zara Full-Price Sell-Thru</div>
+                <div class="kpi-sub">Vs 45% Industry Average</div>
+              </div>
+              <div class="kpi-card accent-rose">
+                <div class="kpi-val">28.5%</div>
+                <div class="kpi-lbl">E-Commerce Return Rate</div>
+                <div class="kpi-sub">Triples in-store return rate</div>
+              </div>
+              <div class="kpi-card accent-cyan">
+                <div class="kpi-val">7-15 Days</div>
+                <div class="kpi-lbl">Agile Cycle Time</div>
+                <div class="kpi-sub">Design to consumer rack</div>
+              </div>
+            </div>
+
+            <p>Today's retail winners are those that maintain <strong>velocity over volume</strong>. By producing in small batches (100–500 units) and nearshoring production in Portugal, Morocco, Turkey, and Mexico, agile brands like Zara and Shein dramatically cut design-to-rack lead times, protect gross margins from markdown erosion, and minimize dead-stock inventory.</p>
+          </section>
+
+          <!-- Section 2: Business Models -->
+          <section class="report-section" id="rep-models">
+            <h2>2. Fashion Retail Operating Models & Archetypes</h2>
+            <div class="models-grid">
+              <div class="model-box">
+                <div class="model-badge">MODEL 1</div>
+                <h3>Ultra-Fast Digital On-Demand (Shein, Temu)</h3>
+                <p>Digital-only platforms producing clothing in micro-batches of 50 to 100 units based on algorithmic trend scraping. Automated reorders are placed within 48 hours as demand spikes. Cross-border air shipping leverages de minimis customs duty exemptions.</p>
+              </div>
+              <div class="model-box">
+                <div class="model-badge">MODEL 2</div>
+                <h3>Agile Nearshore Fast Fashion (Inditex / Zara)</h3>
+                <p>Over 50% of production nearshored in Spain, Portugal, Morocco, and Turkey. Turnaround from sketch to store racks occurs in 15 to 20 days. Deliberate store scarcity drives superior full-price sell-through rates (>68%).</p>
+              </div>
+              <div class="model-box">
+                <div class="model-badge">MODEL 3</div>
+                <h3>Performance Sportswear (Nike, Lululemon, Adidas)</h3>
+                <p>Long-cycle product development (6 to 9 months) requiring complex footwear injection tooling, performance textiles, and multi-year athlete sponsorships. Balances wholesale mall distribution with digital DTC apps.</p>
+              </div>
+              <div class="model-box">
+                <div class="model-badge">MODEL 4</div>
+                <h3>Artisanal Luxury & Haute Couture (LVMH, Hermès)</h3>
+                <p>Engineered exclusivity and zero promotional markdowns. Handcrafted artisanal workshops in France and Italy; trophy flagship real estate on Fifth Avenue and Champs-Élysées. Gross margins exceed 70%.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 3: Comparative Matrix -->
+          <section class="report-section" id="rep-matrix">
+            <h2>3. Cross-Company Comparative Matrix</h2>
+            <div class="table-responsive">
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Annual Revenue</th>
+                    <th>Business Model</th>
+                    <th>Design-to-Rack</th>
+                    <th>Sourcing Hubs</th>
+                    <th>Turns / Yr</th>
+                    <th>Full-Price %</th>
+                    <th>Gross Margin</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Inditex (Zara)</strong></td>
+                    <td>$38.5 Billion</td>
+                    <td>Agile Nearshore Fast</td>
+                    <td>15 – 21 Days</td>
+                    <td>Spain, Portugal, Morocco</td>
+                    <td>8.2x</td>
+                    <td>68%</td>
+                    <td>57.8%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Shein</strong></td>
+                    <td>$34.0 Billion</td>
+                    <td>Ultra-Fast Digital</td>
+                    <td>7 – 10 Days</td>
+                    <td>Guangzhou (China)</td>
+                    <td>12.5x</td>
+                    <td>~50%</td>
+                    <td>44.0%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Nike Inc.</strong></td>
+                    <td>$51.4 Billion</td>
+                    <td>Sportswear & Footwear</td>
+                    <td>6 – 9 Months</td>
+                    <td>Vietnam, Indonesia</td>
+                    <td>3.8x</td>
+                    <td>58%</td>
+                    <td>44.6%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>LVMH Fashion</strong></td>
+                    <td>$46.2 Billion</td>
+                    <td>Artisanal Luxury</td>
+                    <td>6 – 12 Months</td>
+                    <td>France, Italy</td>
+                    <td>2.1x</td>
+                    <td>98%</td>
+                    <td>72.5%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Uniqlo (Fast Retailing)</strong></td>
+                    <td>$20.8 Billion</td>
+                    <td>Functional LifeWear</td>
+                    <td>3 – 6 Months</td>
+                    <td>China, Vietnam, Bangladesh</td>
+                    <td>5.5x</td>
+                    <td>74%</td>
+                    <td>52.4%</td>
+                  </tr>
+                  <tr>
+                    <td><strong>H&M Group</strong></td>
+                    <td>$22.3 Billion</td>
+                    <td>Traditional Fast Fashion</td>
+                    <td>45 – 60 Days</td>
+                    <td>Bangladesh, India, China</td>
+                    <td>4.2x</td>
+                    <td>48%</td>
+                    <td>51.2%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Section 4: Supply Chain Tiers -->
+          <section class="report-section" id="rep-tiers">
+            <h2>4. The 5-Tier Fashion Supply Chain Architecture</h2>
+            <div class="tier-flow">
+              <div class="tier-card tier-4">
+                <div class="tier-tag">TIER 4</div>
+                <h4>Raw Agricultural & Petrochemical Fiber Production</h4>
+                <p>Natural cotton farming in India, US, and Brazil. Synthetic petroleum-derived polymers (polyester, nylon, elastane) representing over 65% of all global garment fibers produced annually.</p>
+              </div>
+              <div class="tier-card tier-3">
+                <div class="tier-tag">TIER 3</div>
+                <h4>Yarn Spinning, Weaving, Knitting & Fabric Finishing</h4>
+                <p>Textile mills in China, India, Pakistan, and Turkey. Dyeing, bleaching, and chemical finishes consuming millions of cubic meters of fresh water; subject to rigorous wastewater environmental compliance.</p>
+              </div>
+              <div class="tier-card tier-2">
+                <div class="tier-tag">TIER 2</div>
+                <h4>Garment Manufacturing (Cut-Make-Trim / CMT)</h4>
+                <p>Labor-intensive garment assembly sewing lines in Bangladesh, Vietnam, Cambodia, Indonesia, Mexico, and Morocco. Modernizing with automated fabric laser-cutting and digital marker optimization.</p>
+              </div>
+              <div class="tier-card tier-1">
+                <div class="tier-tag">TIER 1</div>
+                <h4>Global Freight, Consolidation & Regional Fulfillment Hubs</h4>
+                <p>Intermodal ocean freight (20–30 days) versus high-speed dedicated air cargo (2–4 days). Automated fulfillment centers utilizing AutoStore robots, pocket sorters, and item-level RFID scanning.</p>
+              </div>
+              <div class="tier-card tier-0">
+                <div class="tier-tag">TIER 0</div>
+                <h4>Omnichannel Retail, DTC E-Commerce & Reverse Logistics</h4>
+                <p>Experiential flagship store merchandising, Buy-Online-Pick-Up-In-Store (BOPIS), and ship-from-store operations. Reverse logistics processing centers inspecting, sanitizing, and restocking returned apparel.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 5: Unit Economics -->
+          <section class="report-section" id="rep-economics">
+            <h2>5. Unit Economics of a $100 Retail Garment</h2>
+            <p>In a standard $100 retail apparel item, raw manufacturing represents less than a quarter of the consumer price tag. Physical retail rent and staffing ($24), e-commerce reverse logistics ($11), and markdown clearance losses ($13) consume the vast majority of margins, leaving an average net operating profit (EBIT) of approximately <strong>10% ($10.00)</strong>.</p>
+            
+            <div class="chart-embed-box">
+              <img src="charts/retail_cost_breakdown.png" alt="Retail Cost Breakdown" class="report-img">
+              <div class="img-caption">Figure 1: Allocation of expenditures per $100 retail apparel garment.</div>
+            </div>
+          </section>
+
+          <!-- Section 6: Reverse Logistics -->
+          <section class="report-section" id="rep-returns">
+            <h2>6. The Reverse Logistics Crisis: E-Commerce Returns</h2>
+            <p>The primary economic challenge of digital fashion retail is the return rate. While physical in-store apparel returns average <strong>8% to 10%</strong>, online fashion return rates reach <strong>25% to 35%</strong> (and over 40% for formal dresses). This creates an <strong>$800 billion global reverse logistics drag</strong>. Retailers are countering by ending free mail returns, charging $2.50–$4.00 per mail return parcel, and deploying AI virtual sizing tools.</p>
+            
+            <div class="chart-embed-box">
+              <img src="charts/inventory_turnover_leadtime.png" alt="Inventory Turnover vs Lead Time" class="report-img">
+              <div class="img-caption">Figure 2: Design-to-rack velocity and annual inventory turns across key fashion models.</div>
+            </div>
+          </section>
+
+          <!-- Section 7: Sustainability -->
+          <section class="report-section" id="rep-sustainability">
+            <h2>7. ESG, Circularity & Strategic Recommendations</h2>
+            <div class="recommendations-container">
+              <div class="rec-column">
+                <h3>For Fashion Retail Executives</h3>
+                <ol>
+                  <li><strong>Nearshore 30-40% of Volume:</strong> Establish rapid-response nearshore manufacturing (within 1,500 miles of retail markets) to execute 15-day reorders of proven seasonal bestsellers.</li>
+                  <li><strong>Deploy Store-Level Dynamic Markdowns:</strong> Eliminate blanket 40% off sales; liquidate excess inventory with localized AI price optimization algorithms.</li>
+                  <li><strong>Universal RFID Deployment:</strong> Mandate RFID tags on all garments to achieve >99% inventory accuracy and turn stores into micro-fulfillment centers.</li>
+                </ol>
+              </div>
+              <div class="rec-column">
+                <h3>For Circularity & Compliance</h3>
+                <ol>
+                  <li><strong>Prepare for Digital Product Passports:</strong> Audit textile supply chain traceability ahead of the European Union's 2027 DPP mandate.</li>
+                  <li><strong>Capture Secondary Re-Commerce:</strong> Launch brand-owned secondhand trade-in programs (e.g. Zara Pre-Owned) to recapture secondary market profit pools.</li>
+                  <li><strong>Eliminate Unrestricted Free Returns:</strong> Charge nominal mail return fees while keeping in-store drop-offs free to protect margins and drive store foot traffic.</li>
+                </ol>
+              </div>
+            </div>
+          </section>
+        </article>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: CHART GALLERY ================= -->
+    <section class="view-section" id="viewCharts">
+      <div class="charts-view-container">
+        <div class="charts-header">
+          <h2>Fashion Retail Sales Visual Intelligence</h2>
+          <p>Empirical market data, channel evolution trends, and unit economic cost breakdowns.</p>
+        </div>
+
+        <div class="charts-grid">
+          <!-- Chart 1 -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-gold">ANNUAL REVENUE BENCHMARKS</span>
+              <h3>Global Fashion Retail Giants: Annual Revenue Benchmarks</h3>
+            </div>
+            <div class="chart-image-wrap">
+              <img src="charts/fashion_market_share.png" alt="Annual Revenue Benchmarks" class="gallery-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> Nike ($51B+) and LVMH Fashion ($46B+) lead in top-line revenue and operating margins, while Inditex / Zara ($38.5B) and Shein ($34B) dominate volume velocity.
+            </div>
+          </div>
+
+          <!-- Chart 2 -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-cyan">CHANNEL EVOLUTION</span>
+              <h3>Omnichannel Convergence: In-Store vs E-Commerce vs Social Shopping</h3>
+            </div>
+            <div class="chart-image-wrap">
+              <img src="charts/omnichannel_sales_split.png" alt="Omnichannel Sales Split" class="gallery-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> Physical stores have stabilized at ~50% of global sales, proving the enduring value of in-person touch and fit. Social and live shopping has surged to 17% of total sales.
+            </div>
+          </div>
+
+          <!-- Chart 3 -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-rose">INVENTORY TURNS & VELOCITY</span>
+              <h3>Design-to-Rack Lead Time vs. Annual Inventory Turnover</h3>
+            </div>
+            <div class="chart-image-wrap">
+              <img src="charts/inventory_turnover_leadtime.png" alt="Inventory Turnover vs Lead Time" class="gallery-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> Shein (7 days / 12.5 turns) and Zara (15 days / 8.2 turns) compound working capital efficiency, vastly outperforming traditional retailers with 180-day lead times.
+            </div>
+          </div>
+
+          <!-- Chart 4 -->
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-gold">UNIT ECONOMICS</span>
+              <h3>Garment Unit Cost Allocation ($100 Retail Garment)</h3>
+            </div>
+            <div class="chart-image-wrap">
+              <img src="charts/retail_cost_breakdown.png" alt="Unit Cost Breakdown" class="gallery-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> Store rent ($24), online returns ($11), and markdown write-downs ($13) exceed manufacturing costs ($22), leaving an average net EBIT margin of ~10%.
+            </div>
+          </div>
+
+          <!-- Chart 5 -->
+          <div class="chart-card full-width">
+            <div class="chart-card-header">
+              <span class="chart-tag accent-emerald">STRATEGIC AGILITY RADAR</span>
+              <h3>Fashion Retail Agility & Competitiveness Radar (Scale 1-10)</h3>
+            </div>
+            <div class="chart-image-wrap center">
+              <img src="charts/brand_resilience_radar.png" alt="Brand Resilience Radar" class="gallery-img radar-img">
+            </div>
+            <div class="chart-insights">
+              <strong>Key Insight:</strong> LVMH commands unmatched gross margin power (10/10) with zero discounting. Zara balances rapid speed with 68% full-price sell-through, while Shein dominates digital reach.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JavaScript application logic -->
+  <script src="index.js"></script>
+</body>
+</html>
